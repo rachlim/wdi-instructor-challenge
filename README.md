@@ -37,10 +37,12 @@
 
 #### Deliverables
 
-- Please send us back a link to a git repo with the completed code challenge. 
+- Please fork [this repo](https://github.com/generalassembly-hk/wdi-instructor-challenge) and send us a pull request with the completed code challenge. 
 
 - Include a README.md file in your repo with a link to your application deployed on Heroku or Digital Ocean.
 
 #### Bonus
 
 - Rewrite the application using a JavaScript MVC library. Include a readme that explains the benefits and any additional challenges students would face learning the library
+
+**Happy Coding!!**
