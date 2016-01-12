@@ -44,5 +44,8 @@
 #### Bonus
 
 - Rewrite the application using a JavaScript MVC library. Include a readme that explains the benefits and any additional challenges students would face learning the library
+- Use code linting to check and enforce consistent code syntax.
+- Add unit tests and code coverage metrics to establish confidence when refactoring.
+- Connect your deployment via a continuous integration service like Travis, Circle, or Codeship.
 
 **Happy Coding!!**
