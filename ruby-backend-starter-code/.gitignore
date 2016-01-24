@@ -12,6 +12,33 @@
 /db/*.sqlite3-journal
 
 # Ignore all logfiles and tempfiles.
+*.rbc
+*.sassc
+.sass-cache
+capybara-*.html
+/.bundle
+/vendor/bundle
 /log/*
-!/log/.keep
-/tmp
+/tmp/*
+/db/*.sqlite3
+/public/assets/*
+/public/system/*
+/public/uploads/*
+/coverage/
+/spec/tmp/*
+**.orig
+rerun.txt
+.DS_Store
+doc/
+*.swp
+*~
+.project
+server.csr
+server.key
+*.crt
+*.key
+.secret
+*.pdf.env
+database.yml
+.idea
+config/secrets.yml
