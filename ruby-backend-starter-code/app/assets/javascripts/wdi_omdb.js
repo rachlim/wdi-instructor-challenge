@@ -11,6 +11,9 @@ $(document).ready(function (){
 
 	$('form').on('submit', function (e) {
 		e.preventDefault();
+		searchContainer.find('ol').text('');
+		resultsContainer.hide();
+		$('#imageContainer').hide();
 		var title = $('#title').val();
 		var url = 'http://www.omdbapi.com/?s=' + title + '&type=movie&r=json';
 		if (title == ''){
@@ -55,6 +58,7 @@ $(document).ready(function (){
 				$('#imageContainer').find('.poster').html('<img src="' + data.Poster + '" height: "200px"/>');
 				}
 				resultsContainer.show();
+				$('#imageContainer').show();
 				$(this).show(function () {
 					$('html, body').delay('0').animate({scrollTop: $(document).height() - $(window).height() }, 0);
 				});
