@@ -1,6 +1,6 @@
 require 'sinatra'
 
-get '/'
+get '/' do
   File.read('index.html')
 end
 
@@ -17,4 +17,7 @@ get '/favorites' do
   file << movie
   File.write('data.json',JSON.pretty_generate(file))
   movie.to_json
+
+  end
 end
+

@@ -1,0 +1,138 @@
+// Variables for consistency
+// Allows controlling variables in a single place
+
+  // Colors
+  $darkest-grey: #484849;
+  $movie-red: #b80030;
+
+  // Fonts
+  $muli: 'Muli', sans-serif;
+  $base-font-family: 'Muli', sans-serif;
+  $base-font-weight: 400;
+  $base-font-size: 16px;
+  $base-line-height: 1.5em;
+  $base-font-color: #1a1a1a;
+
+
+// normalize body text
+body {
+  font-family: $base-font-family;
+  font-size: $base-font-size;
+  font-weight: $base-font-weight;
+  color: $base-font-color;
+  margin: 0 auto;
+  width: 75%;
+  h1 {
+    font-size: 1.5em;
+    color: $movie-red;
+  }
+  h2 {
+    font-size: 1.25em;
+    color: $darkest-grey;
+  }
+}
+
+// common styles
+.hidden {
+  display: none;
+}
+
+.clearfix {
+  clear: both;
+}
+
+.link-ish {
+  text-decoration: underline;
+  color: blue;
+  cursor: pointer;
+}
+
+#submit, #clear{
+  //height: 30px;
+  min-width: 75px;
+  margin: 15px auto;
+  padding: 5px 15px;
+  background-color: $movie-red;
+  color: white;
+  font-size: 1em;
+  border-radius: .1875em;
+  border: 1px solid $movie-red;
+  &:hover {
+    background-color: #7D0529;
+  }
+}
+
+.movie-bloc {
+  width: 50%;
+  margin: 3vh auto;
+  text-align: center;
+  @media (max-width: 750px) {
+    width: 100%;
+  }
+  div {
+    margin: 20px 0;
+    input {
+      float: none;
+      text-align: center;
+    }
+  }
+}
+
+.movie-form {
+  width: 75%!important;
+  margin: 20px auto!important;
+
+  .movie-label {
+    width: 20%!important;
+    float: left;
+    text-align: left;
+  }
+
+  .movie-field {
+    width: 100%;
+  }
+
+  //placeholder text color :)
+  ::-webkit-input-placeholder { font-size: 1rem; color: grey;}
+  :-moz-placeholder { /* Firefox 18- */ font-size: 1rem; color: grey;}
+  ::-moz-placeholder { /* Firefox 19+ */ font-size: 1rem;   color: grey;}
+  :-ms-input-placeholder { font-size: 1rem; color: grey; }
+
+  textarea,
+  input[type="text"], input[type="email"], input[type="search"] {
+    line-height: 2em;
+    height: 2.25rem;
+    border-radius: 0.1875em;
+    border: 1px solid gray;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+  }
+}
+
+.movie-splash {
+  padding-top: 35px;
+  font-size: 1.5em;
+  text-align: center;
+  font-family: $muli;
+  color: $movie-red;
+  max-width: 910px;
+  min-width: 460px;
+  margin: 0 auto;
+  span {
+    font-size: 1em;
+    width: 75%;
+  }
+  p {
+    font-size: .75em;
+    margin-top: 30px;
+  }
+}
+
+#resultsContainer {
+  float: left;
+  width: 50%;
+}
+
+#imageContainer {
+  float: right;
+}
+

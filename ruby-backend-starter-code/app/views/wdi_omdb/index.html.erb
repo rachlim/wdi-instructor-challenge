@@ -1,0 +1,36 @@
+<div>
+  <div class="movie-splash">
+    <h1>GA Movie Database</h1>
+    <h2><span lang="en">Hello!</span> <span lang="zh">你好!</span> <span lang="fr"> Bonjour!</span></h2>
+    <p lang="en">Use the form below to search for information about a film by title</p>
+  </div>
+  <div class="movie-bloc">
+    <div class="sign-in movie-form">
+      <form>
+        <input id="title" name="movie[title]" type="search" class="movie-field" placeholder="Enter a title and click search"/>
+        <input name="submit" type="submit" value="Go!" id="submit"/>
+      </form>
+    </div>
+  </div>
+
+  <div id="searchContainer" class="searchContainer">
+    <ol class="Title">
+
+    </ol>
+  </div>
+
+<hr>
+
+  <div id="resultsContainer" class="hidden">
+    <p><span style="color: #ab0634;"><strong>Title: </strong></span><span class="title"></span> </p>
+    <p><span style="color: #ab0634;"><strong>Year: </strong></span><span class="year"></span></p>
+    <p><span style="color: #ab0634;"><strong>Actors: </strong></span><span class="actors"></span></p>
+    <p><span style="color: #ab0634;"><strong>Plot: </strong></span><span class="plot"></span></p>
+    <p><span style="color: #ab0634;"><strong>Rated: </strong></span><span class="rated"></span></p>
+    <button id="clear" class="hidden" onclick="window.location.reload()">Start Over</button>
+  </div>
+  <div id="imageContainer"><p class="poster"></p></div>
+
+
+
+</div>
