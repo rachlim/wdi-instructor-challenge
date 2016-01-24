@@ -12,6 +12,7 @@
 /db/*.sqlite3-journal
 
 # Ignore all logfiles and tempfiles.
+.idea
 *.rbc
 *.sassc
 .sass-cache
@@ -40,5 +41,5 @@ server.key
 .secret
 *.pdf.env
 database.yml
-.idea
+
 config/secrets.yml
