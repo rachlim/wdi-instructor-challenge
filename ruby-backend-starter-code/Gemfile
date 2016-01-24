@@ -5,7 +5,8 @@ gem 'rails', '4.2.5'                          # MVC framework vs. sinatra which 
 
 # environment gems (front & backend, admin, db, etc.)
 gem 'pg', '~> 0.18.4'                         # Postgres db instead of sqlite
-gem 'puma', '2.11.1'                          # Puma server - recommended for hosting on heroku
+# gem 'puma', '2.11.1'                          # Puma server - recommended for hosting on heroku
+gem 'unicorn'                                 # Unicorn - backup server for heroku
 # gem 'sinatra'                               # Framework for small apps and apis vs. Rails MVC framework
 
 # javascript gems

@@ -42,4 +42,4 @@ server.key
 *.pdf.env
 database.yml
 
-config/secrets.yml
+#config/secrets.yml

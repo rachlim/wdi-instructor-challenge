@@ -15,7 +15,7 @@ $(document).ready(function (){
 		resultsContainer.hide();
 		$('#imageContainer').hide();
 		var title = $('#title').val();
-		var url = 'http://www.omdbapi.com/?s=' + title + '&type=movie&r=json';
+		var url = 'https://www.omdbapi.com/?s=' + title + '&type=movie&r=json';
 		if (title == ''){
 			alert("You didn't enter anything! Search box can't be blank");
 		}
@@ -38,7 +38,7 @@ $(document).ready(function (){
 	searchContainer.delegate('li>span.link-ish', 'click', function(e){
 		console.log('clicked ');
 		var title = e.target.id;
-		var url = 'http://www.omdbapi.com/?t=' + title + '&type=movie&y=&plot=full&r=json';
+		var url = 'https://www.omdbapi.com/?t=' + title + '&type=movie&y=&plot=full&r=json';
 		console.log("individual movie is " + title);
 		console.log(url);
 		$('#clear').show();
@@ -46,7 +46,7 @@ $(document).ready(function (){
 			success: function (data) {
 				console.log(data);
 				var poster = data.Poster;
-				resultsContainer.find('.title').text(data.Title);
+				resultsContainer.find('.title').html(data.Title);
 				resultsContainer.find('.year').text(data.Year);
 				resultsContainer.find('.actors').text(data.Actors);
 				resultsContainer.find('.plot').text(data.Plot);

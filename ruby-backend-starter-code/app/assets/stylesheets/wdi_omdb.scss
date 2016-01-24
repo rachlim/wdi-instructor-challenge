@@ -137,3 +137,10 @@ body {
   float: right;
 }
 
+#favorite, #unfavorite {
+  cursor: pointer;
+  &:hover {
+    color: $movie-red;
+  }
+}
+
