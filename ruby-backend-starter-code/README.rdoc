@@ -1,28 +1,39 @@
 == README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Access this Movie Database application at:
+
+https://blooming-forest-81127.herokuapp.com/
+
+This application has been written using Ruby on Rails - an MVC framework.
+The benefit to writing in RoR is that you have greater flexibility (can use a mix of langauges),
+it comes with a lot of built-in helper methods, and there is a lot of community support in
+the way of forums, open source gems, and tutorials.
+RoR also provides a very stable file structure (aka scaffold) compared to langauges such as PHP.
+
+The greatest challenge that people would have learning to write in RoR is where to find the answers.
+There are so many variables that can come into play, that finding information when stuck can take
+some time. However, once you learn how to find those answers, it's really fast to write in RoR!
 
 Things you may want to cover:
 
-* Ruby version
+* Ruby version 2.3.0 (currently latest stable)
+* Rails version 4.2.5 (currently latest that doesn't break things)
+* PostgreSQL database
+* Deployed through CircleCI (https://circleci.com/gh/ea0723/ruby-backend-starter-code)
+* Deployed to Heroku (https://blooming-forest-81127.herokuapp.com/)
+* Github Forked Repo (https://github.com/ea0723/wdi-instructor-challenge)
+* Individual Repo (for running code locally) https://github.com/ea0723/ruby-backend-starter-code
 
-* System dependencies
+*Run It Locally*
+1. go to https://github.com/ea0723/ruby-backend-starter-code
+2. fork repo
+3. On your Mac, Open Terminal
+4. Using cd <directory_name> Go to a project folder (where <directory_name> is the name of the folder in which you want to place the code)
+5. Type the following: (the $ is a prompt, don't type it)
+	$ git clone https://github.com/ea0723/ruby-backend-starter-code
+	$ bundle install
+	$ rake db:migrate
+	$ rails s
+6. In your web browser, go to localhost:3000
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+Have fun!
