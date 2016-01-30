@@ -1,5 +1,7 @@
 ![GA Logo](https://raw.github.com/generalassembly/ga-ruby-on-rails-for-devs/master/images/ga.png)
 
+[![Codeship Status](https://www.codeship.io/projects/6ffa7db0-a9aa-0133-cb95-327eac131552/status?branch=master)](https://www.codeship.io)
+
 ## WDI Instructor Code Challenge
 
 ### GOAL 
