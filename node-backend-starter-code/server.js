@@ -6,8 +6,11 @@ Jeremiah Alexander
 
 */
 
-//load env vars
-require('dotenv').config();
+//load env vars only on devlopment, not needed on heroku
+var env = process.env.NODE_ENV || "dev";
+if ( env === "dev" ){
+  require('dotenv').config();
+}
 
 //setup requirements
 var express = require('express');
