@@ -4,13 +4,24 @@
   "description": "JS Server for WDI code challenge",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "istanbul cover _mocha",
     "start": "node server.js"
   },
   "author": "Neel Patel <neelp22@gmail.com> (https://github.com/darthneel)",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.12.0",
+    "chai": "^3.5.0",
     "express": "^4.12.2",
-    "body-parser": "^1.12.0"
+    "mongoose": "^4.3.7",
+    "node-uuid": "^1.4.7"
+  },
+  "devDependencies": {
+    "dotenv": "^2.0.0",
+    "grunt": "^0.4.5",
+    "grunt-contrib-jshint": "^0.12.0",
+    "grunt-contrib-uglify": "^0.11.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "supertest": "^1.1.0"
   }
 }

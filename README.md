@@ -49,3 +49,19 @@
 - Connect your deployment via a continuous integration service like Travis, Circle, or Codeship.
 
 **Happy Coding!!**
+
+
+#### Solution
+
+I have implemented the core requirement above. I have added a MongoDB database to store the user's faviorites. I have used a uuid to generate a unique url that a user can use as a very basic but quick authentication to retrieve their account and add new faviourites.
+
+Of the bonus taks, I have:
+- Added linting
+- Added basic unit tests and coverage metrics, although the application is not at full coverage
+- Setup continuous deployment through codeship
+
+Some known Limitations include:
+- not using pagination, so only the first page of results are returned
+- data is refetched and redrawn when a user switches from search to favorites or vice-versa
+- I used bootstap for responsiveness and basic CSS - it wasn't specified whether CSS needed to be writen from scartch
+- When a user adds or removes a favorite, the display is immediately refreshed rather than waiting for a success confirmation 

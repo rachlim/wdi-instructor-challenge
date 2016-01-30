@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for node-backend-starter-code/server.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">node-backend-starter-code/</a> server.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">86% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>43/50</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">55% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>11/20</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>8/8</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">86% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>43/50</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span></td><td class="text"><pre class="prettyprint lang-js">/* 
+&nbsp;
+I ♥ Movies Server
+==========
+Jeremiah Alexander
+&nbsp;
+*/
+&nbsp;
+//load env vars
+require('dotenv').config();
+&nbsp;
+//setup requirements
+var express = require('express');
+var app = express();
+var fs = require('fs');
+var path = require('path');
+var bodyParser = require("body-parser");
+var uuidGenerator = require('node-uuid');
+var db = require("./db");
+var Movie = require("./models/movie.js");
+&nbsp;
+app.use(express.static(path.join(__dirname, '/public')));
+app.use(bodyParser.urlencoded({ extended: true })); 
+app.use(bodyParser.json());
+&nbsp;
+//we expect a uuid, so that we can return the correct favs for the current user
+app.get('/favorites/:uuid', function(req, res){
+  res.setHeader('Content-Type', 'application/json');
+&nbsp;
+  <span class="missing-if-branch" title="if path not taken" >I</span>if ( !req.params.uuid ){
+<span class="cstat-no" title="statement not covered" >    return res.send({success: false, Error: "Invalid UUID provided."}); </span>
+  }
+&nbsp;
+  //find all movies stored with this uuid and sort by imdbID
+  Movie.find( { uuid: req.params.uuid }, function(err, movies){
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (err){
+<span class="cstat-no" title="statement not covered" >      res.status(500).json({status: "failure"} ); </span>
+    } else {
+      res.json( {success: true, movies: movies } );
+    }
+  }).setOptions({sort: "imdbID"});
+});
+&nbsp;
+//POST a new fav to the list, create a uuid if one is note provided
+app.post('/favorites', function(req, res){
+  res.setHeader('Content-Type', 'application/json');
+&nbsp;
+  //if we don't have a uuid we generate one
+  var newUser = false;
+  var uuid = req.body.uuid;
+  //simply validation on the uuid by checking for a minimum length
+  <span class="missing-if-branch" title="else path not taken" >E</span>if ( !uuid || <span class="branch-1 cbranch-no" title="branch not covered" >uuid.length &lt; 36)</span> {
+    newUser = true;
+    uuid = uuidGenerator.v1();
+  }
+&nbsp;
+  //have we got a title and imdbID
+  <span class="missing-if-branch" title="if path not taken" >I</span>if ( !req.body.imdbID || !req.body.title ){
+<span class="cstat-no" title="statement not covered" >    return res.status(422).json({status: "Invalid data provided."} ); </span>
+  }
+&nbsp;
+  //check if we have already hearted this record for this user
+  Movie.find( { uuid: uuid, imdbID: req.body.imdbID }, function(err, movies){
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (err){
+<span class="cstat-no" title="statement not covered" >      res.status(500).json( {status: "failure"} ); </span>
+    } else {
+      
+      <span class="missing-if-branch" title="else path not taken" >E</span>if ( movies.length === 0 ) {
+        //if not we create a new movie record and save it to the database
+        var record = new Movie();
+        record.imdbID = req.body.imdbID;
+        record.title = req.body.title;
+        record.uuid = uuid;
+&nbsp;
+        record.save(function(err){
+          <span class="missing-if-branch" title="if path not taken" >I</span>if (err){
+<span class="cstat-no" title="statement not covered" >            res.status(500).json({status: "failure"} ); </span>
+          } else {
+            res.json( {success: true, uuid: uuid, movie_id: record._id  } );
+          }
+        });
+      } else {
+<span class="cstat-no" title="statement not covered" >        res.json( {success: true, uuid: uuid, movie_id: movies[0]._id } );</span>
+      }
+    }
+  });
+});
+&nbsp;
+//Added a delete route for removing favs by mongodb oid
+app.delete("/favorites/:oid", function(req, res) {
+&nbsp;
+    Movie.remove( { _id: req.params.oid }, function(err, movie) {
+      <span class="missing-if-branch" title="else path not taken" >E</span>if (err){
+        res.status(422).json({status: "Failed to unheart Movie"} ); 
+      } else {
+<span class="cstat-no" title="statement not covered" >        res.json( {success: true, message: "Movie unhearted" } );</span>
+      }
+    });
+});
+&nbsp;
+app.listen(3000, function(){
+  console.log("Listening on port 3000");
+});
+&nbsp;
+//export the module so we can use it for testing
+module.exports = app;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sun Jan 31 2016 02:00:48 GMT+0800 (SGT)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>
