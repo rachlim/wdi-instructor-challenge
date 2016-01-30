@@ -1,13 +1,21 @@
+// instantiate express.js. our base framework for the code
 var express = require('express');
 var app = express();
+
+// instantiate node modules required in our server codes
 var fs = require('fs');
 var path = require('path');
 var bodyParser = require('body-parser');
+var logger = require('./logger');
 
+// middlewares. run one after another
+app.use(logger);
 app.use(express.static(path.join(__dirname, '/public')));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+// routes list
+// final middleware that ties in the static view files
 app.use('/', express.static( path.join(__dirname, 'public') ) );
 
 app.get('/favorites', function(req, res) {
