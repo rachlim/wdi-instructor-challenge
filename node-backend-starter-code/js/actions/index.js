@@ -1,21 +1,11 @@
 import fetch from 'isomorphic-fetch'
 
-let nextMovieId = 0
-
-export const addMovie = (title) => {
-  return {
-    type: 'ADD_MOVIE',
-    id: nextMovieId++,
-    title
-  }
-}
-
-export const setSelectedTab = (filter) => {
-  return {
-    type: 'SET_SELECTED_TAB',
-    filter
-  }
-}
+// export const setSelectedTab = (filter) => {
+//   return {
+//     type: 'SET_SELECTED_TAB',
+//     filter
+//   }
+// }
 
 export const requestMovies = (searchTerm) => {
   return {
@@ -89,21 +79,22 @@ export const receiveMovieFail = (title, err) => {
   }
 }
 
-export function fetchMovie (id, title) {
+export function fetchMovie (id) {
   return function (dispatch) {
-    dispatch(requestMovie(id, title))
-
+    dispatch(requestMovie(id))
     return fetch(`http://www.omdbapi.com/?i=${id}&type=movie&plot=full`)
     .then(r => r.json())
     .then(r => {
       if (r.Response === 'False') {
-        return dispatch(fetchMoviesFail(title, r.Error))
+        return dispatch(fetchMoviesFail(r.Error))
       }
 
       let movie = {
+        id: id,
         actors: r.Actors,
         director: r.Director,
         plot: r.Plot,
+        poster: r.Poster,
         production: r.Production,
         rating: r.Rated,
         title: r.Title,
@@ -111,9 +102,9 @@ export function fetchMovie (id, title) {
         imdbRating: r.imdbRating
       }
 
-      dispatch(setSelectedTab('movie'))
-      dispatch(receiveMovies(movie))
+      // dispatch(setSelectedTab('movie'))
+      dispatch(receiveMovie(movie))
     })
-    .catch(e => dispatch(fetchMoviesFail(title, e)))
+    .catch(e => dispatch(fetchMoviesFail(e)))
   }
 }

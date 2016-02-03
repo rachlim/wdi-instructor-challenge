@@ -7,10 +7,28 @@ import createLogger from 'redux-logger'
 import reducers from './reducers'
 
 let initialState = {
-  selectedTab: 'search',
+  // selectedTab: 'search',
   // favorites: [],
   movies: []
 }
+
+// Should this be the ideal state?
+// var obj = {
+//   selectedTab: 'tab',
+//   favorites: {}, // cache this shit
+//   searchTerm: 'Star Wars',
+//   movies: {
+//     'starwars': [{
+//       page: 1,
+//       isFetching: false,
+//       items: []
+//     }, {
+//       page: 2,
+//       isFetching: false,
+//       items: []
+//     }]
+//   }
+// }
 
 export const history = createBrowserHistory()
 
@@ -18,7 +36,8 @@ const store = createStore(
   reducers,
   initialState,
   compose(applyMiddleware(
-    thunkMiddleware, createLogger(), syncHistory(history)
+    thunkMiddleware, createLogger(),
+    // syncHistory(history)
   ), window.devToolsExtension ? window.devToolsExtension() : f => f)
 )
 
