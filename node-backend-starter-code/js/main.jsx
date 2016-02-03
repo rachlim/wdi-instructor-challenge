@@ -16,7 +16,6 @@ render(
         <IndexRoute component={Search}/>
         <Route path='/movie/:id' component={MovieDetail} />
       </Route>
-      <Route path='/random/:random' component={App} />
     </Router>
   </Provider>,
   document.getElementById('app')

@@ -25,7 +25,7 @@ if (!process.env.production) {
   app.use(logger('dev'))
 }
 
-app.use((req, res) => {
+app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, 'index.html'))
 })
 

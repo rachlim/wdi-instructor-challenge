@@ -1,22 +1,7 @@
 import React, {Component} from 'react'
-import { connect } from 'react-redux'
 import { Link } from 'react-router'
 
-const mapStateToProps = (state) => {
-  return {
-    state
-  }
-}
-
 class App extends Component {
-  constructor () {
-    super()
-  }
-
-  componentWillMount() {
-    console.log(this.props.state)
-  }
-
   render () {
     return (
       <div>
@@ -30,5 +15,5 @@ class App extends Component {
   }
 }
 
-export default connect(mapStateToProps)(App)
+export default App
 
