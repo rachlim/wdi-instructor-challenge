@@ -7,6 +7,7 @@ const MoviesList = ({movies}) => {
       {movies.map(m => {
         return (
           <li key={m.id}>
+            <img src={m.poster} />
             <Link to={`/movie/${m.id}`}> {m.title} </Link>
           </li>
         )
