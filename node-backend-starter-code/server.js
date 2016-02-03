@@ -23,19 +23,10 @@ if (!process.env.production) {
   }))
   app.use(webpackHotMiddleware(compiler))
   app.use(logger('dev'))
-  app.use(express.static(__dirname + '/views'))
 }
 
-if (process.env.production) {
-  app.use(express.static(__dirname + '/public'))
-}
-
-app.get('*', function (request, response) {
-  if (!process.env.production) {
-    response.sendFile(path.resolve(__dirname, 'views', 'index.html'))
-  } else {
-    response.sendFile(path.resolve(__dirname, 'public', 'index.html'))
-  }
+app.use((req, res) => {
+  res.sendFile(path.resolve(__dirname, 'index.html'))
 })
 
 if (require.main === module) {

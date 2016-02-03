@@ -1,4 +1,6 @@
+import createBrowserHistory from 'history/lib/createBrowserHistory'
 import { createStore, applyMiddleware, compose } from 'redux'
+import { syncHistory } from 'react-router-redux'
 import thunkMiddleware from 'redux-thunk'
 import createLogger from 'redux-logger'
 
@@ -10,12 +12,14 @@ let initialState = {
   movies: []
 }
 
+export const history = createBrowserHistory()
+
 const store = createStore(
   reducers,
   initialState,
-  compose(applyMiddleware(thunkMiddleware, createLogger()),
-    window.devToolsExtension ? window.devToolsExtension() : f => f
-  )
+  compose(applyMiddleware(
+    thunkMiddleware, createLogger(), syncHistory(history)
+  ), window.devToolsExtension ? window.devToolsExtension() : f => f)
 )
 
 export default store

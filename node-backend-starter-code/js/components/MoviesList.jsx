@@ -9,8 +9,8 @@ const MoviesList = ({movies, onMovieClick}) => {
           <li key={m.id}>
             <img src={m.poster} />
             <Link to={`movie/${m.id}`} onClick={(e) => {
-              console.log(e);
-              onMovieClick(e, m.id, m.title)}
+              onMovieClick(e, m.id, m.title)
+            }
             }> {m.title} </Link>
           </li>
         )

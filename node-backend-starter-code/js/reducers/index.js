@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux'
+import { routeReducer } from 'react-router-redux'
 
 const movies = (state = [], action) => {
   switch (action.type) {
@@ -26,6 +27,7 @@ const selectedTab = (state = 'search', action) => {
 const combined = combineReducers({
   selectedTab,
   movies,
+  routing: routeReducer
 })
 
 export default combined

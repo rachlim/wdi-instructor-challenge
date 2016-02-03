@@ -36,7 +36,7 @@ var development = {
   context: __dirname,
   entry: [
     'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000',
-    './src/js/main.jsx'
+    './js/main.jsx'
   ],
   output: {
     path: '/',
@@ -56,9 +56,9 @@ var development = {
 
 var production = {
   context: __dirname,
-  entry: ['./src/js/main.jsx'],
+  entry: ['./js/main.jsx'],
   output: {
-    path: './public',
+    path: './',
     filename: 'bundle.js'
   },
   devtool: '#source-map',
