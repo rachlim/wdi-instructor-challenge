@@ -108,3 +108,17 @@ export function fetchMovie (id) {
     .catch(e => dispatch(fetchMoviesFail(e)))
   }
 }
+
+export const addFavorite = (id) => {
+  return {
+    type: 'ADD_FAVORITE',
+    id
+  }
+}
+
+export const removeFavorite = (index) => {
+  return {
+    type: 'REMOVE_FAVORITE',
+    index
+  }
+}

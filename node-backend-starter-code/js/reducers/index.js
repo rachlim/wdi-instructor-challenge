@@ -13,9 +13,9 @@ const movies = (state = [], action) => {
 const movie = (state = {}, action) => {
   switch (action.type) {
     case 'RECEIVE_MOVIE':
-      let o = Object.assign({}, state)
-      o[action.movie.id] = action.movie
-      return o
+      let newState = Object.assign({}, state)
+      newState[action.movie.id] = action.movie
+      return newState
     default:
       return state
   }
@@ -30,10 +30,25 @@ const movie = (state = {}, action) => {
 //   }
 // }
 
+const favorite = (state = [], action) => {
+  switch (action.type) {
+    case 'ADD_FAVORITE':
+      return [...state, action.id]
+    case 'REMOVE_FAVORITE':
+      return [
+        ...state.slice(0, action.index),
+        ...state.slice(action.index + 1)
+      ]
+    default:
+      return state
+  }
+}
+
 const combined = combineReducers({
   // selectedTab,
   movies,
-  movie
+  movie,
+  favorite
   // routing: routeReducer
 })
 

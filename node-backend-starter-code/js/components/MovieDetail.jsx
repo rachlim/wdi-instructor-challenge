@@ -1,17 +1,21 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { fetchMovie } from '../actions'
+import { fetchMovie, addFavorite, removeFavorite } from '../actions'
 
 const mapStateToProps = (state, {params}) => {
+  let index = state.favorite.indexOf(params.id)
   return {
-    movie: state.movie[params.id]
+    movie: state.movie[params.id],
+    favorite: index > -1 ? index : null
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
-    fetchMovie
+    fetchMovie,
+    removeFavorite,
+    addFavorite
   }
 }
 
@@ -21,8 +25,23 @@ class MovieDetail extends React.Component {
     dispatch(fetchMovie(params.id))
   }
 
+  clickHandler (e) {
+    let {
+      params,
+      removeFavorite,
+      dispatch,
+      favorite
+    } = this.props
+
+    if (favorite !== null) {
+      dispatch(removeFavorite(favorite))
+    } else {
+      dispatch(addFavorite(params.id))
+    }
+  }
+
   render () {
-    let {movie} = this.props
+    let {dispatch, movie, favorite} = this.props
 
     if (movie) {
       return (
@@ -36,13 +55,16 @@ class MovieDetail extends React.Component {
           <p>production: {movie.production}</p>
           <p>rating: {movie.rating}</p>
           <p>year: {movie.year}</p>
-          <div> Heartthis! </div>
+          <div style={{
+      color: favorite === null ? 'red' : 'inherit'
+    }} onClick={::this.clickHandler}> Heartthis! </div>
         </div>
       )
     } else {
       return (<div> Fetching Movie </div>)
     }
   }
+
 }
 
 export default connect(
