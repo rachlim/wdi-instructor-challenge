@@ -32,6 +32,13 @@ export const receiveMovies = (movies) => {
   }
 }
 
+export const fetchMoviesFail = (movies, err) => {
+  return {
+    type: 'FETCH_MOVIES_FAILURE',
+    err
+  }
+}
+
 // Thunk
 export function fetchMovies (searchTerm) {
   return function (dispatch) {
@@ -59,9 +66,54 @@ export function fetchMovies (searchTerm) {
   }
 }
 
-export const fetchMoviesFail = (movies, err) => {
+export const requestMovie = (id, title) => {
   return {
-    type: 'FETCH_MOVIES_FAILURE',
+    type: 'REQUEST_MOVIE',
+    title,
+    id
+  }
+}
+
+export const receiveMovie = (movie) => {
+  return {
+    type: 'RECEIVE_MOVIE',
+    movie: movie
+  }
+}
+
+export const receiveMovieFail = (title, err) => {
+  return {
+    type: 'RECEIVE_MOVIE_FAILURE',
+    title,
     err
+  }
+}
+
+export function fetchMovie (id, title) {
+  return function (dispatch) {
+    dispatch(requestMovie(id, title))
+
+    return fetch(`http://www.omdbapi.com/?i=${id}&type=movie&plot=full`)
+    .then(r => r.json())
+    .then(r => {
+      if (r.Response === 'False') {
+        return dispatch(fetchMoviesFail(title, r.Error))
+      }
+
+      let movie = {
+        actors: r.Actors,
+        director: r.Director,
+        plot: r.Plot,
+        production: r.Production,
+        rating: r.Rated,
+        title: r.Title,
+        year: r.Year,
+        imdbRating: r.imdbRating
+      }
+
+      dispatch(setSelectedTab('movie'))
+      dispatch(receiveMovies(movie))
+    })
+    .catch(e => dispatch(fetchMoviesFail(title, e)))
   }
 }

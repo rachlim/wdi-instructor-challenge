@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
 import MoviesList from '../components/MoviesList.jsx'
+import { fetchMovie } from '../actions'
 
 const mapStateToProps = (state) => {
   return {movies: state.movies}
@@ -7,8 +8,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onClick: (id) => {
-      dispatch(/* some action here */)
+    onMovieClick: (e, id, title) => {
+      dispatch(fetchMovie(id, title))
     }
   }
 }
