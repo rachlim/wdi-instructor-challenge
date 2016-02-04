@@ -3,23 +3,21 @@ import { connect } from 'react-redux'
 import MoviesList from '../components/MoviesList.jsx'
 import { fetchFavorites } from '../actions'
 
-const mapStateToProps = (state) => {
+const mapStateToProps = ({favorites}) => {
   return {
-    movies: state.favorites,
+    fetched: favorites.fetched,
+    movies: favorites.movies,
     isFavorite: true
-  }
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    fetchFavorites
   }
 }
 
 class FavoriteList extends Component {
   componentWillMount () {
-    console.log(this.props.fetchFavorites);
+    if (!this.props.fetched) {
+      this.props.fetchFavorites()
+    }
   }
+
   render () {
     return (
       <MoviesList {...this.props} />

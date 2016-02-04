@@ -21,22 +21,28 @@ const movie = (state = {}, {type, movie}) => {
   }
 }
 
-// const selectedTab = (state = 'search', action) => {
-//   switch (action.type) {
-//     case 'SET_SELECTED_TAB':
-//       return action.filter
-//     default:
-//       return state
-//   }
-// }
+const favorite = (state = [], type, movie) => {
+  switch (type) {
+    case 'ADD_FAVORITE': return [...state, movie]
+    case 'REMOVE_FAVORITE':
+      return state.filter(el => el.id !== movie.id)
+    default: return state
+  }
+}
 
-const favorites = (state = [], {type, movie}) => {
+const favorites = (state = {}, {type, movie, movies}) => {
   switch (type) {
     case 'ADD_FAVORITE':
-      return [...state, movie]
     case 'REMOVE_FAVORITE':
-      return state.filter(el => {
-        return el.id !== movie.id
+      return Object.assign({},
+        state, {
+          movies: favorite(state.movies, type, movie)
+        }
+      )
+    case 'RECEIVE_FAVORITES':
+      return Object.assign({}, state, {
+        fetched: true,
+        movies: movies
       })
     default:
       return state
@@ -44,7 +50,6 @@ const favorites = (state = [], {type, movie}) => {
 }
 
 const combined = combineReducers({
-  // selectedTab,
   movies,
   movie,
   favorites

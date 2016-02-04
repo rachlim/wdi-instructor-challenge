@@ -8,7 +8,10 @@ import reducers from './reducers'
 
 let initialState = {
   // selectedTab: 'search',
-  // favorites: [],
+  favorites: {
+    fetched: false,
+    movies: []
+  },
   movies: []
 }
 
@@ -36,7 +39,8 @@ const store = createStore(
   reducers,
   initialState,
   compose(applyMiddleware(
-    thunkMiddleware, createLogger(),
+    thunkMiddleware,
+    // createLogger(),
     // syncHistory(history)
   ), window.devToolsExtension ? window.devToolsExtension() : f => f)
 )

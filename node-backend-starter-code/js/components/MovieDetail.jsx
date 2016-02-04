@@ -2,13 +2,13 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { fetchMovie, addFavorite, removeFavorite } from '../actions'
 
-const mapStateToProps = (state, {params}) => {
-  let favorite = state.favorite.find(f => {
+const mapStateToProps = ({favorites, movie}, {params}) => {
+  let favorite = favorites.movies.find(f => {
     return f.id === params.id
   })
 
   return {
-    movie: state.movie[params.id],
+    movie: movie[params.id],
     favorite: favorite
   }
 }
