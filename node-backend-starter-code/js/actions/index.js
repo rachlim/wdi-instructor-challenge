@@ -1,12 +1,5 @@
 import fetch from 'isomorphic-fetch'
 
-// export const setSelectedTab = (filter) => {
-//   return {
-//     type: 'SET_SELECTED_TAB',
-//     filter
-//   }
-// }
-
 export const requestMovies = (searchTerm) => {
   return {
     type: 'REQUEST_MOVIES',
@@ -134,7 +127,7 @@ export const requestFavorites = (id, title) => {
 export const receiveFavorites = (favorites) => {
   return {
     type: 'RECEIVE_FAVORITES',
-    favorites: favorites
+    movies: favorites
   }
 }
 
@@ -151,7 +144,7 @@ export function fetchFavorites () {
     return fetch(`/api/favorites`)
     .then(r => { if (r.ok) return r.json() })
     .then(r => {
-      console.log(r)
+      dispatch(receiveFavorites(r))
     })
   }
 }

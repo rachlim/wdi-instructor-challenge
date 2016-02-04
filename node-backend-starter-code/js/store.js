@@ -7,7 +7,6 @@ import createLogger from 'redux-logger'
 import reducers from './reducers'
 
 let initialState = {
-  // selectedTab: 'search',
   favorites: {
     fetched: false,
     movies: []
@@ -17,7 +16,6 @@ let initialState = {
 
 // Should this be the ideal state?
 // var obj = {
-//   selectedTab: 'tab',
 //   favorites: {}, // cache this shit
 //   searchTerm: 'Star Wars',
 //   movies: {
