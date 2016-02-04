@@ -1,32 +1,71 @@
-var express = require('express');
-var app = express();
-var fs = require('fs');
-var path = require('path');
+const express = require('express')
+const app = express()
+const bodyParser = require('body-parser')
+const MongoClient = require('mongodb').MongoClient
+const logger = require('morgan')
+const path = require('path')
 
-app.use(express.static(path.join(__dirname, '/public')));
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json());
+var db
 
-app.use('/', express.static(path.join(__dirname, 'public'));
+MongoClient.connect('mongodb://zellwk:zellwk@ds055485.mongolab.com:55485/movie-challenge', (err, database) => {
+  if (err) return console.log(err)
+  db = database
 
-app.get('/favorites', function(req, res){
-  var data = fs.readFileSync('./data.json');
-  res.setHeader('Content-Type', 'application/json');
-  res.send(data);
-;
+  if (require.main === module) {
+    const server = app.listen(process.env.PORT || 3000, function () {
+      var host = server.address().address
+      var port = server.address().port
+      console.log('Listening on http://%s:%s', host, port)
+    })
+  }
+})
 
-app.get('favorites', function(req, res){
-  if(!req.body.name || !req.body.oid){
-    res.send("Error");
-    return
-  
-  var data = JSON.parse(fs.readFileSync('./data.json'));
-  data.push(req.body);
-  fs.writeFile('./data.json', JSON.stringify(data));
-  res.setHeader('Content-Type', 'application/json');
-  res.send(data);
-});
+app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.json())
 
-app.list(3000, function(){
-  console.log("Listening on port 3000");
-});
+// Development with Webpack
+if (!process.env.production) {
+  const webpack = require('webpack')
+  const webpackDevMiddleware = require('webpack-dev-middleware')
+  const webpackHotMiddleware = require('webpack-hot-middleware')
+  const webpackConfig = require('./webpack.config').development
+  const compiler = webpack(webpackConfig)
+
+  app.use(webpackDevMiddleware(compiler, {
+    noInfo: true,
+    publicPath: webpackConfig.output.publicPath,
+    stats: {colors: true}
+  }))
+  app.use(webpackHotMiddleware(compiler))
+  app.use(logger('dev'))
+}
+
+app.get('/api/favorites', (req, res) => {
+  db.collection('favorites').find().toArray((err, result) => {
+    if (err) return res.send(err)
+    res.send(result)
+  })
+})
+
+app.post('/api/favorites', (req, res) => {
+  // Sets _id to movie ID
+  req.body._id = req.body.id
+  db.collection('favorites').save(req.body, (err, result) => {
+    if (err) return res.send(err)
+    res.send(result)
+  })
+})
+
+app.delete('/api/favorites', (req, res) => {
+  db.collection('favorites').findOneAndDelete(
+    {_id: req.body.id},
+    (err, result) => {
+      if (err) return res.send(err)
+      res.send(result)
+    }
+  )
+})
+
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'index.html'))
+})
