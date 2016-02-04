@@ -35,7 +35,7 @@ export function fetchMovies (searchTerm) {
     dispatch(requestMovies())
 
     return fetch(`http://www.omdbapi.com/?s=${searchTerm}&type=movie`)
-    .then(r => r.json())
+    .then(r => { if (r.ok) return r.json() })
     .then(r => {
       if (r.Response === 'False') {
         return dispatch(fetchMoviesFail(searchTerm, r.Error))
@@ -83,7 +83,7 @@ export function fetchMovie (id) {
   return function (dispatch) {
     dispatch(requestMovie(id))
     return fetch(`http://www.omdbapi.com/?i=${id}&type=movie&plot=full`)
-    .then(r => r.json())
+    .then(r => { if (r.ok) return r.json() })
     .then(r => {
       if (r.Response === 'False') {
         return dispatch(fetchMoviesFail(r.Error))
@@ -120,5 +120,38 @@ export const removeFavorite = (movie) => {
   return {
     type: 'REMOVE_FAVORITE',
     movie
+  }
+}
+
+export const requestFavorites = (id, title) => {
+  return {
+    type: 'REQUEST_FAVORITES',
+    title,
+    id
+  }
+}
+
+export const receiveFavorites = (favorites) => {
+  return {
+    type: 'RECEIVE_FAVORITES',
+    favorites: favorites
+  }
+}
+
+export const receiveFavoritesFail = (err) => {
+  return {
+    type: 'RECEIVE_FAVORITES_FAILURE',
+    err
+  }
+}
+
+export function fetchFavorites () {
+  return (dispatch) => {
+    dispatch(requestFavorites())
+    return fetch(`/api/favorites`)
+    .then(r => { if (r.ok) return r.json() })
+    .then(r => {
+      console.log(r)
+    })
   }
 }
