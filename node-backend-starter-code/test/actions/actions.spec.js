@@ -1,6 +1,6 @@
 /* global describe, it, expect */
 
-import * as actions from '../js/actions'
+import * as actions from '../../js/actions'
 
 describe('Pure actions', () => {
   it('should have a type', () => {
