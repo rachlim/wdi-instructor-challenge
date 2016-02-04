@@ -1,7 +1,6 @@
 import { combineReducers } from 'redux'
-// import { routeReducer } from 'react-router-redux'
 
-const movies = (state = [], {type, movies}) => {
+export const movies = (state = [], {type, movies}) => {
   switch (type) {
     case 'RECEIVE_MOVIES':
       return [...movies]
@@ -10,7 +9,7 @@ const movies = (state = [], {type, movies}) => {
   }
 }
 
-const movie = (state = {}, {type, movie}) => {
+export const movie = (state = {}, {type, movie}) => {
   switch (type) {
     case 'RECEIVE_MOVIE':
       let newState = Object.assign({}, state)
@@ -21,7 +20,7 @@ const movie = (state = {}, {type, movie}) => {
   }
 }
 
-const favorite = (state = [], type, movie) => {
+export const favorite = (state = [], {type, movie}) => {
   switch (type) {
     case 'ADD_FAVORITE':
       return [...state, movie]
@@ -31,13 +30,13 @@ const favorite = (state = [], type, movie) => {
   }
 }
 
-const favorites = (state = {}, {type, movie, movies}) => {
+export const favorites = (state = {}, {type, movie, movies}) => {
   switch (type) {
     case 'ADD_FAVORITE':
     case 'REMOVE_FAVORITE':
       return Object.assign({},
         state, {
-          movies: favorite(state.movies, type, movie)
+          movies: favorite(state.movies, {type, movie})
         }
       )
     case 'RECEIVE_FAVORITES':
@@ -54,7 +53,6 @@ const combined = combineReducers({
   movies,
   movie,
   favorites
-  // routing: routeReducer
 })
 
 export default combined
