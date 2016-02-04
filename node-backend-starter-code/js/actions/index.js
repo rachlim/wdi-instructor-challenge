@@ -109,16 +109,16 @@ export function fetchMovie (id) {
   }
 }
 
-export const addFavorite = (id) => {
+export const addFavorite = (movie) => {
   return {
     type: 'ADD_FAVORITE',
-    id
+    movie
   }
 }
 
-export const removeFavorite = (index) => {
+export const removeFavorite = (movie) => {
   return {
     type: 'REMOVE_FAVORITE',
-    index
+    movie
   }
 }

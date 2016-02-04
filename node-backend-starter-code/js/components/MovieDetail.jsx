@@ -3,10 +3,13 @@ import { connect } from 'react-redux'
 import { fetchMovie, addFavorite, removeFavorite } from '../actions'
 
 const mapStateToProps = (state, {params}) => {
-  let index = state.favorite.indexOf(params.id)
+  let favorite = state.favorite.find(f => {
+    return f.id === params.id
+  })
+
   return {
     movie: state.movie[params.id],
-    favorite: index > -1 ? index : null
+    favorite: favorite
   }
 }
 
@@ -27,16 +30,17 @@ class MovieDetail extends React.Component {
 
   clickHandler (e) {
     let {
+      movie,
       params,
       removeFavorite,
       dispatch,
       favorite
     } = this.props
 
-    if (favorite !== null) {
+    if (favorite) {
       dispatch(removeFavorite(favorite))
     } else {
-      dispatch(addFavorite(params.id))
+      dispatch(addFavorite(movie))
     }
   }
 
@@ -56,7 +60,7 @@ class MovieDetail extends React.Component {
           <p>rating: {movie.rating}</p>
           <p>year: {movie.year}</p>
           <div style={{
-      color: favorite === null ? 'red' : 'inherit'
+      color: favorite ? 'red' : 'inherit'
     }} onClick={::this.clickHandler}> Heartthis! </div>
         </div>
       )

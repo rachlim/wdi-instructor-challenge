@@ -33,12 +33,11 @@ const movie = (state = {}, action) => {
 const favorite = (state = [], action) => {
   switch (action.type) {
     case 'ADD_FAVORITE':
-      return [...state, action.id]
+      return [...state, action.movie]
     case 'REMOVE_FAVORITE':
-      return [
-        ...state.slice(0, action.index),
-        ...state.slice(action.index + 1)
-      ]
+      return state.filter(el => {
+        return el.id !== action.movie.id
+      })
     default:
       return state
   }
