@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>WDI Instructor Challenge</title>
+
+    <style>
+      html,
+      body {
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+      }
+
+      a { color: blue; }
+      a:hover { color: magenta; }
+    </style>
+  </head>
+
+  <body>
+    <table border="0" width="100%">
+      <tr>
+        <td valign="top" width="50%">
+          <!-- Search Form -->
+          <div id="searchAction">
+            <h2>Search for movies</h2>
+
+            <form id="searchForm">
+              Movie name: <input id="searchText" type="text" size="50" placeholder="Enter name of movie" /><br><br>
+              <input id="submit" type="submit" value="Search" />
+            </form>
+            <br>
+
+            <div id="searchResultsBox"></div>
+          </div>
+        </td>
+
+        <td valign="top" width="50%">
+          <!-- Movie Details -->
+          <div id="detailsBox"></div>
+        </td>
+      </tr>
+    </table>
+    <hr>
+
+    <div id="favoritesAction">
+      <h2>Favorite Movies</h2>
+
+      <input id="listFavorites" type="button" value="Click to fetch list of favorite movies" /><br><br>
+
+      <div id="favoritesBox"></div>
+    </div>
+
+
+    <script>
+      // Create namespace for code instead of polluting global namespace
+      var indexScript = function () {
+          var searchTextField = document.getElementById('searchText'),
+              searchResultsBox = document.getElementById('searchResultsBox'),
+              favoritesBox = document.getElementById('favoritesBox'),
+              detailsBox = document.getElementById('detailsBox'),
+              apiErrorMsg = 'Problem connecting to remote service - please try again later.',
+              searchResults = [];
+
+          // Put focus on search field
+          searchTextField.focus();
+
+          // Executed when search form is submitted
+          document.getElementById('searchForm').onsubmit = function () {
+              var searchText = searchTextField.value;
+
+              // Alert user if search text is empty and return to form
+              if (!searchText) {
+                  alert('Please enter movie name to search for');
+                  searchTextField.focus();
+                  return false;
+              }
+
+              findMovies(searchText);
+
+              return false; // prevent form from submitting and refreshing entire page
+          };
+
+          // Executed when Favorites button is clicked
+          document.getElementById('listFavorites').onclick = function () {
+              var apiUrl = window.location.origin + '/favorites',
+                  data = JSON.stringify({}),
+                  callbackParams = [];
+
+              ajaxCall('GET', apiUrl, data, true, favoritesCallback, callbackParams);
+          };
+
+          /*** PUBLIC METHODS ***/
+
+          /**
+           * Find movies by title
+           *
+           * @param  string title
+           * @param  int    page  Page number for search results which may be split into multiple pages
+           * @return void
+           */
+          function findMovies(title, page)
+          {
+              // HTTPS needed for API url especially if deployed on Heroku which uses HTTPS
+              var page = parseInt(page) || 1,
+                  apiUrl = 'https://www.omdbapi.com/?r=json&page=' + page + '&s='
+                         + encodeURIComponent(title).replace(/%20/, '+'),
+                  callbackParams = {"title":title, "page":page};
+
+              ajaxCall('GET', apiUrl, '', false, findMoviesCallback, callbackParams);
+          }
+
+          /**
+           * Save movie to favorites
+           *
+           * @param  int resultIndex
+           * @return void
+           */
+          function saveMovie(resultIndex)
+          {
+              var movie = getMovie(resultIndex),
+                  apiUrl = window.location.origin + '/favorites',
+                  callbackParams = [],
+                  data;
+
+              if (false === movie) {
+                  alert('Unable to save movie to Favorites');
+                  return;
+              }
+
+              data = JSON.stringify({"name":movie.Title, "oid":movie.imdbID});
+              ajaxCall('POST', apiUrl, data, true, saveMovieCallback, callbackParams);
+          }
+
+          /**
+           * Show movie details
+           *
+           * @param  int resultIndex
+           * @return void
+           */
+          function showDetails(resultIndex)
+          {
+              var movie = getMovie(resultIndex),
+                  html = '';
+
+              if (false === movie) {
+                  detailsBox.innerHTML = 'No details';
+                  return;
+              }
+
+              html += '<h2>Movie Details</h2>';
+
+              for (var property in movie) {
+                  if (movie.hasOwnProperty(property)) { // exclude prototype properties
+                      html += '<b>' + property + ':</b> ' + movie[property] + '<br>';
+                  }
+              }
+
+              detailsBox.innerHTML = html;
+          }
+
+          /*** PRIVATE METHODS ***/
+
+          /**
+           * Helper function to make AJAX calls to external APIs
+           *
+           * @param  string   method     HTTP method
+           * @param  string   apiUrl     API endpoint url
+           * @param  mixed    data       Data to be sent. Can be empty
+           * @param  bool     isDataJSON Whether data param is plain text or in JSON
+           * @param  callback callback   This will be called when a valid result is available.
+           *                             Result will be passed in as a JSON object
+           * @param  object   params     Params that will be passed along to the callback besides the result
+           * @return void
+           */
+          function ajaxCall(method, apiUrl, data, isDataJSON, callback, params)
+          {
+              var request = new XMLHttpRequest();
+
+              request.open(method, apiUrl, true);
+              if (isDataJSON) {
+                  request.setRequestHeader('Content-Type', 'application/json');
+              }
+
+              request.onreadystatechange = function () {
+                  if (request.readyState != 4 || request.status != 200) {
+                      return;
+                  }
+
+                  try {
+                      result = JSON.parse(request.responseText);
+                  } catch (exception) {
+                      alert(apiErrorMsg);
+                      return false;
+                  }
+
+                  return callback(result, params);
+              };
+              request.send(data);
+          }
+
+          /**
+           * Helper function to escape single quotes in strings for use in Javascript
+           *
+           * @param  string text
+           * @return string
+           */
+          function escapeString(text)
+          {
+              return text.replace(/'/, "\\'");
+          }
+
+          /**
+           * Retrieve movie details for movie in current page of search results
+           *
+           * @param  int resultIndex
+           * @return false|object
+           */
+          function getMovie(resultIndex)
+          {
+              if (resultIndex < 0 || resultIndex >= searchResults.length) {
+                  return false;
+              }
+
+              return searchResults[resultIndex];
+          }
+
+          /**
+           * Post-AJAX callback when Favorites button is clicked
+           *
+           * @param  false|jsonObject result
+           * @param  object           params Callback params if any
+           * @return void
+           */
+          function favoritesCallback(result, params)
+          {
+              if (0 == result.length) {
+                  favoritesBox.innerHTML = 'You have not saved any movies to your favorites list yet.';
+                  return;
+              }
+
+              var html = '';
+
+              // List items
+              html += '<ol>';
+              result.forEach(function (element, index, array) {
+                  html += '<li>' + element.name + '</li>';
+              });
+              html += '</ol>';
+
+              favoritesBox.innerHTML = html;
+          }
+
+          /**
+           * Post-AJAX callback for findMovies to render search results
+           *
+           * @param  false|jsonObject result
+           * @param  object           params Callback params containing title and page
+           * @return void
+           */
+          function findMoviesCallback(result, params)
+          {
+              // Empty copy of previous search results
+              searchResults = [];
+
+              // No results found
+              if ("False" == result.Response) {
+                  searchResultsBox.innerHTML = 'No results were found.';
+                  return;
+              }
+
+              var itemsPerPage = 10,
+                  title = params.title,
+                  pageNum = params.page,
+                  items = result.Search,
+                  itemsCnt = items.length,
+                  totalItems = parseInt(result.totalResults) || 0,
+                  totalPages = Math.ceil(totalItems / itemsPerPage),
+                  html = itemsCnt + ' out of ' + totalItems + ' search results displayed<br><br>';
+
+              // Save current search results for further use when user clicks on movie title for details
+              searchResults = items;
+
+              // List items for current page of search results
+              html += '<ol start="' + (1 + (pageNum - 1) * itemsPerPage) + '">';
+              items.forEach(function (element, index, array) {
+                  detailsAction = '<a href="#" onclick="indexScript.showDetails(' + index + ');">'
+                                + 'Details</a>';
+                  saveAction = '<a href="#" onclick="indexScript.saveMovie(' + index + ');">'
+                                + 'Save</a>';
+                  actions = '[' + detailsAction + ' | ' + saveAction + '] ';
+                  html += '<li>' + actions + element.Title + '</li>';
+              });
+              html += '</ol><br>';
+
+              // Pagination links
+              for (var i = 1; i <= totalPages; i++) {
+                  link = (i == pageNum)
+                       ? '<b>' + i + '</b>'
+                       : '<a href="#" onclick="indexScript.findMovies(\''
+                         + escapeString(title) + '\', ' + i + ');">' + i + '</a>';
+
+                  html += ' ' + link + ' ';
+              }
+
+              searchResultsBox.innerHTML = html;
+          }
+
+          /**
+           * Post-AJAX callback for saveMovie()
+           *
+           * @param  false|jsonObject result
+           * @param  object           params Callback params if any
+           * @return void
+           */
+          function saveMovieCallback(result, params)
+          {
+              alert('Movie saved to favorites!');
+              favoritesCallback(result); // refresh Favorites list
+          }
+
+          // Expose public properties and methods
+          return {
+              findMovies: findMovies,
+              saveMovie: saveMovie,
+              showDetails: showDetails
+          };
+      }(); // invoke code
+    </script>
+  </body>
+</html>
