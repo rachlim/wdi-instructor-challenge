@@ -1,20 +1,20 @@
 import { combineReducers } from 'redux'
 // import { routeReducer } from 'react-router-redux'
 
-const movies = (state = [], action) => {
-  switch (action.type) {
+const movies = (state = [], {type, movies}) => {
+  switch (type) {
     case 'RECEIVE_MOVIES':
-      return [...action.movies]
+      return [...movies]
     default:
       return state
   }
 }
 
-const movie = (state = {}, action) => {
-  switch (action.type) {
+const movie = (state = {}, {type, movie}) => {
+  switch (type) {
     case 'RECEIVE_MOVIE':
       let newState = Object.assign({}, state)
-      newState[action.movie.id] = action.movie
+      newState[movie.id] = movie
       return newState
     default:
       return state
@@ -30,13 +30,13 @@ const movie = (state = {}, action) => {
 //   }
 // }
 
-const favorite = (state = [], action) => {
-  switch (action.type) {
+const favorites = (state = [], {type, movie}) => {
+  switch (type) {
     case 'ADD_FAVORITE':
-      return [...state, action.movie]
+      return [...state, movie]
     case 'REMOVE_FAVORITE':
       return state.filter(el => {
-        return el.id !== action.movie.id
+        return el.id !== movie.id
       })
     default:
       return state
@@ -47,7 +47,7 @@ const combined = combineReducers({
   // selectedTab,
   movies,
   movie,
-  favorite
+  favorites
   // routing: routeReducer
 })
 
