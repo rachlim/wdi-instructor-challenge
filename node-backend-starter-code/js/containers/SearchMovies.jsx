@@ -7,7 +7,7 @@ let SearchMovies = ({dispatch}) => {
   return (
     <form onSubmit={(e) => {
       e.preventDefault()
-      dispatch(fetchMovies(input.value))
+      dispatch(fetchMovies(encodeURIComponent(input.value)))
       input.value = ''
     }}>
       <input ref={node => {

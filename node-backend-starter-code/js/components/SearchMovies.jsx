@@ -11,6 +11,8 @@ export default class Chatbox extends Component {
 
   submitHandler (e) {
     e.preventDefault()
+    let search = encodeURIComponent(this.state.search)
+    console.log(search);
     fetch(`http://www.omdbapi.com/?s=${this.state.search}&type=movie`)
       .then(r => r.json())
       .then(res => this.setState({movies: res.Search}))
