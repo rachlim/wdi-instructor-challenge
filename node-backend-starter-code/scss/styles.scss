@@ -1,3 +1,94 @@
+@import "normalize-scss/sass/_normalize";
+
+@include normalize;
+
 body {
   background: white;
+}
+
+nav {
+  background: #313131;
+
+  a {
+    display: inline-block;
+    padding: 1em;
+    color: white;
+    text-decoration: none;
+
+    &:hover,
+    &:active,
+    &:focus {
+      color: red;
+    }
+  }
+}
+
+.container {
+  max-width: 1200px;
+  margin: 1em auto 0;
+  padding-right: 2em;
+  padding-left: 2em;
+}
+
+.searchbox {
+  display: flex;
+
+  input {
+    padding: 0.5em 0.75em;
+    flex: 1 0 auto;
+  }
+}
+
+.movieList {
+  padding: 0;
+
+  li {
+    display: flex;
+    list-style: none;
+  }
+
+  li + li {
+    margin-top: 1em;
+  }
+
+  figure {
+    margin: 0;
+    margin-right: 1em;
+  }
+
+  img {
+    width: 100px;
+    height: auto;
+  }
+}
+
+.movieDetail {
+  display: flex;
+}
+
+.movieDetail__meta {
+  display: flex;
+  align-items: center;
+}
+
+.movieDetail__meta-item {
+  & + &:before {
+    margin-left: 0.5em;
+    content: ", ";
+  }
+}
+
+.movieDetail__heart {
+  display: inline-block;
+  width: 1em;
+  margin-left: 1em;
+  cursor: pointer;
+
+  svg {
+    pointer-events: none;
+  }
+
+  svg.is-favorite {
+    fill: red;
+  }
 }

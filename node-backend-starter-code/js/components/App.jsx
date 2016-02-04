@@ -9,7 +9,9 @@ class App extends Component {
           <Link to='/'>Search </Link>
           <Link to='/favorites'>Favorites</Link>
         </nav>
-        {this.props.children}
+        <div className='container'>
+          {this.props.children}
+        </div>
       </div>
     )
   }

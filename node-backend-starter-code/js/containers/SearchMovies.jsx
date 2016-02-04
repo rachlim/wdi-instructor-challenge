@@ -5,7 +5,7 @@ import { fetchMovies } from '../actions'
 let SearchMovies = ({dispatch}) => {
   let input
   return (
-    <form onSubmit={(e) => {
+    <form className='searchbox' onSubmit={(e) => {
       e.preventDefault()
       dispatch(fetchMovies(encodeURIComponent(input.value)))
       input.value = ''

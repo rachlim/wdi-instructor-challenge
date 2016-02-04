@@ -4,12 +4,17 @@ import { Link } from 'react-router'
 const MoviesList = ({movies, isFavorite = false, onMovieClick}) => {
   if (movies.length) {
     return (
-      <ul>
+      <ul className='movieList'>
         {movies.map(m => {
           return (
             <li key={m.id}>
-              <img src={m.poster} />
-              <Link to={`movie/${m.id}`}> {m.title} </Link>
+              <figure>
+                <img src={m.poster} />
+              </figure>
+              <div className='movieList__content'>
+                <h3><Link to={`movie/${m.id}`}> {m.title} </Link></h3>
+                <p>{m.year}</p>
+              </div>
             </li>
           )
         })}
