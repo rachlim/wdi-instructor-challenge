@@ -1,13 +1,13 @@
 // Karma configuration
 // Generated on Sun Jan 10 2016 01:27:22 GMT+0800 (SGT)
-var webpackConfig = require('./webpack.config.js').development;
+var webpackConfig = require('./webpack.config.js').development
 
 // entry and output determined by karma-webpack
 delete webpackConfig['context']
 delete webpackConfig['entry']
 delete webpackConfig['output']
 
-module.exports = function(config) {
+module.exports = function (config) {
   config.set({
     basePath: '',
     // Note: switch to Jasmine if you prefer Jasmine
@@ -47,6 +47,13 @@ module.exports = function(config) {
     // how many browser should be started simultaneous
     concurrency: Infinity,
 
-    webpack: webpackConfig,
-  });
-};
+    webpack: Object.assign({}, webpackConfig, {
+      node: {fs: 'empty'}
+    }),
+
+    webpackMiddleware: {
+      noInfo: true,
+      stats: {colors: true}
+    }
+  })
+}
