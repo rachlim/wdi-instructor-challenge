@@ -62,7 +62,7 @@ class MovieDetail extends React.Component {
               <span className='movieDetail__meta-item'>{movie.rating}</span>
               <div className='movieDetail__heart' onClick={::this.clickHandler}>
                 <svg className={favorite ? 'is-favorite' : ''} viewBox='0 0 1024 1024'>
-                  <path class='path1' d='M880.077 212.531c-85.606-78.592-224.41-78.592-310.016 0l-58.061 53.35-58.112-53.35c-85.606-78.592-224.358-78.592-309.965 0-96.307 88.371-96.307 231.629 0 320.051l368.077 337.818 368.077-337.818c96.307-88.422 96.307-231.68 0-320.051z'></path>
+                  <path className='path1' d='M880.077 212.531c-85.606-78.592-224.41-78.592-310.016 0l-58.061 53.35-58.112-53.35c-85.606-78.592-224.358-78.592-309.965 0-96.307 88.371-96.307 231.629 0 320.051l368.077 337.818 368.077-337.818c96.307-88.422 96.307-231.68 0-320.051z'></path>
                 </svg>
               </div>
             </div>
