@@ -6,7 +6,7 @@ class App extends Component {
     return (
       <div>
         <nav>
-          <Link to='/'>Search  </Link>
+          <Link to='/'>Search </Link>
           <Link to='/favorites'>Favorites</Link>
         </nav>
         {this.props.children}

@@ -23,7 +23,8 @@ const movie = (state = {}, {type, movie}) => {
 
 const favorite = (state = [], type, movie) => {
   switch (type) {
-    case 'ADD_FAVORITE': return [...state, movie]
+    case 'ADD_FAVORITE':
+      return [...state, movie]
     case 'REMOVE_FAVORITE':
       return state.filter(el => el.id !== movie.id)
     default: return state
@@ -42,7 +43,7 @@ const favorites = (state = {}, {type, movie, movies}) => {
     case 'RECEIVE_FAVORITES':
       return Object.assign({}, state, {
         fetched: true,
-        movies: movies
+        movies: [...state.movies, ...movies]
       })
     default:
       return state

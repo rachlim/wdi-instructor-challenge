@@ -1,10 +1,25 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
+const MongoClient = require('mongodb').MongoClient
 const logger = require('morgan')
 const path = require('path')
 
-// Standard Express stuff
+var db
+
+MongoClient.connect('mongodb://zellwk:zellwk@ds055485.mongolab.com:55485/movie-challenge', (err, database) => {
+  if (err) return console.log(err)
+  db = database
+
+  if (require.main === module) {
+    const server = app.listen(process.env.PORT || 3000, function () {
+      var host = server.address().address
+      var port = server.address().port
+      console.log('Listening on http://%s:%s', host, port)
+    })
+  }
+})
+
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 
@@ -26,28 +41,31 @@ if (!process.env.production) {
 }
 
 app.get('/api/favorites', (req, res) => {
-  res.send([{
-    actors: 'Mark Hamill, Harrison Ford, Carrie Fisher, Peter Cushing',
-    director: 'George Lucas',
-    id: 'tt0076759',
-    imdbRating: '8.7',
-    plot: 'A young boy from Tatooine sets out on an adventure with an old Jedi named Obi-Wan Kenobi as his mentor to save Princess Leia from the ruthless Darth Vader and Destroy the Death Star built by the Empire which has the power to destroy the entire galaxy.',
-    poster: 'http://ia.media-imdb.com/images/M/MV5BMTU4NTczODkwM15BMl5BanBnXkFtZTcwMzEyMTIyMw@@._V1_SX300.jpg',
-    production: undefined,
-    rating: 'PG',
-    title: 'Star Wars: Episode IV - A New Hope',
-    year: '1977'
-  }])
+  db.collection('favorites').find().toArray((err, result) => {
+    if (err) return res.send(err)
+    res.send(result)
+  })
+})
+
+app.post('/api/favorites', (req, res) => {
+  // Sets _id to movie ID
+  req.body._id = req.body.id
+  db.collection('favorites').save(req.body, (err, result) => {
+    if (err) return res.send(err)
+    res.send(result)
+  })
+})
+
+app.delete('/api/favorites', (req, res) => {
+  db.collection('favorites').findOneAndDelete(
+    {_id: req.body.id},
+    (err, result) => {
+      if (err) return res.send(err)
+      res.send(result)
+    }
+  )
 })
 
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, 'index.html'))
 })
-
-if (require.main === module) {
-  const server = app.listen(process.env.PORT || 3000, function () {
-    var host = server.address().address
-    var port = server.address().port
-    console.log('Listening on http://%s:%s', host, port)
-  })
-}

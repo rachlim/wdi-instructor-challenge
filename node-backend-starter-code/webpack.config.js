@@ -23,6 +23,7 @@ var mod = {
 var sassLoader = {
   includePaths: [
     path.resolve(__dirname, './node_modules'),
+    path.resolve(__dirname, './node_modules/support-for/sass'),
     path.resolve(__dirname, './bower_components')
   ]
 }

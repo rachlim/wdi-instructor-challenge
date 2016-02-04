@@ -16,7 +16,7 @@ const MoviesList = ({movies, isFavorite = false, onMovieClick}) => {
       </ul>
     )
   } else if (isFavorite) {
-    return (<div>No movies in favorites yet :(</div>)
+    return (<div>No movies favorited yet :(</div>)
   } else {
     return (<div>Start searching for some movies! </div>)
   }

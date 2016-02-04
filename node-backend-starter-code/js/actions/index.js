@@ -83,6 +83,7 @@ export function fetchMovie (id) {
       }
 
       let movie = {
+        title: r.Title,
         id: id,
         actors: r.Actors,
         director: r.Director,
@@ -90,7 +91,6 @@ export function fetchMovie (id) {
         poster: r.Poster,
         production: r.Production,
         rating: r.Rated,
-        title: r.Title,
         year: r.Year,
         imdbRating: r.imdbRating
       }
@@ -109,10 +109,73 @@ export const addFavorite = (movie) => {
   }
 }
 
+export const addFavoriteFail = (movie) => {
+  return {
+    type: 'ADD_FAVORITE_FAIL',
+    movie
+  }
+}
+
+export const addFavoriteRequest = (movie) => {
+  return {
+    type: 'ADD_FAVORITE_REQUEST',
+    movie
+  }
+}
+
 export const removeFavorite = (movie) => {
   return {
     type: 'REMOVE_FAVORITE',
     movie
+  }
+}
+
+export const removeFavoriteRequest = (movie) => {
+  return {
+    type: 'REMOVE_FAVORITE_REQUEST',
+    movie
+  }
+}
+
+export const saveFavorite = (movie) => {
+  return (dispatch) => {
+    dispatch(addFavoriteRequest(movie))
+    fetch('/api/favorites', {
+      method: 'post',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(movie)
+    })
+    .then(r => { if (r.ok) return r.json() })
+    .then(r => {
+      if (r.ok) {
+        dispatch(addFavorite(movie))
+      }
+    })
+    .catch(e => {
+      // Placeholder for errors
+      return console.log(e)
+    })
+  }
+}
+
+export const deleteFavorite = (movie) => {
+  return (dispatch) => {
+    dispatch(removeFavoriteRequest(movie))
+    fetch('/api/favorites', {
+      method: 'delete',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(movie)
+    })
+    .then(r => { if (r.ok) return r.json() })
+    .then(r => {
+      if (r.ok) {
+        dispatch(removeFavorite(movie))
+      }
+    })
+    .catch(e => {
+      // Placeholder for errors
+      return console.log(e)
+    })
   }
 }
 

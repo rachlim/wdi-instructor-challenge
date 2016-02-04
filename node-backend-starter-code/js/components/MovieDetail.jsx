@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { fetchMovie, addFavorite, removeFavorite } from '../actions'
+import { fetchMovie, saveFavorite, deleteFavorite } from '../actions'
 
 const mapStateToProps = ({favorites, movie}, {params}) => {
   let favorite = favorites.movies.find(f => {
@@ -17,8 +17,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
     fetchMovie,
-    removeFavorite,
-    addFavorite
+    deleteFavorite,
+    saveFavorite
   }
 }
 
@@ -32,15 +32,15 @@ class MovieDetail extends React.Component {
     let {
       movie,
       params,
-      removeFavorite,
+      deleteFavorite,
       dispatch,
       favorite
     } = this.props
 
     if (favorite) {
-      dispatch(removeFavorite(favorite))
+      dispatch(deleteFavorite(favorite))
     } else {
-      dispatch(addFavorite(movie))
+      dispatch(saveFavorite(movie))
     }
   }
 
