@@ -7,7 +7,7 @@ import sinon from 'sinon'
 
 describeWithDOM('<MoviesList />', () => {
   it('renders .movieList if has props.movies', () => {
-    let movies = [[1], [2]]
+    let movies = [[{id: 1}], [{id: 2}]]
     const onMovieClick = sinon.spy()
     const wrapper = mount(<MoviesList movies={movies} onMovieClick={onMovieClick}/>)
 
