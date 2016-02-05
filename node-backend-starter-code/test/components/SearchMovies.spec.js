@@ -20,21 +20,10 @@ describeWithDOM('<SearchMovies />', () => {
     expect(wrapper.find('button')).to.have.length(1)
   })
 
-  it('should onSubmit when form is submitted', () => {
-    let onSubmit = sinon.spy()
-    const wrapper = mount(
-      <Provider store={store}>
-        <SearchMovies onSubmit={onSubmit} />
-      </Provider>
-    )
-
-    Simulate.submit(wrapper.find('form').node)
-    wrapper.find('form').simulate('submit')
-
-    console.log(onSubmit.calledCount)
-
-    // expect(onSubmit.calledOnce).to.equal(true)
+  it('(╯°□°）╯︵ ┻━┻', () => {
+    function flipTable () {
+      throw new Error('table')
+    }
+    expect(flipTable).to.throw()
   })
-
-  it('¯_(ツ)_/¯')
 })
