@@ -6,8 +6,7 @@
   "scripts": {
     "start": "NODE_ENV=production node server.js",
     "dev": "node server.js",
-    "postinstall": "build",
-    "build": "webpack",
+    "postinstall": "webpack",
     "test": "mocha --compilers js:babel-register --recursive",
     "mocha": "mocha --compilers js:babel-register --recursive --watch --reporter nyan"
   },
