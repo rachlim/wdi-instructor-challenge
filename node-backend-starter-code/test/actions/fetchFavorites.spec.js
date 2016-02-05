@@ -3,7 +3,7 @@
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import * as actions from '../../js/actions'
-import nock from 'nock'
+import fetchMock from 'fetch-mock'
 
 const mockStore = configureMockStore([thunk])
 
@@ -13,18 +13,17 @@ describe('fetchMovie', () => {
   }
 
   afterEach(function () {
-    nock.cleanAll()
+    fetchMock.restore()
   })
 
-  it('should handle RECEIVE_MOVIE', function (done) {
-    nock('http://localhost:3000')
-      .post('/api/favorites')
-      .reply(200, {ok: true})
+  it('should handle ADD_FAVORITE', function (done) {
+    fetchMock.mock('/api/favorites', 'post', {ok: true})
 
     const expectedActions = [
       {type: 'ADD_FAVORITE_REQUEST', movie},
       {type: 'ADD_FAVORITE', movie}
     ]
+
     const store = mockStore({}, expectedActions, done)
     store.dispatch(actions.saveFavorite(movie))
   })

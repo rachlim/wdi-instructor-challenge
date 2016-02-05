@@ -1,4 +1,5 @@
-import fetch from 'isomorphic-fetch'
+/* globals fetch */
+require('isomorphic-fetch')
 
 export const requestMovies = (searchTerm) => {
   return {
@@ -138,7 +139,7 @@ export const removeFavoriteRequest = (movie) => {
 export const saveFavorite = (movie) => {
   return (dispatch) => {
     dispatch(addFavoriteRequest(movie))
-    fetch('http://localhost:3000/api/favorites', {
+    fetch('/api/favorites', {
       method: 'post',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(movie)
