@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { fetchMovies } from '../actions'
 
-let SearchMovies = ({dispatch}) => {
+export let SearchMovies = ({dispatch}) => {
   let input
   return (
     <form className='searchbox' onSubmit={(e) => {

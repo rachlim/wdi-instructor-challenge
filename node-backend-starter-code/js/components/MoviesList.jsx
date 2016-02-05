@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router'
 
-const MoviesList = ({movies, isFavorite = false, onMovieClick}) => {
+const MoviesList = ({movies, isFavorite = false}) => {
   if (movies.length) {
     return (
       <ul className='movieList'>
