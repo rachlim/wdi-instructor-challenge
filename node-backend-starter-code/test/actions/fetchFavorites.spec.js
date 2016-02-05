@@ -1,8 +1,9 @@
-/* global describe, it, beforeEach, afterEach, sinon */
+/* global describe, it, afterEach */
 
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import * as actions from '../../js/actions'
+import nock from 'nock'
 
 const mockStore = configureMockStore([thunk])
 
@@ -11,19 +12,14 @@ describe('fetchMovie', () => {
     id: 'tt0076759'
   }
 
-  beforeEach(function () {
-    this.stub = sinon.stub(window, 'fetch')
-  })
-
   afterEach(function () {
-    this.stub.restore()
+    nock.cleanAll()
   })
 
   it('should handle RECEIVE_MOVIE', function (done) {
-    this.stub.returns(Promise.resolve({
-      ok: true,
-      json: () => Promise.resolve(movie)
-    }))
+    nock('http://localhost:3000')
+      .post('/api/favorites')
+      .reply(200, {ok: true})
 
     const expectedActions = [
       {type: 'ADD_FAVORITE_REQUEST', movie},

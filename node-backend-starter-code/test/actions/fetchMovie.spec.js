@@ -1,8 +1,9 @@
-/* global describe, it, beforeEach, afterEach, sinon */
+/* global describe, it, afterEach */
 
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import * as actions from '../../js/actions'
+import nock from 'nock'
 
 const mockStore = configureMockStore([thunk])
 
@@ -20,18 +21,17 @@ describe('fetchMovie', () => {
     imdbRating: 'some string'
   }
 
-  beforeEach(function () {
-    this.stub = sinon.stub(window, 'fetch')
-  })
-
   afterEach(function () {
-    this.stub.restore()
+    nock.cleanAll()
   })
 
   it('should handle RECEIVE_MOVIE', function (done) {
-    this.stub.returns(Promise.resolve({
-      ok: true,
-      json: () => Promise.resolve({
+    nock('http://www.omdbapi.com/')
+      .filteringPath((path) => {
+        return '/'
+      })
+      .get('/')
+      .reply('200', {
         Response: 'True',
         Title: 'Some title',
         Actors: 'some string',
@@ -43,7 +43,24 @@ describe('fetchMovie', () => {
         Year: 'some string',
         imdbRating: 'some string'
       })
-    }))
+    // Example of stubbing fetch with Sinon. Requires you to be on the browser though
+
+    // this.stub = sinon.stub(window, 'fetch')
+    // this.stub.returns(Promise.resolve({
+    //   ok: true,
+    //   json: () => Promise.resolve({
+    //     Response: 'True',
+    //     Title: 'Some title',
+    //     Actors: 'some string',
+    //     Director: 'some string',
+    //     Plot: 'some string',
+    //     Poster: 'some string',
+    //     Production: 'some string',
+    //     Rated: 'some string',
+    //     Year: 'some string',
+    //     imdbRating: 'some string'
+    //   })
+    // }))
 
     const expectedActions = [
       {type: 'REQUEST_MOVIE', id: movie.id},

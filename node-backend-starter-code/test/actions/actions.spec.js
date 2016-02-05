@@ -1,5 +1,6 @@
-/* global describe, it, expect */
+/* global describe, it */
 
+import { expect } from 'chai'
 import * as actions from '../../js/actions'
 
 describe('Pure actions', () => {

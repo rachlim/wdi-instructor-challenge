@@ -1,5 +1,5 @@
-/* global describe, it, expect */
-
+/* global describe, it */
+import { expect } from 'chai'
 import { favorites, favorite } from '../../js/reducers'
 
 describe('Favorites reducer', () => {

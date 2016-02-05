@@ -74,7 +74,7 @@ export const receiveMovieFail = (title, err) => {
 export function fetchMovie (id) {
   return function (dispatch) {
     dispatch(requestMovie(id))
-    return window.fetch(`http://www.omdbapi.com/?i=${id}&type=movie&plot=full`)
+    return fetch(`http://www.omdbapi.com/?i=${id}&type=movie&plot=full`)
     .then(r => { if (r.ok) return r.json() })
     .then(r => {
       if (r.Response === 'False') {
@@ -138,14 +138,16 @@ export const removeFavoriteRequest = (movie) => {
 export const saveFavorite = (movie) => {
   return (dispatch) => {
     dispatch(addFavoriteRequest(movie))
-    window.fetch('/api/favorites', {
+    fetch('http://localhost:3000/api/favorites', {
       method: 'post',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(movie)
     })
-    .then(r => { if (r.ok) return r.json() })
     .then(r => {
-      dispatch(addFavorite(movie))
+      if (r.ok) return r.json()
+    })
+    .then(r => {
+      if (r.ok) return dispatch(addFavorite(movie))
     })
     .catch(e => {
       // Placeholder for errors
