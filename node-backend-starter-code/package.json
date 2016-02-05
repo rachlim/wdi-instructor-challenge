@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js production=true",
+    "start": "NODE_ENV=production node server.js",
     "dev": "node server.js",
-    "build": "rm -rf public && cp -pr views/ public && webpack",
+    "postinstall": "build",
+    "build": "webpack",
     "test": "mocha --compilers js:babel-register --recursive",
     "mocha": "mocha --compilers js:babel-register --recursive --watch"
   },
