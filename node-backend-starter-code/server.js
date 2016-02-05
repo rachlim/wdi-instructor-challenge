@@ -40,6 +40,8 @@ if (process.env.NODE_ENV !== 'production') {
   app.use(logger('dev'))
 }
 
+app.use(express.static(__dirname + '/public'))
+
 app.get('/api/favorites', (req, res) => {
   db.collection('favorites').find().toArray((err, result) => {
     if (err) return res.send(err)

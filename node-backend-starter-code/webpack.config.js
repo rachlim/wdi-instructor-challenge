@@ -60,7 +60,7 @@ var production = {
   entry: ['./js/main.jsx'],
   output: {
     path: './',
-    filename: 'bundle.js'
+    filename: 'public/bundle.js'
   },
   devtool: '#source-map',
   module: mod,
