@@ -22,7 +22,7 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-class MovieDetail extends React.Component {
+export class MovieDetail extends React.Component {
   componentWillMount () {
     let {params, fetchMovie, dispatch} = this.props
     dispatch(fetchMovie(params.id))

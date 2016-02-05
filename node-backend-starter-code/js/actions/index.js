@@ -49,10 +49,9 @@ export function fetchMovies (searchTerm) {
   }
 }
 
-export const requestMovie = (id, title) => {
+export const requestMovie = (id) => {
   return {
     type: 'REQUEST_MOVIE',
-    title,
     id
   }
 }
@@ -75,7 +74,7 @@ export const receiveMovieFail = (title, err) => {
 export function fetchMovie (id) {
   return function (dispatch) {
     dispatch(requestMovie(id))
-    return fetch(`http://www.omdbapi.com/?i=${id}&type=movie&plot=full`)
+    return window.fetch(`http://www.omdbapi.com/?i=${id}&type=movie&plot=full`)
     .then(r => { if (r.ok) return r.json() })
     .then(r => {
       if (r.Response === 'False') {
@@ -95,7 +94,6 @@ export function fetchMovie (id) {
         imdbRating: r.imdbRating
       }
 
-      // dispatch(setSelectedTab('movie'))
       dispatch(receiveMovie(movie))
     })
     .catch(e => dispatch(fetchMoviesFail(e)))
@@ -140,16 +138,14 @@ export const removeFavoriteRequest = (movie) => {
 export const saveFavorite = (movie) => {
   return (dispatch) => {
     dispatch(addFavoriteRequest(movie))
-    fetch('/api/favorites', {
+    window.fetch('/api/favorites', {
       method: 'post',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(movie)
     })
     .then(r => { if (r.ok) return r.json() })
     .then(r => {
-      if (r.ok) {
-        dispatch(addFavorite(movie))
-      }
+      dispatch(addFavorite(movie))
     })
     .catch(e => {
       // Placeholder for errors
