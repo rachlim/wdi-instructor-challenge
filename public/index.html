@@ -3,12 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <title>Flickies</title>
+  <link rel="stylesheet" href="./stylesheets/app.css">
 </head>
 <body>
   <h1>Flickies</h1>
 
+  <div class="materialContainer">
+   <div class="box">
+      <div class="title">SEARCH</div>
+
+      <form action="#" method="post">
+        <div class="input">
+           <label for="movie_name">Movie name</label>
+           <input type="text" name="movie_name" id="movie_name">
+           <span class="spin"></span>
+        </div>
+
+        <div class="button login">
+           <button><span>GO</span> <i class="fa fa-check"></i></button>
+        </div>
+      </form>
+   </div>
+ </div>
+
   <ul class='city-list'></ul>
-  <script src="jquery.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
   <script src="client.js"></script>
 </body>
 </html>
