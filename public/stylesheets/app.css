@@ -85,10 +85,12 @@ ul li:last-child {
   content: '';
   display: table;
 }
-.result-list li a:last-child {
+
+/*.result-list li a:last-child {
   float: left;
   padding-right: 10px;
-}
+}*/
+
 .result-list li {
   background: #fff;
   box-shadow: 0 1px 2px #999;
@@ -108,7 +110,7 @@ ul li:last-child {
   cursor: pointer;
 }
 
-.result-list h2 {
+.result-list h2 a {
   color: rgba(0, 0, 0, 0.8);
   font-weight: 300;
 
@@ -117,7 +119,7 @@ ul li:last-child {
   -ms-transition: 300ms cubic-bezier(.4, 0, .2, 1);
 }
 
-.result-list li:hover h2 {
+.result-list li:hover h2 a {
   color: #ED2553;
 }
 

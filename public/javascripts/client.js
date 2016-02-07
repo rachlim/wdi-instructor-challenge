@@ -13,6 +13,9 @@ $(function() {
   }
 });
 
+var __OMDB = '//www.omdbapi.com/?';
+var __BASE = window.location;
+
 $(function() {
   $(".input input").focus(function() {
     $(this).parent(".input").each(function() {
@@ -70,7 +73,7 @@ $(function() {
 
     $.ajax({
       type: 'POST',
-      url: '//www.omdbapi.com/?' + formData
+      url: __OMDB + formData
     }).done(function(results) {
       $('.result-list').empty();
       resetForm();
@@ -84,10 +87,6 @@ $(function() {
     });
   });
 
-  function emptyList() {
-    $('.result-list').empty();
-  }
-
   function resetForm() {
     $('form').trigger('reset');
     $('button.active').removeClass('active');
@@ -98,12 +97,16 @@ $(function() {
 
   function listResults(results) {
     var list = [];
-    var filmTitle;
+    var filmTitle, filmLink;
 
     for (var i in results.Search) {
+      filmLink = $('<a/>', {
+                            href: __BASE.origin + '/movies/' + results.Search[i].imdbID,
+                            text: results.Search[i].Title
+                          });
       filmTitle = $('<h2/>',{
                           'data-imdb' : results.Search[i].imdbID,
-                          text: results.Search[i].Title
+                          html: filmLink
                       });
 
       list.push($('<li>', {

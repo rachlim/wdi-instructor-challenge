@@ -21,6 +21,13 @@ app.post('/', function(req, res) {
   res.sendStatus(201);
 });
 
+app.get('/movies/:id', function(req, res) {
+  var id = req.params.id;
+  console.log('id is: ' + id);
+  // post to omdb api here for restful application
+  res.sendStatus(200);
+});
+
 app.get('/favorites', function(req, res) {
   var data = fs.readFileSync('./data.json');
   res.setHeader('Content-Type', 'application/json');
