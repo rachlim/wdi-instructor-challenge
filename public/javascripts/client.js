@@ -65,10 +65,14 @@ $(function() {
     event.preventDefault();
     var form = $(this);
     var formData = form.serialize();
+
+    $('.spinner-wrapper').show();
+
     $.ajax({
       type: 'POST',
       url: '//www.omdbapi.com/?' + formData
     }).done(function(results) {
+      $('.spinner-wrapper').fadeOut('slow');
       emptyList();
       resetForm();
       listResults(results);
