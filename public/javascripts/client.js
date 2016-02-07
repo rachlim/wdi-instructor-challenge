@@ -67,7 +67,7 @@ $(function() {
     var formData = form.serialize();
     $.ajax({
       type: 'POST',
-      url: 'http://www.omdbapi.com/?' + formData
+      url: '//www.omdbapi.com/?' + formData
     }).done(function(results) {
       emptyList();
       resetForm();
@@ -84,7 +84,7 @@ $(function() {
     $('form').trigger('reset');
     $('button.active').removeClass('active');
     $('span.click-effect').remove();
-    $(".input input").trigger('blur');    
+    $(".input input").trigger('blur');
   }
 
   function listResults(results) {
