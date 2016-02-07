@@ -65,12 +65,9 @@ $(function() {
     event.preventDefault();
     var form = $(this);
     var formData = form.serialize();
-
-    // console.log(formData);
     $.ajax({
       type: 'POST',
-      url: '/',
-      data: formData
+      url: 'http://www.omdbapi.com/?' + formData
     }).done(function(results) {
       showResults(results);
     });

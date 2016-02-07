@@ -15,13 +15,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // routes list
-// final middleware that ties in the static view files
-app.use('/', express.static( path.join(__dirname, 'public') ) );
-
 app.post('/', function(req, res) {
-  var request_body = req.body;
-
-  console.log(request_body);
+  var input = req.body;
+  // if (! input.movie_name) res.status(400);
+  res.sendStatus(201);
 });
 
 app.get('/favorites', function(req, res) {
