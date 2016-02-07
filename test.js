@@ -2,9 +2,6 @@ var request = require('supertest');
 var nock = require('nock'); // maybe redundant
 var app = require('./app');
 
-// var omdb = request('http://www.omdbapi.com/');
-var params = {t: 'Star Wars', r: 'json'};
-
 describe('Request to the root path', function() {
   it('Returns a 200 status code', function(done) {
     request(app)
@@ -34,20 +31,17 @@ describe('Request to the favorite path', function () {
 });
 
 describe('Call OMDB api', function () {
-  it('has movie_name in the request', function () {
-    var omdb = nock('http://www.omdbapi.com/')
-                .get(params)
-                .reply(404);
-    // omdb.post('/')
-    //   .send({foo: 'bar'})
-    //   .expect({
-    //     Response: "False",
-    //     Error: "Something went wrong."
-    //   }, done);
+  it('has movie keyword in the request', function (done) {
+    var omdb = nock('http://www.omdbapi.com')
+                .get('/?foo=Bar&r=json')
+                .reply(200, {
+                  Response: "False",
+                  Error: "Something went wrong."
+                });
 
-    // request(app)
-    //   .get('/?tags=california&tagmode=all')
-    //   .expect(200, done);
+    setTimeout(function() {
+      omdb.done(); //
+    }, 5000);
   });
 
   // it('Returns a 200 status code', function () {

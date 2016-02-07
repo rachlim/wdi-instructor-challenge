@@ -69,11 +69,38 @@ $(function() {
       type: 'POST',
       url: 'http://www.omdbapi.com/?' + formData
     }).done(function(results) {
-      showResults(results);
+      emptyList();
+      resetForm();
+      listResults(results);
+      addPaginationIfExists(results);
     });
   });
 
-  function showResults(results) {
-    console.log(results);
+  function emptyList() {
+    $('.result-list').empty();
+  }
+
+  function resetForm() {
+    $('form').trigger('reset');
+    $('button.active').removeClass('active');
+    $('span.click-effect').remove();
+  }
+
+  function listResults(results) {
+    var list = [];
+
+    for (var i in results.Search) {
+      list.push($('<li>', {
+        text: results.Search[i].Title
+      }));
+    }
+
+    $('.result-list').append(list);
+  }
+
+  function addPaginationIfExists(results) {
+    var total = results.TotalResults;
+    
+
   }
 });
