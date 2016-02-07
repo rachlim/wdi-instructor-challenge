@@ -18,7 +18,7 @@ body {
    background-position: center;
    background-size: cover;
    background-repeat: no-repeat;*/
-  background: #d70 linear-gradient(transparent, #b40);
+  background: #b40 linear-gradient(transparent, #48627D);
   min-height: 100vh;
   font-family: 'Roboto', sans-serif;
 }
@@ -78,6 +78,8 @@ ul li:last-child {
 
 /* MODULE - RESULT LIST */
 
+.result-list { text-align: center; }
+
 .result-list li::after {
   clear: both;
   content: '';
@@ -104,6 +106,19 @@ ul li:last-child {
 .result-list li:hover {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   cursor: pointer;
+}
+
+.result-list h2 {
+  color: rgba(0, 0, 0, 0.8);
+  font-weight: 300;
+
+  transition: 300ms cubic-bezier(.4, 0, .2, 1);
+  -webkit-transition: 300ms cubic-bezier(.4, 0, .2, 1);
+  -ms-transition: 300ms cubic-bezier(.4, 0, .2, 1);
+}
+
+.result-list li:hover h2 {
+  color: #ED2553;
 }
 
 /* MODULE - BOX */

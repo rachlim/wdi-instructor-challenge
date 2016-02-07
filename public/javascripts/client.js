@@ -72,11 +72,15 @@ $(function() {
       type: 'POST',
       url: '//www.omdbapi.com/?' + formData
     }).done(function(results) {
-      $('.spinner-wrapper').fadeOut('slow');
-      emptyList();
+      $('.result-list').empty();
       resetForm();
-      listResults(results);
-      addPaginationIfExists(results);
+
+      if ('True' == results.Response) {
+        listResults(results);
+        addPaginationIfExists(results);
+      } else {
+        $('.result-list').html('<h2>' + results.Error + '</h2>');
+      }
     });
   });
 
@@ -89,14 +93,21 @@ $(function() {
     $('button.active').removeClass('active');
     $('span.click-effect').remove();
     $(".input input").trigger('blur');
+    $('.spinner-wrapper').fadeOut('slow');
   }
 
   function listResults(results) {
     var list = [];
+    var filmTitle;
 
     for (var i in results.Search) {
+      filmTitle = $('<h2/>',{
+                          'data-imdb' : results.Search[i].imdbID,
+                          text: results.Search[i].Title
+                      });
+
       list.push($('<li>', {
-        text: results.Search[i].Title
+        html: filmTitle
       }));
     }
 
@@ -105,7 +116,5 @@ $(function() {
 
   function addPaginationIfExists(results) {
     var total = results.TotalResults;
-
-    qi
   }
 });
