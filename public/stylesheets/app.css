@@ -16,10 +16,11 @@
 /* BASE */
 
 body {
-   background-image: url(https://lh4.googleusercontent.com/-XplyTa1Za-I/VMSgIyAYkHI/AAAAAAAADxM/oL-rD6VP4ts/w1184-h666/Android-Lollipop-wallpapers-Google-Now-Wallpaper-2.png);
+   /*background-image: url(https://lh4.googleusercontent.com/-XplyTa1Za-I/VMSgIyAYkHI/AAAAAAAADxM/oL-rD6VP4ts/w1184-h666/Android-Lollipop-wallpapers-Google-Now-Wallpaper-2.png);
    background-position: center;
    background-size: cover;
-   background-repeat: no-repeat;
+   background-repeat: no-repeat;*/
+   background: #d70 linear-gradient(transparent, #b40);
    min-height: 100vh;
    font-family: 'Roboto', sans-serif;
 }
@@ -33,6 +34,9 @@ h1 {
   color: white;
   text-align: center;
   line-height: 2;
+  font-size: 5vw;
+  font-weight: 100;
+  font-family: 'Roboto', sans-serif;
 }
 
 /* Headings */
