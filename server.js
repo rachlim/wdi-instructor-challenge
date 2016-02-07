@@ -18,6 +18,12 @@ app.use(bodyParser.json());
 // final middleware that ties in the static view files
 app.use('/', express.static( path.join(__dirname, 'public') ) );
 
+app.post('/', function(req, res) {
+  var request_body = req.body;
+
+  console.log(request_body);
+});
+
 app.get('/favorites', function(req, res) {
   var data = fs.readFileSync('./data.json');
   res.setHeader('Content-Type', 'application/json');
