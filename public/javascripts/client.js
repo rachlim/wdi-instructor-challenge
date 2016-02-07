@@ -84,6 +84,7 @@ $(function() {
     $('form').trigger('reset');
     $('button.active').removeClass('active');
     $('span.click-effect').remove();
+    $(".input input").trigger('blur');    
   }
 
   function listResults(results) {
@@ -100,7 +101,7 @@ $(function() {
 
   function addPaginationIfExists(results) {
     var total = results.TotalResults;
-    
+
 
   }
 });
