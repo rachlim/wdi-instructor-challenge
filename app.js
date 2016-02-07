@@ -9,7 +9,7 @@ var bodyParser = require('body-parser');
 var logger = require('./logger');
 
 // middlewares. run one after another
-app.use(logger);
+// app.use(logger);
 app.use(express.static(path.join(__dirname, '/public')));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -43,6 +43,4 @@ app.get('favorites', function(req, res){
   res.send(data);
 });
 
-app.listen(3000, function(){
-  console.log("Listening on port 3000");
-});
+module.exports = app;
