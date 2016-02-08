@@ -2,7 +2,7 @@
 var __OMDB = '//www.omdbapi.com/?';
 var __BASE = window.location;
 
-$(function() {
+(function() {
   // THIS PART HERE COVERS ALL DOM MANIPULATION FOR AESTHETIC PURPOSES
   $(".input input").focus(function() {
     $(this).parent(".input").each(function() {
@@ -78,20 +78,21 @@ $(function() {
       type: 'GET',
       url: __OMDB + formData
     }).done(function(results) {
-      $('.result-list').empty();
+      $('.alert-container').fadeOut();
       resetFlow();
 
       if ('True' == results.Response) {
-        $('.alert-container').fadeOut();
         listResults(results);
         addPaginationIfExists(results);
       } else {
+        resetFlow();
         $('.result-list').html('<h2>' + results.Error + '</h2>');
       }
     });
   }
 
   function resetFlow() {
+    $('.result-list').empty();
     $('form').trigger('reset');
     $('button.active').removeClass('active');
     $('span.click-effect').remove();
@@ -101,7 +102,7 @@ $(function() {
 
   function listResults(results) {
     var list = [];
-    var filmTitle, filmLink;
+    var filmTitle, filmLink, detailSection, filmList;
 
     for (var i in results.Search) {
       filmLink = $('<a/>', {
@@ -114,9 +115,12 @@ $(function() {
                           html: filmLink
                       });
 
-      list.push($('<li>', {
+      detailSection = $('<section/>');
+      filmList = $('<li/>', {
         html: filmTitle
-      }));
+      }).append(detailSection);
+
+      list.push(filmList);
     }
 
     $('.result-list').append(list);
@@ -132,22 +136,61 @@ $(function() {
     e.preventDefault();
     var movie = $(this);
     var imdb_id = movie.data('imdb');
-    getMovieDetails(imdb_id);
+
+    getDetails(imdb_id, function(details) {
+      var movieSection = movie.parents('li').find('section');
+      console.log(details);
+      hideOtherSections();
+      showSection(movieSection, details);
+    });
   });
 
-  function getMovieDetails(imdb_id) {
-    // TODO: VALIDATE IF IMDB IS EMPTY
-    var search_params = "i=" + imdb_id + "&type=movie&r=json";
+  function hideOtherSections() {
+    $('.result-list').find('section').empty();
+  }
 
+  function getDetails(imdb_id, callback) {
+    // TODO: VALIDATE IF IMDB IS EMPTY
+
+    var details;
+
+    var search_params = "i=" + imdb_id + "&type=movie&r=json";
     $.ajax({
       type: 'GET',
-      url: __OMDB + search_params
-    }).done(function(details) {
-      showDetails(details);
+      url: __OMDB + search_params,
+      success: function(data) {
+        details = data;
+        callback(details);
+      }
     });
   }
 
-  function showDetails(details) {
-    console.log('Genre is: ' + details.Genre);  
+  function showSection(section, details) {
+    var detail_container = $('<div class="media" />');
+
+    var movie_poster = $('<div class="media-left" />');
+    var poster_link = $('<a href="' + details.Poster+ '" />');
+    var poster_url = $('<img width="250" class="media-object" src="' + details.Poster+ '" />');
+    poster_url.appendTo(poster_link);
+    poster_link.appendTo(movie_poster);
+
+    var movie_copy = $('<div class="media-body" />');
+    var movie_heading = $('<h4 class="media-heading">' + details.Year + '</h4>');
+    var movie_plot = $('<p class="plot" />').text(details.Plot);
+    var movie_director = $('<p class="director" />').text('Director: ' + details.Director);
+    var movie_rating = $('<p class="rating" />').text('Rating: ' + details.Rated);
+    var movie_length = $('<p class="length" />').text('Runtime: ' + details.Runtime);
+    var movie_length = $('<p class="imdb_rating" />').text('iMDB Rating: ' + details.imdbRating);
+
+    movie_copy.append(movie_plot)
+              .append(movie_director)
+              .append(movie_director)
+              .append(movie_rating)
+              .append(movie_length)
+              .prepend(movie_heading);
+
+    detail_container.append(movie_poster).append(movie_copy);
+    section.append(detail_container);
+    section.fadeIn('slow');
   }
-});
+})($);
