@@ -1,6 +1,6 @@
 var request = require('supertest');
-var nock = require('nock'); // maybe redundant
 var app = require('./app');
+var omdb = 'http://www.omdbapi.com';
 
 describe('Request to the root path', function() {
   it('Returns a 200 status code', function(done) {
@@ -19,7 +19,7 @@ describe('Request to the root path', function() {
 describe('Request to the favorite path', function () {
   it('Returns a 200 status code', function(done) {
     request(app)
-      .get('/favorites')
+      .get('/')
       .expect(200, done);
   });
 
@@ -30,28 +30,39 @@ describe('Request to the favorite path', function () {
   });
 });
 
-describe('Call OMDB api', function () {
-  it('has movie keyword in the request', function (done) {
-    var omdb = nock('http://www.omdbapi.com')
-                .get('/?foo=Bar&r=json')
-                .reply(200, {
-                  Response: "False",
-                  Error: "Something went wrong."
-                });
+describe('Call OMDB SEARCH api', function () {
 
-    setTimeout(function() {
-      omdb.done(); //
-    }, 5000);
+  it('Returns a 200 status code', function (done) {
+    request(omdb)
+      .get('/?foo=Bar&r=json')
+      .expect(200, done);
   });
 
-  // it('Returns a 200 status code', function () {
-  //   omdb.post('/')
-  //     .send(params)
-  //     .expect(200);
-  // });
-  //
-  // it('Returns a JSON format', function (done) {
-  //   omdb.post().send(params)
-  //     .expect('Content-Type', /json/, done);
-  // });
+  it('Returns a JSON format', function (done) {
+    request(omdb)
+      .get('/?foo=Bar&r=json')
+      .expect('Content-Type', /json/, done);
+  });
+
+  it('must have search keyword in the request', function (done) {
+    request(omdb)
+      .get('/?foo=Bar&r=json')
+      .expect({
+        Response: "False",
+        Error: "Something went wrong."
+      }, done);
+  });
+
+  it('result search keyword in the request', function (done) {
+    request(omdb)
+      .get('/?s=lolz&r=json&t=movie')
+      .expect({
+        Response: "False",
+        Error: "Movie not found!"
+      }, done);
+  });
+});
+
+describe('Call OMDB DETAILS api', function () {
+  
 });

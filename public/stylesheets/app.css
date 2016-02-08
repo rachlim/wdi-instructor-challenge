@@ -58,6 +58,11 @@ ul li:last-child {
   margin-bottom: 0;
 }
 
+/* Links */
+a:hover {
+  text-decoration: none !important;
+}
+
 /* LAYOUT */
 
 .container {
@@ -75,6 +80,9 @@ ul li:last-child {
   -webkit-transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
 }
+
+/* MODULE - ALERT */
+.alert-container { display: none; }
 
 /* MODULE - RESULT LIST */
 
@@ -118,6 +126,8 @@ ul li:last-child {
   -webkit-transition: 300ms cubic-bezier(.4, 0, .2, 1);
   -ms-transition: 300ms cubic-bezier(.4, 0, .2, 1);
 }
+
+a.film-link {}
 
 .result-list li:hover h2 a {
   color: #ED2553;

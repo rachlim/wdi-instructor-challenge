@@ -1,17 +1,4 @@
-$(function() {
-
-  // $.get('/cities', appendToList);
-
-  function appendToList(cities) {
-    var list = [];
-    for (var i in cities) {
-      list.push($('<li>', {
-        text: cities[i]
-      }));
-    }
-    $('.city-list').append(list);
-  }
-});
+// GLOBAL VAR
 
 var __OMDB = '//www.omdbapi.com/?';
 var __BASE = window.location;
@@ -68,7 +55,24 @@ $(function() {
     event.preventDefault();
     var form = $(this);
     var formData = form.serialize();
+    var formArr = form.serializeArray();
 
+    if (! formArr[0].value) {
+      showEmptyError();
+    } else {
+      showResultsFlow(formData);
+    }
+  });
+
+  // $('.result-list').on('click',  (arguments) => {})
+
+  function showEmptyError() {
+    $('.alert-container').find('.alert').text('Please enter your search keyword');
+    $('.alert-container').fadeIn();
+    resetFlow();
+  }
+
+  function showResultsFlow(formData) {
     $('.spinner-wrapper').show();
 
     $.ajax({
@@ -76,18 +80,19 @@ $(function() {
       url: __OMDB + formData
     }).done(function(results) {
       $('.result-list').empty();
-      resetForm();
+      resetFlow();
 
       if ('True' == results.Response) {
+        $('.alert-container').fadeOut();
         listResults(results);
         addPaginationIfExists(results);
       } else {
         $('.result-list').html('<h2>' + results.Error + '</h2>');
       }
     });
-  });
+  }
 
-  function resetForm() {
+  function resetFlow() {
     $('form').trigger('reset');
     $('button.active').removeClass('active');
     $('span.click-effect').remove();
@@ -101,6 +106,7 @@ $(function() {
 
     for (var i in results.Search) {
       filmLink = $('<a/>', {
+                            class: 'film-link',
                             href: __BASE.origin + '/movies/' + results.Search[i].imdbID,
                             text: results.Search[i].Title
                           });
@@ -117,6 +123,7 @@ $(function() {
     $('.result-list').append(list);
   }
 
+  // TODO
   function addPaginationIfExists(results) {
     var total = results.TotalResults;
   }
