@@ -1,9 +1,9 @@
 // GLOBAL VAR
-
 var __OMDB = '//www.omdbapi.com/?';
 var __BASE = window.location;
 
 $(function() {
+  // THIS PART HERE COVERS ALL DOM MANIPULATION FOR AESTHETIC PURPOSES
   $(".input input").focus(function() {
     $(this).parent(".input").each(function() {
       $("label", this).css({
@@ -51,6 +51,7 @@ $(function() {
     $("button", this).addClass('active');
   });
 
+  // THIS PART HERE COVERS ALL DOM MANIPULATION FROM SEARCH MOVIES BASED ON KEYWORDS
   $('form').on('submit', function(event) {
     event.preventDefault();
     var form = $(this);
@@ -64,8 +65,6 @@ $(function() {
     }
   });
 
-  // $('.result-list').on('click',  (arguments) => {})
-
   function showEmptyError() {
     $('.alert-container').find('.alert').text('Please enter your search keyword');
     $('.alert-container').fadeIn();
@@ -76,7 +75,7 @@ $(function() {
     $('.spinner-wrapper').show();
 
     $.ajax({
-      type: 'POST',
+      type: 'GET',
       url: __OMDB + formData
     }).done(function(results) {
       $('.result-list').empty();
@@ -108,10 +107,10 @@ $(function() {
       filmLink = $('<a/>', {
                             class: 'film-link',
                             href: __BASE.origin + '/movies/' + results.Search[i].imdbID,
-                            text: results.Search[i].Title
+                            text: results.Search[i].Title,
+                            'data-imdb' : results.Search[i].imdbID,
                           });
       filmTitle = $('<h2/>',{
-                          'data-imdb' : results.Search[i].imdbID,
                           html: filmLink
                       });
 
@@ -126,5 +125,29 @@ $(function() {
   // TODO
   function addPaginationIfExists(results) {
     var total = results.TotalResults;
+  }
+
+  // THIS PART HERE COVERS ALL DOM MANIPULATION FROM GETTING DETAILS ON MOVIES
+  $('.result-list').on('click', '.film-link', function(e) {
+    e.preventDefault();
+    var movie = $(this);
+    var imdb_id = movie.data('imdb');
+    getMovieDetails(imdb_id);
+  });
+
+  function getMovieDetails(imdb_id) {
+    // TODO: VALIDATE IF IMDB IS EMPTY
+    var search_params = "i=" + imdb_id + "&type=movie&r=json";
+
+    $.ajax({
+      type: 'GET',
+      url: __OMDB + search_params
+    }).done(function(details) {
+      showDetails(details);
+    });
+  }
+
+  function showDetails(details) {
+    console.log('Genre is: ' + details.Genre);  
   }
 });
