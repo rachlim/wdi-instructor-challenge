@@ -150,7 +150,7 @@ var __BASE = window.location;
   }
 
   function getDetails(imdb_id, callback) {
-    // TODO: VALIDATE IF IMDB IS EMPTY
+    // TODO: VALIDATE IF IMDB ID IS EMPTY
 
     var details;
 
@@ -180,13 +180,14 @@ var __BASE = window.location;
     var movie_director = $('<p class="director" />').text('Director: ' + details.Director);
     var movie_rating = $('<p class="rating" />').text('Rating: ' + details.Rated);
     var movie_length = $('<p class="length" />').text('Runtime: ' + details.Runtime);
-    var movie_length = $('<p class="imdb_rating" />').text('iMDB Rating: ' + details.imdbRating);
+    var movie_imdb_rating = $('<p class="imdb_rating" />').text('iMDB Rating: ' + details.imdbRating);
 
     movie_copy.append(movie_plot)
               .append(movie_director)
               .append(movie_director)
               .append(movie_rating)
               .append(movie_length)
+              .append(movie_imdb_rating)
               .prepend(movie_heading);
 
     detail_container.append(movie_poster).append(movie_copy);
