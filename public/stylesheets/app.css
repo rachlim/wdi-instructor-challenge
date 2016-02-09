@@ -376,6 +376,78 @@ a:hover, a:focus {
   border-radius: 50%;
 }
 
+/* MODULE - FAVORITE BUTTON */
+
+.hide {
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+input + label:before {
+  cursor: pointer;
+  color: #ccc;
+  font-size: 48px;
+  display: block;
+  content: attr(data-icon);
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+  -webkit-animation-duration: 0s;
+          animation-duration: 0s;
+  -webkit-animation-timing-function: linear;
+          animation-timing-function: linear;
+}
+input + label:hover:before {
+  -webkit-animation-duration: 0.3s;
+          animation-duration: 0.3s;
+}
+input:checked + label:before {
+  color: #ffac33;
+  -webkit-animation-name: boing;
+  animation-name: boing;
+}
+
+@-webkit-keyframes boing {
+  0% {
+    -webkit-transform: scale(1, 1);
+            transform: scale(1, 1);
+  }
+  60% {
+    -webkit-transform: scale(0.8, 0.8);
+            transform: scale(0.8, 0.8);
+  }
+  70% {
+    -webkit-transform: scale(1.4, 1.4);
+            transform: scale(1.4, 1.4);
+  }
+  100% {
+    -webkit-transform: scale(1, 1);
+            transform: scale(1, 1);
+  }
+}
+
+@keyframes boing {
+  0% {
+    -webkit-transform: scale(1, 1);
+            transform: scale(1, 1);
+  }
+  60% {
+    -webkit-transform: scale(0.8, 0.8);
+            transform: scale(0.8, 0.8);
+  }
+  70% {
+    -webkit-transform: scale(1.4, 1.4);
+            transform: scale(1.4, 1.4);
+  }
+  100% {
+    -webkit-transform: scale(1, 1);
+            transform: scale(1, 1);
+  }
+}
+
 /* MODULE - SPINNER */
 
 .spinner-wrapper {

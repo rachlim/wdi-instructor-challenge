@@ -28,6 +28,10 @@ describe('Request to the favorite path', function () {
       .get('/favorites')
       .expect('Content-Type', /json/, done);
   });
+
+  it('Post a ', function () {
+
+  });
 });
 
 describe('Call OMDB SEARCH api', function () {
@@ -64,5 +68,5 @@ describe('Call OMDB SEARCH api', function () {
 });
 
 describe('Call OMDB DETAILS api', function () {
-  
+
 });

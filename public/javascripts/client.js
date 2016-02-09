@@ -105,6 +105,14 @@ var __BASE = window.location;
     var filmTitle, filmLink, detailSection, filmList;
 
     for (var i in results.Search) {
+      favLink = $('<input/>', {
+                            id: 'fav' + i,
+                            class: 'hide fav-link',
+                            type: 'checkbox',
+                            'data-imdb' : results.Search[i].imdbID,
+                          });
+      favStar = $('<label aria-hidden="true" data-icon="&#9733;" for="fav' + i + '" />');
+
       filmLink = $('<a/>', {
                             class: 'film-link',
                             href: __BASE.origin + '/movies/' + results.Search[i].imdbID,
@@ -118,7 +126,7 @@ var __BASE = window.location;
       detailSection = $('<section/>');
       filmList = $('<li/>', {
         html: filmTitle
-      }).append(detailSection);
+      }).append(detailSection, favLink, favStar);
 
       list.push(filmList);
     }
@@ -149,22 +157,6 @@ var __BASE = window.location;
     $('.result-list').find('section').empty();
   }
 
-  function getDetails(imdb_id, callback) {
-    // TODO: VALIDATE IF IMDB ID IS EMPTY
-
-    var details;
-
-    var search_params = "i=" + imdb_id + "&type=movie&r=json";
-    $.ajax({
-      type: 'GET',
-      url: __OMDB + search_params,
-      success: function(data) {
-        details = data;
-        callback(details);
-      }
-    });
-  }
-
   function showSection(section, details) {
     var detail_container = $('<div class="media" />');
 
@@ -190,8 +182,44 @@ var __BASE = window.location;
               .append(movie_imdb_rating)
               .prepend(movie_heading);
 
-    detail_container.append(movie_poster).append(movie_copy);
+    detail_container.append(movie_poster, movie_copy);
     section.append(detail_container);
     section.fadeIn('slow');
+  }
+
+  // THIS PART HERE COVERS ALL EVENT ON FAVORITING A MOVIE
+  $('.result-list').on('click', '.fav-link', function() {
+    var star = $(this);
+    var imdb_id = star.data('imdb');
+
+    if (star.is(":checked")) {
+      favMovie(imdb_id);
+    } else {
+      console.log('unfav imdb is: ' + imdb_id);
+    }
+  });
+
+  function favMovie(imdb_id) {
+    
+  }
+
+
+
+  // SHARED FUNCTIONS
+
+  function getDetails(imdb_id, callback) {
+    // TODO: VALIDATE IF IMDB ID IS EMPTY
+
+    var details;
+
+    var search_params = "i=" + imdb_id + "&type=movie&r=json";
+    $.ajax({
+      type: 'GET',
+      url: __OMDB + search_params,
+      success: function(data) {
+        details = data;
+        callback(details);
+      }
+    });
   }
 })($);
