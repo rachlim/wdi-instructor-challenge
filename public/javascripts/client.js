@@ -83,6 +83,7 @@ var __BASE = window.location;
 
       if ('True' == results.Response) {
         listResults(results);
+        updateFav();
         addPaginationIfExists(results);
       } else {
         resetFlow();
@@ -113,6 +114,7 @@ var __BASE = window.location;
                           });
       favStar = $('<label aria-hidden="true" data-icon="&#9733;" for="fav' + i + '" />');
 
+
       filmLink = $('<a/>', {
                             class: 'film-link',
                             href: __BASE.origin + '/movies/' + results.Search[i].imdbID,
@@ -132,6 +134,24 @@ var __BASE = window.location;
     }
 
     $('.result-list').append(list);
+  }
+
+  function updateFav() {
+    var all_fav_links = $('.fav-link');
+    var all_fav_in_data = [];
+
+    getFavorites(function(favsData) {
+      all_fav_in_data = favsData;
+
+      all_fav_links.each(function(k, favLink) {
+        var this_fav_link = $(favLink);
+        var fav_imdb_id = this_fav_link.data('imdb');
+
+        for (var i in all_fav_in_data) {
+          if(fav_imdb_id == all_fav_in_data[i].oid) this_fav_link.attr('checked', true);
+        }
+      });
+    });
   }
 
   // TODO
@@ -200,25 +220,50 @@ var __BASE = window.location;
   });
 
   function favMovie(imdb_id) {
-    
+    var movie_details;
+
+    getDetails(imdb_id, function(details) {
+      movie_details = details;
+      postFavorite(movie_details.imdbID, movie_details.Title);
+    });
   }
-
-
 
   // SHARED FUNCTIONS
 
   function getDetails(imdb_id, callback) {
     // TODO: VALIDATE IF IMDB ID IS EMPTY
-
-    var details;
-
     var search_params = "i=" + imdb_id + "&type=movie&r=json";
+
     $.ajax({
       type: 'GET',
       url: __OMDB + search_params,
-      success: function(data) {
-        details = data;
+      success: function(details) {
         callback(details);
+      }
+    });
+  }
+
+  function getFavorites(callback) {
+    $.ajax({
+      type: 'GET',
+      url: __BASE + 'favorites',
+      success: function(favorites) {
+        callback(favorites);
+      }
+    });
+  }
+
+  function postFavorite(oid, name) {
+    $.ajax({
+      type: 'POST',
+      url: __BASE + 'favorites',
+      data: {
+        name: name,
+        oid: oid
+      },
+      success: function(data) {
+        // TODO: do sth after post favorite?
+        console.log(data);
       }
     });
   }

@@ -24,3 +24,5 @@ coverage
 
 # Benchmarking
 benchmarks/graphs
+
+data.json
