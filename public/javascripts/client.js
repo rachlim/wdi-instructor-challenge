@@ -34,7 +34,10 @@ var __BASE = window.location;
     }
   });
 
-  $(".button").click(function(e) {
+  // THIS PART HERE COVERS ALL DOM MANIPULATION FROM SEARCH MOVIES BASED ON KEYWORDS
+  $(".submit").click(function(e) {
+    e.preventDefault();
+
     var pX = e.pageX,
       pY = e.pageY,
       oX = parseInt($(this).offset().left),
@@ -49,14 +52,22 @@ var __BASE = window.location;
 
     }, 600);
     $("button", this).addClass('active');
-  });
 
-  // THIS PART HERE COVERS ALL DOM MANIPULATION FROM SEARCH MOVIES BASED ON KEYWORDS
-  $('form').on('submit', function(event) {
-    event.preventDefault();
-    var form = $(this);
+    var form = $('form');
     var formData = form.serialize();
     var formArr = form.serializeArray();
+
+    if (! formArr[0].value) {
+      showEmptyError();
+    } else {
+      showResultsFlow(formData);
+    }
+  });
+
+  $(".favorite").click(function(e) {
+    e.preventDefault();
+
+    var allFavs = [];
 
     if (! formArr[0].value) {
       showEmptyError();
@@ -215,7 +226,7 @@ var __BASE = window.location;
     if (star.is(":checked")) {
       favMovie(imdb_id);
     } else {
-      console.log('unfav imdb is: ' + imdb_id);
+      unfavMovie(imdb_id);
     }
   });
 
