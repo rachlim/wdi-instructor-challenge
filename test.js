@@ -49,10 +49,10 @@ describe('Call OMDB SEARCH api', function () {
   });
 });
 
-describe('Request to the favorite path', function () {
+describe('Request to favorite a movie', function () {
   it('Returns a 200 status code', function(done) {
     request(app)
-      .get('/')
+      .get('/favorites')
       .expect(200, done);
   });
 
@@ -74,24 +74,14 @@ describe('Request to the favorite path', function () {
   it('Post an existing oID returns error', function (done) {
     request(app)
       .post('/favorites')
-      .send('name=Test&oid=tt2407380')
+      .send('name=Here Comes the Boom&oid=tt1648179')
       .expect(400, {
         Error: 'Bad Request.',
         Message: 'Existing movie has been favorited before.'
       }, done);
   });
 
-  it('Post an existing oID returns error', function (done) {
-    request(app)
-      .post('/favorites')
-      .send('name=Test&oid=tt2407380')
-      .expect(400, {
-        Error: 'Bad Request.',
-        Message: 'Existing movie has been favorited before.'
-      }, done);
-  });
-
-  it('Returns a JSON format if posted correctly', function (done) {
+  it('Returns a JSON of the favorited movie if posted correctly', function (done) {
     request(app)
       .post('/favorites')
       .send('name=The+Test&oid=tt1986180')
@@ -110,4 +100,38 @@ describe('Request to the favorite path', function () {
         oid: rand_oid
       }, done);
   });
+});
+
+describe('Request to remove favorite from movie', function () {
+  it('Returns a JSON format', function (done) {
+    request(app)
+      .delete('/favorites')
+      .expect('Content-Type', /json/, done);
+  });
+
+  it('Delete without oID return error', function (done) {
+    request(app)
+      .delete('/favorites')
+      .expect(400, {
+        Error: 'Bad Request.',
+        Message: 'No oID input was given.'
+      }, done);
+  });
+
+
+  it('Delete a non existent oID returns error', function (done) {
+    request(app)
+      .delete('/favorites')
+      .send('name=Here Comes the Boom&oid=tt1648179')
+      .expect(400, {
+        Error: 'Bad Request.',
+        Message: 'Existing movie has not been favorited before.'
+      }, done);
+  });
+
+
+
+
+
+
 });

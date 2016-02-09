@@ -35,7 +35,6 @@ app.get('/favorites', function(req, res) {
 });
 
 app.post('/favorites', function(req, res){
-
   if(!req.body.name || !req.body.oid){
     // add message upon errors
     res.status(400).json({
@@ -62,6 +61,47 @@ app.post('/favorites', function(req, res){
   }
 
   data.push(req.body);
+  fs.writeFile('./data.json', JSON.stringify(data));
+  res.setHeader('Content-Type', 'application/json');
+
+  // send only posted movie upon successful post
+  res.send(req.body);
+});
+
+// new route to delete (unfavorite) a movie
+app.delete('/favorites', function(req, res) {
+  if(!req.body.name || !req.body.oid){
+    // add message upon errors
+    res.status(400).json({
+      Error: 'Bad Request.',
+      Message: 'No oID input was given.'
+    });
+
+    return;
+  }
+
+  // check if existing movie is in the stored data
+  var data = JSON.parse(fs.readFileSync('./data.json'));
+  for(var i = 0; i < data.length; i++) {
+    var movie = data[i];
+
+    console.log(movie.oid, req.body.oid);
+
+    if(movie.oid !== req.body.oid) {
+      res.status(400).json({
+        Error: 'Bad Request.',
+        Message: 'Existing movie has not been favorited before.'
+      });
+
+      return;
+    } else {
+      console.log('unfavor this movie');
+      console.log(movie);
+      removed_data = data.splice(i, 1);
+      console.log(removed_data, data);
+    }
+  }
+
   fs.writeFile('./data.json', JSON.stringify(data));
   res.setHeader('Content-Type', 'application/json');
 
