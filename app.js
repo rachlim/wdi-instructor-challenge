@@ -35,16 +35,38 @@ app.get('/favorites', function(req, res) {
 });
 
 app.post('/favorites', function(req, res){
+
   if(!req.body.name || !req.body.oid){
-    res.send("Error");
+    // add message upon errors
+    res.status(400).json({
+      Error: 'Bad Request.',
+      Message: 'No oID input was given.'
+    });
+
     return;
   }
 
+  // check if existing movie is in the stored data
   var data = JSON.parse(fs.readFileSync('./data.json'));
+  for(var i = 0; i < data.length; i++) {
+    var movie = data[i];
+
+    if(movie.oid === req.body.oid) {
+      res.status(400).json({
+        Error: 'Bad Request.',
+        Message: 'Existing movie has been favorited before.'
+      });
+
+      return;
+    }
+  }
+
   data.push(req.body);
   fs.writeFile('./data.json', JSON.stringify(data));
   res.setHeader('Content-Type', 'application/json');
-  res.send(data);
+
+  // send only posted movie upon successful post
+  res.send(req.body);
 });
 
 module.exports = app;
