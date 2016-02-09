@@ -69,11 +69,20 @@ var __BASE = window.location;
 
     var allFavs = [];
 
-    if (! formArr[0].value) {
-      showEmptyError();
-    } else {
-      showResultsFlow(formData);
-    }
+    // TODO: show sth if fav is empty
+
+    getFavorites(function(all_fav_in_data) {
+      for (var fav in all_fav_in_data) {
+        allFavs.push({
+          imdbID: all_fav_in_data[fav].oid,
+          Title: all_fav_in_data[fav].name
+        });
+      }
+
+      resetFlow();
+      listResults(allFavs);
+      updateFav();
+    });
   });
 
   function showEmptyError() {
@@ -93,7 +102,7 @@ var __BASE = window.location;
       resetFlow();
 
       if ('True' == results.Response) {
-        listResults(results);
+        listResults(results.Search);
         updateFav();
         addPaginationIfExists(results);
       } else {
@@ -116,21 +125,21 @@ var __BASE = window.location;
     var list = [];
     var filmTitle, filmLink, detailSection, filmList;
 
-    for (var i in results.Search) {
+    for (var i in results) {
       favLink = $('<input/>', {
                             id: 'fav' + i,
                             class: 'hide fav-link',
                             type: 'checkbox',
-                            'data-imdb' : results.Search[i].imdbID,
+                            'data-imdb' : results[i].imdbID,
                           });
       favStar = $('<label aria-hidden="true" data-icon="&#9733;" for="fav' + i + '" />');
 
 
       filmLink = $('<a/>', {
                             class: 'film-link',
-                            href: __BASE.origin + '/movies/' + results.Search[i].imdbID,
-                            text: results.Search[i].Title,
-                            'data-imdb' : results.Search[i].imdbID,
+                            href: __BASE.origin + '/movies/' + results[i].imdbID,
+                            text: results[i].Title,
+                            'data-imdb' : results[i].imdbID,
                           });
       filmTitle = $('<h2/>',{
                           html: filmLink
@@ -178,7 +187,6 @@ var __BASE = window.location;
 
     getDetails(imdb_id, function(details) {
       var movieSection = movie.parents('li').find('section');
-      console.log(details);
       hideOtherSections();
       showSection(movieSection, details);
     });
