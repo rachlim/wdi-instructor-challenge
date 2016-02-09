@@ -122,7 +122,7 @@ describe('Request to remove favorite from movie', function () {
   it('Delete a non existent oID returns error', function (done) {
     request(app)
       .delete('/favorites')
-      .send('name=Here Comes the Boom&oid=tt1648179')
+      .send('name=Here+Comes+the+Boom&oid=tt1648179')
       .expect(400, {
         Error: 'Bad Request.',
         Message: 'Existing movie has not been favorited before.'

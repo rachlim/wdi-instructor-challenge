@@ -70,7 +70,7 @@ app.post('/favorites', function(req, res){
 
 // new route to delete (unfavorite) a movie
 app.delete('/favorites', function(req, res) {
-  if(!req.body.name || !req.body.oid){
+  if(!req.body.oid){
     // add message upon errors
     res.status(400).json({
       Error: 'Bad Request.',
@@ -97,12 +97,15 @@ app.delete('/favorites', function(req, res) {
     } else {
       console.log('unfavor this movie');
       console.log(movie);
-      removed_data = data.splice(i, 1);
-      console.log(removed_data, data);
+      data.splice(i, 1);
+
+      console.log('data now');
+      console.log(data);
+
+      fs.writeFile('./data.json', JSON.stringify(data));
     }
   }
 
-  fs.writeFile('./data.json', JSON.stringify(data));
   res.setHeader('Content-Type', 'application/json');
 
   // send only posted movie upon successful post

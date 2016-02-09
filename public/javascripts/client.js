@@ -247,6 +247,15 @@ var __BASE = window.location;
     });
   }
 
+  function unfavMovie(imdb_id) {
+    var movie_details;
+
+    getDetails(imdb_id, function(details) {
+      movie_details = details;
+      deleteFavorite(movie_details.imdbID, movie_details.Title);
+    });
+  }
+
   // SHARED FUNCTIONS
 
   function getDetails(imdb_id, callback) {
@@ -275,6 +284,21 @@ var __BASE = window.location;
   function postFavorite(oid, name) {
     $.ajax({
       type: 'POST',
+      url: __BASE + 'favorites',
+      data: {
+        name: name,
+        oid: oid
+      },
+      success: function(data) {
+        // TODO: do sth after post favorite?
+        console.log(data);
+      }
+    });
+  }
+
+  function deleteFavorite(oid, name) {
+    $.ajax({
+      type: 'DELETE',
       url: __BASE + 'favorites',
       data: {
         name: name,
