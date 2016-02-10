@@ -69,7 +69,7 @@ var __BASE = window.location;
     $('.spinner-wrapper').fadeOut('slow');
   }
 
-  function listResults(results) {
+  function listResults(results, inFavorite) {
     var list = [];
     var movieTitle, movieLink, detailSection, movieList;
 
@@ -81,6 +81,7 @@ var __BASE = window.location;
                             type: 'checkbox',
                             'data-imdb' : results[i].imdbID,
                             'data-movie-title' : results[i].Title,
+                            'data-in-favorite' : inFavorite
                           });
       favStar = $('<label aria-hidden="true" data-icon="&#9733;" for="fav' + i + '" />');
 
@@ -228,7 +229,7 @@ var __BASE = window.location;
         showEmptyError('You have not liked any movie. Click on the star!');
       } else {
         resetFlow();
-        listResults(allFavs);
+        listResults(allFavs, true);
         checkFavStatus();
       }
     });
@@ -240,9 +241,9 @@ var __BASE = window.location;
     var title = star.data('movie-title');
 
     if (star.is(":checked")) {
-      updateDeleteFavorite('POST', imdb_id, title);
+      updateDeleteFavorite('POST', star, imdb_id, title);
     } else {
-      updateDeleteFavorite('DELETE', imdb_id, title);
+      updateDeleteFavorite('DELETE', star, imdb_id, title);
     }
   });
 
@@ -254,7 +255,7 @@ var __BASE = window.location;
 
       if (results.Search) {
         if ('True' == results.Response) {
-          listResults(results.Search);
+          listResults(results.Search, false);
           checkFavStatus();
           if(type === 'search') handlePagination(results, params);
         } else {
@@ -301,7 +302,7 @@ var __BASE = window.location;
     });
   }
 
-  function updateDeleteFavorite(type, oid, name) {
+  function updateDeleteFavorite(type, favlink, oid, name) {
     $.ajax({
       type: type,
       url: __BASE + 'favorites',
@@ -312,7 +313,7 @@ var __BASE = window.location;
       success: function(data) {
         // TODO: do sth after post favorite?
 
-        if (type == "DELETE") {
+        if (type == "DELETE" && favlink.data('in-favorite')) {
           $('#'+oid).fadeOut('slow');
         }
       }
