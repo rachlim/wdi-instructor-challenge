@@ -128,38 +128,48 @@ var __BASE = window.location;
 
   // TODO PAGINATION FOR RESULTS
   function handlePagination(results, params) {
-    var totalResultCount = results.totalResults;
+    var totalResultCount = results.totalResults,
+        totalPages = Math.ceil(totalResultCount / 10);
+
+    console.log(totalResultCount, totalPages);
 
     if(totalResultCount > 10) {
       $('.paginator')
         .show()
-        .data('params', params);
-        // .find('.previous').addClass('disabled');
+        .data('params', params)
+        .data('current-page', 1)
+        .data('max', totalPages)
+        .find('.previous').addClass('disabled');
     }
   }
 
-  $('.paginator').on('click', '.next', function(e) {
+  $('.paginator').on('click', '.change-page', function(e) {
     e.preventDefault();
-    var next_link = $(this),
-        prev_link = $('.previous'),
-        currentPage = next_link.data('page'),
-        nextPage = (! currentPage) ? 2 : currentPage + 1,
-        params = $('.paginator').data('params') + '&page=' + nextPage;
 
-    prev_link.data('page', currentPage - 1);
-    next_link.data('page', nextPage);
+    var paginator = $('.paginator'),
+        pager_trigger = $(this),
+        all_next = $('.next'),
+        all_prev = $('.previous');
+
+    if(pager_trigger.hasClass('disabled')) return false;
+    $('.change-page').removeClass('disabled');
+
+    var currentPage = paginator.data('current-page'),
+        nextPage = ( 'undefined' === typeof( all_next.data('page') ) ) ? currentPage + 1 : all_next.data('page'),
+        prevPage = ( 1 < currentPage ) ? currentPage - 1 : currentPage,
+        maxPage = paginator.data('max');
+
+    var new_page = (pager_trigger.hasClass('next')) ? nextPage : prevPage;
+    var params = paginator.data('params') + '&page=' + new_page;
+
     getMoviesFlow('pagination', params);
-  });
 
-  $('.paginator').on('click', '.previous', function(e) {
-    e.preventDefault();
-    var prev_link = $(this),
-        currentPage = prev_link.data('page'),
-        prevPage = currentPage - 1;
-        params = $('.paginator').data('params') + '&page=' + prevPage;
+    if(new_page == maxPage) all_next.addClass('disabled');
+    if(new_page == 1) all_prev.addClass('disabled');
 
-    prev_link.data('page', prevPage);
-    getMoviesFlow('pagination', params);
+    paginator.data('current-page', new_page);
+    all_next.data('page', new_page + 1);
+    all_prev.data('page', new_page - 1);
   });
 
   // THIS PART HERE COVERS ALL DOM MANIPULATION FROM GETTING DETAILS ON MOVIES
@@ -262,15 +272,11 @@ var __BASE = window.location;
           resetFlow();
           $('.result-list').html('<h2>' + results.Error + '</h2>');
         }
-      } else {
-        $('.next').addClass('disabled');
       }
     });
   }
 
   function getMovies(params, callback) {
-    console.log(params);
-
     $.ajax({
       type: 'GET',
       url: __OMDB + params
