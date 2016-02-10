@@ -372,13 +372,6 @@ a:hover, a:focus {
   position: relative;
   z-index: 2;
 }
-.click-effect {
-  position: absolute;
-  top: 0;
-  left: 0;
-  background: #ED2553;
-  border-radius: 50%;
-}
 
 /* MODULE - FAVORITE BUTTON */
 

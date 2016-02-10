@@ -34,64 +34,28 @@ var __BASE = window.location;
     }
   });
 
-  // THIS PART HERE COVERS ALL DOM MANIPULATION FROM SEARCH MOVIES BASED ON KEYWORDS
+  // THIS PART HERE COVERS ALL SEARCH MOVIE FLOW
   $(".submit").click(function(e) {
     e.preventDefault();
-
-    var pX = e.pageX,
-      pY = e.pageY,
-      oX = parseInt($(this).offset().left),
-      oY = parseInt($(this).offset().top);
-
-    $(this).append('<span class="click-effect x-' + oX + ' y-' + oY + '" style="margin-left:' + (pX - oX) + 'px;margin-top:' + (pY - oY) + 'px;"></span>');
-    $('.x-' + oX + '.y-' + oY + '').animate({
-      "width": "500px",
-      "height": "500px",
-      "top": "-250px",
-      "left": "-250px",
-
-    }, 600);
-    $("button", this).addClass('active');
 
     var form = $('form');
     var formData = form.serialize();
     var formArr = form.serializeArray();
 
     if (! formArr[0].value) {
-      showEmptyError();
+      showEmptyError('Please enter your search keyword');
     } else {
-      showResultsFlow(formData);
+      showSearchResults(formData);
     }
   });
 
-  $(".favorite").click(function(e) {
-    e.preventDefault();
-
-    var allFavs = [];
-
-    // TODO: show sth if fav is empty
-
-    getFavorites(function(all_fav_in_data) {
-      for (var fav in all_fav_in_data) {
-        allFavs.push({
-          imdbID: all_fav_in_data[fav].oid,
-          Title: all_fav_in_data[fav].name
-        });
-      }
-
-      resetFlow();
-      listResults(allFavs);
-      updateFav();
-    });
-  });
-
-  function showEmptyError() {
-    $('.alert-container').find('.alert').text('Please enter your search keyword');
+  function showEmptyError(message) {
+    $('.alert-container').find('.alert').text(message);
     $('.alert-container').fadeIn();
     resetFlow();
   }
 
-  function showResultsFlow(formData) {
+  function showSearchResults(formData) {
     $('.spinner-wrapper').show();
 
     $.ajax({
@@ -103,7 +67,7 @@ var __BASE = window.location;
 
       if ('True' == results.Response) {
         listResults(results.Search);
-        updateFav();
+        checkFavStatus();
         addPaginationIfExists(results);
       } else {
         resetFlow();
@@ -123,42 +87,43 @@ var __BASE = window.location;
 
   function listResults(results) {
     var list = [];
-    var filmTitle, filmLink, detailSection, filmList;
+    var movieTitle, movieLink, detailSection, movieList;
 
+    //TODO: Refactor this loop
     for (var i in results) {
       favLink = $('<input/>', {
                             id: 'fav' + i,
                             class: 'hide fav-link',
                             type: 'checkbox',
                             'data-imdb' : results[i].imdbID,
-                            'data-film-title' : results[i].Title,
+                            'data-movie-title' : results[i].Title,
                           });
       favStar = $('<label aria-hidden="true" data-icon="&#9733;" for="fav' + i + '" />');
 
 
-      filmLink = $('<a/>', {
-                            class: 'film-link',
+      movieLink = $('<a/>', {
+                            class: 'movie-link',
                             href: __BASE.origin + '/movies/' + results[i].imdbID,
                             text: results[i].Title,
                             'data-imdb' : results[i].imdbID,
                           });
-      filmTitle = $('<h2/>',{
-                          html: filmLink
+      movieTitle = $('<h2/>',{
+                          html: movieLink
                       });
 
       detailSection = $('<section/>');
-      filmList = $('<li/>', {
-        html: filmTitle,
+      movieList = $('<li/>', {
+        html: movieTitle,
         id: results[i].imdbID
       }).append(detailSection, favLink, favStar);
 
-      list.push(filmList);
+      list.push(movieList);
     }
 
     $('.result-list').append(list);
   }
 
-  function updateFav() {
+  function checkFavStatus() {
     var all_fav_links = $('.fav-link');
     var all_fav_in_data = [];
 
@@ -176,31 +141,31 @@ var __BASE = window.location;
     });
   }
 
-  // TODO
+  // TODO PAGINATION FOR RESULTS
   function addPaginationIfExists(results) {
     var total = results.TotalResults;
   }
 
   // THIS PART HERE COVERS ALL DOM MANIPULATION FROM GETTING DETAILS ON MOVIES
-  $('.result-list').on('click', '.film-link', function(e) {
+  $('.result-list').on('click', '.movie-link', function(e) {
     e.preventDefault();
     var movie = $(this);
     var imdb_id = movie.data('imdb');
 
-    getDetails(imdb_id, function(details) {
+    getMovieDetails(imdb_id, function(details) {
       var movieSection = movie.parents('li').find('section');
-      hideOtherSections();
-      showSection(movieSection, details);
+      hideOtherMovies();
+      showMovieDetails(movieSection, details);
     });
   });
 
-  function hideOtherSections() {
+  function hideOtherMovies() {
     $('.result-list').find('section').empty();
   }
 
-  function showSection(section, details) {
+  function showMovieDetails(section, details) {
+    //TODO REFACTOR THIS APPEND ZILLA
     var detail_container = $('<div class="media" />');
-
     var movie_poster = $('<div class="media-left" />');
     var poster_link = $('<a href="' + details.Poster+ '" />');
     var poster_url = $('<img width="250" class="media-object" src="' + details.Poster+ '" />');
@@ -229,10 +194,33 @@ var __BASE = window.location;
   }
 
   // THIS PART HERE COVERS ALL EVENT ON CLICKING FAVORITE FOR A MOVIE
+  $(".favorite").click(function(e) {
+    e.preventDefault();
+
+    var allFavs = [];
+
+    getFavorites(function(all_fav_in_data) {
+      for (var fav in all_fav_in_data) {
+        allFavs.push({
+          imdbID: all_fav_in_data[fav].oid,
+          Title: all_fav_in_data[fav].name
+        });
+      }
+
+      if (0 === allFavs.length) {
+        showEmptyError('You have not liked any movie. Click on the star!');
+      } else {
+        resetFlow();
+        listResults(allFavs);
+        checkFavStatus();
+      }
+    });
+  });
+
   $('.result-list').on('click', '.fav-link', function() {
     var star = $(this);
     var imdb_id = star.data('imdb');
-    var title = star.data('film-title');
+    var title = star.data('movie-title');
 
     if (star.is(":checked")) {
       updateDeleteFavorite('POST', imdb_id, title);
@@ -243,7 +231,7 @@ var __BASE = window.location;
 
   // SHARED FUNCTIONS
 
-  function getDetails(imdb_id, callback) {
+  function getMovieDetails(imdb_id, callback) {
     // TODO: VALIDATE IF IMDB ID IS EMPTY
     var search_params = "i=" + imdb_id + "&type=movie&r=json";
 
@@ -278,7 +266,6 @@ var __BASE = window.location;
         // TODO: do sth after post favorite?
 
         if (type == "DELETE") {
-          console.log('remove this li');
           $('#'+oid).fadeOut('slow');
         }
       }
