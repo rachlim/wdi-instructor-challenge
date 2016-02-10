@@ -57,23 +57,7 @@ var __BASE = window.location;
 
   function showSearchResults(formData) {
     $('.spinner-wrapper').show();
-
-    $.ajax({
-      type: 'GET',
-      url: __OMDB + formData
-    }).done(function(results) {
-      $('.alert-container').fadeOut();
-      resetFlow();
-
-      if ('True' == results.Response) {
-        listResults(results.Search);
-        checkFavStatus();
-        addPaginationIfExists(results);
-      } else {
-        resetFlow();
-        $('.result-list').html('<h2>' + results.Error + '</h2>');
-      }
-    });
+    getMoviesFlow('search', formData);
   }
 
   function resetFlow() {
@@ -142,9 +126,40 @@ var __BASE = window.location;
   }
 
   // TODO PAGINATION FOR RESULTS
-  function addPaginationIfExists(results) {
-    var total = results.TotalResults;
+  function handlePagination(results, params) {
+    var totalResultCount = results.totalResults;
+
+    if(totalResultCount > 10) {
+      $('.paginator')
+        .show()
+        .data('params', params);
+        // .find('.previous').addClass('disabled');
+    }
   }
+
+  $('.paginator').on('click', '.next', function(e) {
+    e.preventDefault();
+    var next_link = $(this),
+        prev_link = $('.previous'),
+        currentPage = next_link.data('page'),
+        nextPage = (! currentPage) ? 2 : currentPage + 1,
+        params = $('.paginator').data('params') + '&page=' + nextPage;
+
+    prev_link.data('page', currentPage - 1);
+    next_link.data('page', nextPage);
+    getMoviesFlow('pagination', params);
+  });
+
+  $('.paginator').on('click', '.previous', function(e) {
+    e.preventDefault();
+    var prev_link = $(this),
+        currentPage = prev_link.data('page'),
+        prevPage = currentPage - 1;
+        params = $('.paginator').data('params') + '&page=' + prevPage;
+
+    prev_link.data('page', prevPage);
+    getMoviesFlow('pagination', params);
+  });
 
   // THIS PART HERE COVERS ALL DOM MANIPULATION FROM GETTING DETAILS ON MOVIES
   $('.result-list').on('click', '.movie-link', function(e) {
@@ -207,6 +222,8 @@ var __BASE = window.location;
         });
       }
 
+      $('.paginator').hide();
+
       if (0 === allFavs.length) {
         showEmptyError('You have not liked any movie. Click on the star!');
       } else {
@@ -230,6 +247,36 @@ var __BASE = window.location;
   });
 
   // SHARED FUNCTIONS
+  function getMoviesFlow(type, params) {
+    getMovies(params, function(results) {
+      $('.alert-container').fadeOut();
+      resetFlow();
+
+      if (results.Search) {
+        if ('True' == results.Response) {
+          listResults(results.Search);
+          checkFavStatus();
+          if(type === 'search') handlePagination(results, params);
+        } else {
+          resetFlow();
+          $('.result-list').html('<h2>' + results.Error + '</h2>');
+        }
+      } else {
+        $('.next').addClass('disabled');
+      }
+    });
+  }
+
+  function getMovies(params, callback) {
+    console.log(params);
+
+    $.ajax({
+      type: 'GET',
+      url: __OMDB + params
+    }).done(function(results) {
+      callback(results);
+    });
+  }
 
   function getMovieDetails(imdb_id, callback) {
     // TODO: VALIDATE IF IMDB ID IS EMPTY

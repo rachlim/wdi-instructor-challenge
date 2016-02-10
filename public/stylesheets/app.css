@@ -547,3 +547,6 @@ input:checked + label:before {
     opacity: 0;
   }
 }
+
+/* MODULE - PAGINATION */
+.paginator { display: none; }
