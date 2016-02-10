@@ -62,7 +62,7 @@ describe('Request to favorite a movie', function () {
       .expect('Content-Type', /json/, done);
   });
 
-  it('Post without oID return error', function (done) {
+  it('Returns error without oID', function (done) {
     request(app)
       .post('/favorites')
       .expect(400, {
@@ -71,21 +71,14 @@ describe('Request to favorite a movie', function () {
       }, done);
   });
 
-  it('Post an existing oID returns error', function (done) {
+  it('Returns error when posted an existing oID ', function (done) {
     request(app)
       .post('/favorites')
-      .send('name=Here Comes the Boom&oid=tt1648179')
+      .send('name=Foo&oid=Bar')
       .expect(400, {
         Error: 'Bad Request.',
         Message: 'Existing movie has been favorited before.'
       }, done);
-  });
-
-  it('Returns a JSON of the favorited movie if posted correctly', function (done) {
-    request(app)
-      .post('/favorites')
-      .send('name=The+Test&oid=tt1986180')
-      .expect('Content-Type', /json/, done);
   });
 
   it('Returns posted data if posted correctly', function (done) {
@@ -118,20 +111,23 @@ describe('Request to remove favorite from movie', function () {
       }, done);
   });
 
-
   it('Delete a non existent oID returns error', function (done) {
     request(app)
       .delete('/favorites')
-      .send('name=Here+Comes+the+Boom&oid=tt1648179')
+      .send('name=Bar&oid=Foo')
       .expect(400, {
         Error: 'Bad Request.',
         Message: 'Existing movie has not been favorited before.'
       }, done);
   });
 
-
-
-
-
-
+  it('Returns requested body when successful', function (done) {
+    request(app)
+      .delete('/favorites')
+      .send('name=Here+Comes+the+Boom&oid=tt1648179')
+      .expect(200, {
+        name: 'Here Comes the Boom',
+        oid: 'tt1648179'
+      }, done);
+  });
 });

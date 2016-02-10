@@ -131,6 +131,7 @@ var __BASE = window.location;
                             class: 'hide fav-link',
                             type: 'checkbox',
                             'data-imdb' : results[i].imdbID,
+                            'data-film-title' : results[i].Title,
                           });
       favStar = $('<label aria-hidden="true" data-icon="&#9733;" for="fav' + i + '" />');
 
@@ -147,7 +148,8 @@ var __BASE = window.location;
 
       detailSection = $('<section/>');
       filmList = $('<li/>', {
-        html: filmTitle
+        html: filmTitle,
+        id: results[i].imdbID
       }).append(detailSection, favLink, favStar);
 
       list.push(filmList);
@@ -226,35 +228,18 @@ var __BASE = window.location;
     section.fadeIn('slow');
   }
 
-  // THIS PART HERE COVERS ALL EVENT ON FAVORITING A MOVIE
+  // THIS PART HERE COVERS ALL EVENT ON CLICKING FAVORITE FOR A MOVIE
   $('.result-list').on('click', '.fav-link', function() {
     var star = $(this);
     var imdb_id = star.data('imdb');
+    var title = star.data('film-title');
 
     if (star.is(":checked")) {
-      favMovie(imdb_id);
+      updateDeleteFavorite('POST', imdb_id, title);
     } else {
-      unfavMovie(imdb_id);
+      updateDeleteFavorite('DELETE', imdb_id, title);
     }
   });
-
-  function favMovie(imdb_id) {
-    var movie_details;
-
-    getDetails(imdb_id, function(details) {
-      movie_details = details;
-      postFavorite(movie_details.imdbID, movie_details.Title);
-    });
-  }
-
-  function unfavMovie(imdb_id) {
-    var movie_details;
-
-    getDetails(imdb_id, function(details) {
-      movie_details = details;
-      deleteFavorite(movie_details.imdbID, movie_details.Title);
-    });
-  }
 
   // SHARED FUNCTIONS
 
@@ -281,9 +266,9 @@ var __BASE = window.location;
     });
   }
 
-  function postFavorite(oid, name) {
+  function updateDeleteFavorite(type, oid, name) {
     $.ajax({
-      type: 'POST',
+      type: type,
       url: __BASE + 'favorites',
       data: {
         name: name,
@@ -291,22 +276,11 @@ var __BASE = window.location;
       },
       success: function(data) {
         // TODO: do sth after post favorite?
-        console.log(data);
-      }
-    });
-  }
 
-  function deleteFavorite(oid, name) {
-    $.ajax({
-      type: 'DELETE',
-      url: __BASE + 'favorites',
-      data: {
-        name: name,
-        oid: oid
-      },
-      success: function(data) {
-        // TODO: do sth after post favorite?
-        console.log(data);
+        if (type == "DELETE") {
+          console.log('remove this li');
+          $('#'+oid).fadeOut('slow');
+        }
       }
     });
   }
