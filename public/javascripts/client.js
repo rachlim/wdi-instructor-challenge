@@ -61,10 +61,10 @@ var __BASE = window.location;
   }
 
   function resetFlow() {
+    $('.paginator').fadeOut();
     $('.result-list').empty();
     $('form').trigger('reset');
     $('button.active').removeClass('active');
-    $('span.click-effect').remove();
     $(".input input").trigger('blur');
     $('.spinner-wrapper').fadeOut('slow');
   }
@@ -152,7 +152,7 @@ var __BASE = window.location;
         all_prev = $('.previous');
 
     if(pager_trigger.hasClass('disabled')) return false;
-    $('.change-page').removeClass('disabled');
+    $('.change-page').addClass('disabled');
 
     var currentPage = paginator.data('current-page'),
         nextPage = ( 'undefined' === typeof( all_next.data('page') ) ) ? currentPage + 1 : all_next.data('page'),
@@ -162,10 +162,11 @@ var __BASE = window.location;
     var new_page = (pager_trigger.hasClass('next')) ? nextPage : prevPage;
     var params = paginator.data('params') + '&page=' + new_page;
 
-    getMoviesFlow('pagination', params);
-
-    if(new_page == maxPage) all_next.addClass('disabled');
-    if(new_page == 1) all_prev.addClass('disabled');
+    if(getMoviesFlow('pagination', params)) {
+      $('.change-page').removeClass('disabled');
+      if(new_page == maxPage) all_next.addClass('disabled');
+      if(new_page == 1) all_prev.addClass('disabled');
+    }
 
     paginator.data('current-page', new_page);
     all_next.data('page', new_page + 1);
@@ -238,6 +239,7 @@ var __BASE = window.location;
       if (0 === allFavs.length) {
         showEmptyError('You have not liked any movie. Click on the star!');
       } else {
+        $('.alert-container').fadeOut();
         resetFlow();
         listResults(allFavs, true);
         checkFavStatus();
@@ -267,7 +269,11 @@ var __BASE = window.location;
         if ('True' == results.Response) {
           listResults(results.Search, false);
           checkFavStatus();
-          if(type === 'search') handlePagination(results, params);
+          if(type === 'search') {
+            handlePagination(results, params);
+          } else {
+            return true;
+          }
         } else {
           resetFlow();
           $('.result-list').html('<h2>' + results.Error + '</h2>');

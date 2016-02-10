@@ -82,7 +82,7 @@ a:hover, a:focus {
 }
 
 /* MODULE - ALERT */
-.alert-container { display: none; }
+.alert-container { display: none; padding: 1%;}
 
 /* MODULE - RESULT LIST */
 
