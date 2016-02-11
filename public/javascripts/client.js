@@ -99,24 +99,6 @@ var __BASE = window.location;
     });
   }
 
-  function updateDeleteFavorite(type, favlink, oid, name) {
-    $.ajax({
-      type: type,
-      url: __BASE + 'favorites',
-      data: {
-        name: name,
-        oid: oid
-      },
-      success: function(data) {
-        // TODO: do sth after post favorite?
-
-        if (type == "DELETE" && favlink.data('in-favorite')) {
-          $('#'+oid).fadeOut('slow');
-        }
-      }
-    });
-  }
-
   // end of shared functions
 
   // THIS PART HERE COVERS ALL SEARCH MOVIE FLOW
@@ -275,6 +257,9 @@ var __BASE = window.location;
       var movieSection = movie.parents('li').find('section');
       hideOtherMovies();
 
+      // if movie details already added to the section
+      // ignore the flow of AJAX call to get the movie details
+      // and just show the section
       if(0 === movieSection.find('.media').length)  {
         $('#result-spinner-' + imdb_id).fadeIn('slow');
         getMovieDetails(imdb_id, function(details) {
@@ -284,7 +269,9 @@ var __BASE = window.location;
 
       movieSection.fadeIn().addClass('active');
       movie.addClass('active');
-    } // TODO: close the detail section when opened section is clicked again
+    }
+
+    // TODO: close the detail section when opened section is clicked again
   });
 
   // function that hides all other movie details
@@ -294,6 +281,8 @@ var __BASE = window.location;
     $('.movie-link').removeClass('active');
   }
 
+  // process the results after calling the AJAX to oMDB API
+  // adding it into the specific movie section
   function addMovieDetailsToSection(section, details) {
     //TODO REFACTOR THIS APPEND ZILLA
     var detail_container = $('<div class="media" />');
@@ -356,12 +345,35 @@ var __BASE = window.location;
     var imdb_id = star.data('imdb');
     var title = star.data('movie-title');
 
+    // check if a movie is already favorited
+    // if it is, delete the favorite instead
     if (star.is(":checked")) {
       updateDeleteFavorite('POST', star, imdb_id, title);
     } else {
       updateDeleteFavorite('DELETE', star, imdb_id, title);
     }
   });
+
+  // the ajax call who update or delete the user's favorites movie
+  // interact with back end application API endpoint
+  function updateDeleteFavorite(type, favlink, oid, name) {
+    $.ajax({
+      type: type,
+      url: __BASE + 'favorites',
+      data: {
+        name: name,
+        oid: oid
+      },
+      success: function(data) {
+        // TODO: do sth after post favorite?
+
+        // remove the movie list, if user currently viewing the favorite list
+        if (type == "DELETE" && favlink.data('in-favorite')) {
+          $('#'+oid).fadeOut('slow');
+        }
+      }
+    });
+  }
 
   // THIS PART HERE COVERS ALL DOM MANIPULATION FOR AESTHETIC PURPOSES
   // wont explain a lot here, cos it's not the main functionalities
