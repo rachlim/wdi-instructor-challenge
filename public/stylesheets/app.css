@@ -165,7 +165,8 @@ a:hover, a:focus {
 }
 
 .result-list section.active {
-  max-height: 500px;
+  min-height: 400px;
+  max-height: 1000px;
 }
 
 .result-list .movie-link.active {
