@@ -1,3 +1,9 @@
+/*
+THIS IS THE MAIN TEST FILE THAT RUNS THE UNIT TEST IN OUR APP.
+
+Each unit test is self-explanatory. Read readme.md on how to run the test.
+*/
+
 var request = require('supertest');
 var app = require('./app');
 var omdb = 'http://www.omdbapi.com';

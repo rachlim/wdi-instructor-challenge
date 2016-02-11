@@ -3,75 +3,12 @@ var __OMDB = '//www.omdbapi.com/?';
 var __BASE = window.location;
 
 (function() {
+  // SHARED FUNCTIONS
+  // these function called from different flow
+  // purposely separated so it can work independently
 
-  // TODO Get random poster, put it as the body background
-  function randomID(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-
-  // console.log(randomID(0, 9999999));
-  // getMovieDetails( randomID() );
-
-  // THIS PART HERE COVERS ALL DOM MANIPULATION FOR AESTHETIC PURPOSES
-  $(".input input").focus(function() {
-    $(this).parent(".input").each(function() {
-      $("label", this).css({
-        "line-height": "18px",
-        "font-size": "18px",
-        "font-weight": "100",
-        "top": "0px"
-      });
-
-      $(".spin", this).css({
-        "width": "100%"
-      });
-    });
-  }).blur(function() {
-    $(".spin").css({
-      "width": "0px"
-    });
-
-    if ($(this).val() === "") {
-      $(this).parent(".input").each(function() {
-        $("label", this).css({
-          "line-height": "60px",
-          "font-size": "24px",
-          "font-weight": "300",
-          "top": "10px"
-        });
-      });
-    }
-  });
-
-  // THIS PART HERE COVERS ALL SEARCH MOVIE FLOW
-  $(".submit").click(function(e) {
-    e.preventDefault();
-
-    var form = $('form');
-    var formData = form.serialize();
-    var formArr = form.serializeArray();
-
-    $(".favorite").removeClass('active');
-
-    if (! formArr[0].value) {
-      showEmptyError('Please enter your search keyword');
-    } else {
-      showSearchResults(formData);
-    }
-  });
-
-  function showEmptyError(message) {
-    $('.paginator').hide();
-    $('.alert-container').find('.alert').text(message);
-    $('.alert-container').fadeIn('slow');
-    resetFlow();
-  }
-
-  function showSearchResults(formData) {
-    $('#search-spinner').fadeIn('slow');
-    getMoviesFlow(formData, 'search');
-  }
-
+  // this function is mainly to reset the site as to it's initial state
+  // e.g. form reset, emptied result list, hide all post-submit css states
   function resetFlow() {
     $('.result-list').empty();
     $('form').trigger('reset');
@@ -80,6 +17,144 @@ var __BASE = window.location;
     $('#search-spinner').fadeOut('slow');
   }
 
+  // this function is a gateway function that calls the ajax functions
+  // that interacts with the oMDB API
+  // the function is mainly created so it can also allow pagination to reuse its logic
+  function getMoviesFlow(params, type) {
+    getMovies(params, function(results) {
+      $('.alert-container').fadeOut();
+      resetFlow();
+
+      if ('True' == results.Response) {
+        listResults(results.Search, false);
+        checkFavStatus();
+
+        //if the trigger for this function comes from "search"
+        //reset back all the pagination
+        if(type === 'search') {
+          resetPagination(results, params);
+        }
+      } else {
+        $('.paginator').fadeOut();
+        $('.result-list').html('<h2>' + results.Error + '</h2>');
+      }
+    });
+  }
+
+  // the ajax function that interacts with oMDB API
+  // returns with a callback function once it's done retrieving the result from the api
+  function getMovies(params, callback) {
+    $.ajax({
+      type: 'GET',
+      url: __OMDB + params
+    }).done(function(results) {
+      callback(results);
+    });
+  }
+
+  function getMovieDetails(imdb_id, callback) {
+    // TODO: VALIDATE IF IMDB ID IS EMPTY
+    var search_params = "i=" + imdb_id + "&type=movie&plot=full&tomatoes=true&r=json";
+
+    $.ajax({
+      type: 'GET',
+      url: __OMDB + search_params,
+      success: function(details) {
+        callback(details);
+      }
+    });
+  }
+
+  // this function check each result items whether it has been favorited or not
+  function checkFavStatus() {
+    var all_fav_links = $('.fav-link');
+    var all_fav_in_data = [];
+
+    getFavorites(function(favsData) {
+      all_fav_in_data = favsData;
+
+      all_fav_links.each(function(k, favLink) {
+        var this_fav_link = $(favLink);
+        var fav_imdb_id = this_fav_link.data('imdb');
+
+        for (var i in all_fav_in_data) {
+          // if same id is found from data.json as compared to the result list
+          // marked the result item as 'favorited' (yellow star)
+          if(fav_imdb_id == all_fav_in_data[i].oid) this_fav_link.attr('checked', true);
+        }
+      });
+    });
+  }
+
+  // the ajax function that interacts with the back end api endpoints.
+  // retrieves all the favorites in the data.json files
+  // returns a callback function
+  function getFavorites(callback) {
+    $.ajax({
+      type: 'GET',
+      url: __BASE + 'favorites',
+      success: function(favorites) {
+        callback(favorites);
+      }
+    });
+  }
+
+  function updateDeleteFavorite(type, favlink, oid, name) {
+    $.ajax({
+      type: type,
+      url: __BASE + 'favorites',
+      data: {
+        name: name,
+        oid: oid
+      },
+      success: function(data) {
+        // TODO: do sth after post favorite?
+
+        if (type == "DELETE" && favlink.data('in-favorite')) {
+          $('#'+oid).fadeOut('slow');
+        }
+      }
+    });
+  }
+
+  // end of shared functions
+
+  // THIS PART HERE COVERS ALL SEARCH MOVIE FLOW
+  $(".submit").click(function(e) {
+    e.preventDefault();
+
+    var form = $('form');
+    var formData = form.serialize();
+    var formArr = form.serializeArray();
+    // get request parameters from form
+
+    // make sure the css doesn't flash 'active' (yellow)
+    $(".favorite").removeClass('active');
+
+    // front end validation to check if user types something in the form
+    if (! formArr[0].value) {
+      showEmptyError('Please enter your search keyword');
+    } else {
+      showSearchResults(formData);
+    }
+  });
+
+  // this function gets called to fill the error message placeholder
+  function showEmptyError(message) {
+    $('.paginator').hide();
+    $('.alert-container').find('.alert').text(message);
+    $('.alert-container').fadeIn('slow');
+    resetFlow();
+  }
+
+  // called getMoviesFlow function
+  function showSearchResults(formData) {
+    $('#search-spinner').fadeIn('slow');
+    getMoviesFlow(formData, 'search');
+  }
+
+  // this function process the data returned by the AJAX calls//
+  // and push it to index html
   function listResults(results, inFavorite) {
     var list = [];
     var favLink, favStar, movieTitle, movieLink, detailSection, movieList;
@@ -87,6 +162,9 @@ var __BASE = window.location;
 
     //TODO: Refactor this loop
     for (var i in results) {
+      // for each results returned
+      // create element that will be pushed into the list DOM object
+
       favLink = $('<input/>', {
                             id: 'fav' + i,
                             class: 'hide fav-link',
@@ -116,6 +194,7 @@ var __BASE = window.location;
         id: results[i].imdbID
       }).append(favStar, movieTitle, detailSection);
 
+      // cloned spinner element for each result item
       resultSpinner
         .clone()
         .attr('id', 'result-spinner-' + results[i].imdbID)
@@ -128,29 +207,16 @@ var __BASE = window.location;
     $('.result-list').append(list);
   }
 
-  function checkFavStatus() {
-    var all_fav_links = $('.fav-link');
-    var all_fav_in_data = [];
-
-    getFavorites(function(favsData) {
-      all_fav_in_data = favsData;
-
-      all_fav_links.each(function(k, favLink) {
-        var this_fav_link = $(favLink);
-        var fav_imdb_id = this_fav_link.data('imdb');
-
-        for (var i in all_fav_in_data) {
-          if(fav_imdb_id == all_fav_in_data[i].oid) this_fav_link.attr('checked', true);
-        }
-      });
-    });
-  }
-
+  // THIS PART HERE COVERS ALL DOM MANIPULATION ON PAGINATION
+  // this function reset the pagination states to its initial stage
+  // and pass the original search parameter to the pagination element
+  // so it'll know what to show on the next page
   function resetPagination(results, params) {
     var totalResultCount = results.totalResults,
         totalPages = Math.ceil(totalResultCount / 10);
 
-    if(totalResultCount > 10 && totalPages > 1) {
+    // show pagination only if search result is more than 10 items
+    if(totalResultCount > 10) {
       $('.next').removeData('page');
       $('.previous').data('page', 1);
 
@@ -166,6 +232,9 @@ var __BASE = window.location;
     }
   }
 
+  // when pagination button is clicked (next or previous)
+  // a call is made again to oMDB api
+  // and the pagination element is updated accordingly
   $('.paginator').on('click', '.change-page', function(e) {
     e.preventDefault();
 
@@ -215,10 +284,11 @@ var __BASE = window.location;
 
       movieSection.fadeIn().addClass('active');
       movie.addClass('active');
-    }
-
+    } // TODO: close the detail section when opened section is clicked again
   });
 
+  // function that hides all other movie details
+  // so only one details gets shown each time
   function hideOtherMovies() {
     $('.result-list').find('section').fadeOut();
     $('.movie-link').removeClass('active');
@@ -293,74 +363,43 @@ var __BASE = window.location;
     }
   });
 
-  // SHARED FUNCTIONS
-  function getMoviesFlow(params, type) {
-    getMovies(params, function(results) {
-      $('.alert-container').fadeOut();
-      resetFlow();
+  // THIS PART HERE COVERS ALL DOM MANIPULATION FOR AESTHETIC PURPOSES
+  // wont explain a lot here, cos it's not the main functionalities
+  $(".input input").focus(function() {
+    $(this).parent(".input").each(function() {
+      $("label", this).css({
+        "line-height": "18px",
+        "font-size": "18px",
+        "font-weight": "100",
+        "top": "0px"
+      });
 
-      if ('True' == results.Response) {
-        listResults(results.Search, false);
-        checkFavStatus();
-        if(type === 'search') {
-          resetPagination(results, params);
-        } else {
-          movies_list = results;
-        }
-      } else {
-        $('.paginator').fadeOut();
-        $('.result-list').html('<h2>' + results.Error + '</h2>');
-      }
+      $(".spin", this).css({
+        "width": "100%"
+      });
     });
+  }).blur(function() {
+    $(".spin").css({
+      "width": "0px"
+    });
+
+    if ($(this).val() === "") {
+      $(this).parent(".input").each(function() {
+        $("label", this).css({
+          "line-height": "60px",
+          "font-size": "24px",
+          "font-weight": "300",
+          "top": "10px"
+        });
+      });
+    }
+  });
+
+  // TODO Get random movie poster, put it as the body background
+  function randomID(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  function getMovies(params, callback) {
-    $.ajax({
-      type: 'GET',
-      url: __OMDB + params
-    }).done(function(results) {
-      callback(results);
-    });
-  }
-
-  function getMovieDetails(imdb_id, callback) {
-    // TODO: VALIDATE IF IMDB ID IS EMPTY
-    var search_params = "i=" + imdb_id + "&type=movie&plot=full&tomatoes=true&r=json";
-
-    $.ajax({
-      type: 'GET',
-      url: __OMDB + search_params,
-      success: function(details) {
-        callback(details);
-      }
-    });
-  }
-
-  function getFavorites(callback) {
-    $.ajax({
-      type: 'GET',
-      url: __BASE + 'favorites',
-      success: function(favorites) {
-        callback(favorites);
-      }
-    });
-  }
-
-  function updateDeleteFavorite(type, favlink, oid, name) {
-    $.ajax({
-      type: type,
-      url: __BASE + 'favorites',
-      data: {
-        name: name,
-        oid: oid
-      },
-      success: function(data) {
-        // TODO: do sth after post favorite?
-
-        if (type == "DELETE" && favlink.data('in-favorite')) {
-          $('#'+oid).fadeOut('slow');
-        }
-      }
-    });
-  }
+  // console.log(randomID(0, 9999999));
+  // getMovieDetails( randomID() );
 })($);
