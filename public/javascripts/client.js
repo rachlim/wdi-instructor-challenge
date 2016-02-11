@@ -42,6 +42,8 @@ var __BASE = window.location;
     var formData = form.serialize();
     var formArr = form.serializeArray();
 
+    $(".favorite").removeClass('active');
+
     if (! formArr[0].value) {
       showEmptyError('Please enter your search keyword');
     } else {
@@ -236,6 +238,7 @@ var __BASE = window.location;
   $(".favorite").click(function(e) {
     e.preventDefault();
     $('.paginator').fadeOut();
+    $(this).addClass('active');
 
     var allFavs = [];
 

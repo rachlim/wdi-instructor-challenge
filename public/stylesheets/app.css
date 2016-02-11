@@ -268,7 +268,8 @@ a:hover, a:focus {
 
 /* MODULE - FORM */
 
-.input, .input label, .input input, .input .spin, .button, .button button .button.trigger button i.fa, .material-button .shape:before, .material-button .shape:after, .button.trigger button {
+.input, .input label, .input input, .input .spin, .button, .button button .button.trigger button i.fa, .material-button .shape:before,
+.material-button .shape:after, .button.trigger button, .pager li>a {
   transition: 300ms cubic-bezier(.4, 0, .2, 1);
   -webkit-transition: 300ms cubic-bezier(.4, 0, .2, 1);
   -ms-transition: 300ms cubic-bezier(.4, 0, .2, 1);
@@ -386,10 +387,11 @@ a:hover, a:focus {
   border-color: var(--main-primary-color);
   border-color: #ED2553;
 }
-.button.favorite button:hover {
+.button.favorite button:hover, .button.favorite.active button {
   color: #FFAC33;
   border-color: #FFAC33;
 }
+
 .button {
   margin: 0;
   overflow: hidden;
@@ -578,4 +580,21 @@ input:checked + label:before {
 
 /* MODULE - PAGINATION */
 .paginator { display: none; }
-ne;
+.pager li>a, .pager .disabled>a {
+  border-radius:0;
+  /* background:none; */
+  /* background-color:transparent; */
+  border:3pxsolidred;
+  font-weight:900;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.pager li>a:hover {
+  color: #ED2553;
+  color:var(--main-primary-color);
+}
+
+/* EXTENDING BOOTSTRAP */
+.alert-warning {
+  text-align: center;
+}
