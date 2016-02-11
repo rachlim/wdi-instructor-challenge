@@ -202,6 +202,7 @@ var __BASE = window.location;
       hideOtherMovies();
 
       if(0 === movieSection.find('.media').length)  {
+        $('#result-loader-' + imdb_id).fadeIn('slow');
         getMovieDetails(imdb_id, function(details) {
           addMovieDetailsToSection(movieSection, details);
         });
@@ -243,7 +244,6 @@ var __BASE = window.location;
               .append(movie_imdb_rating)
               .prepend(movie_heading);
 
-    $('#result-loader-' + details.imdbID).fadeIn('slow');
     detail_container.append(movie_poster, movie_copy);
     section.append(detail_container);
     $('#result-loader-' + details.imdbID).fadeOut('slow');
