@@ -11,6 +11,10 @@
   outline: none;
 }
 
+:root {
+  --main-primary-color: #ED2553;
+}
+
 /* BASE */
 
 body {
@@ -20,28 +24,27 @@ body {
    background-repeat: no-repeat;*/
   background: #b40 linear-gradient(transparent, #48627D);
   min-height: 100vh;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Roboto', sans-serif !important;
 }
 
-/*body,
-html {
-   overflow: hidden;
-}*/
+/* Typography */
+
+h1, h2, h3, h4, h5, .title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+}
 
 h1 {
   color: white;
   text-align: center;
   line-height: 2;
   font-size: 5vw;
-  font-weight: 100;
-  font-family: 'Roboto', sans-serif;
-}
-
-/* Headings */
-
-h1 {
   color: white;
   margin-bottom: 20px;
+}
+
+p {
+  line-height: 1.5 !important;
 }
 
 /* Lists */
@@ -94,8 +97,8 @@ a:hover, a:focus {
 }
 
 .result-list h2 { text-align: center; }
-.result-list > h2 { 
-  color: white; 
+.result-list > h2 {
+  color: white;
   font-weight: bold;
 }
 
@@ -143,15 +146,33 @@ a:hover, a:focus {
 
 .result-list li:hover h2 a {
   color: #ED2553;
+  color: var(--main-primary-color);
 }
 
 .result-list section {
   text-align: left;
-  margin-top: 5vw;
+  margin-top: 1vw;
   transition: 300ms cubic-bezier(.4, 0, .2, 1);
   -webkit-transition: 300ms cubic-bezier(.4, 0, .2, 1);
   -ms-transition: 300ms cubic-bezier(.4, 0, .2, 1);
   display: none;
+  border-top: 2px solid #ED2553;
+  border-bottom: 2px solid #ED2553;
+  padding: 5% 0;
+
+  max-height: 0;
+  transition: max-height 0.15s ease-out;;
+  -webkit-transition: max-height 0.15s ease-out;;
+  -ms-transition: max-height 0.15s ease-out;
+}
+
+.result-list section.active {
+  max-height: 500px;
+}
+
+.result-list .movie-link.active {
+  color: #ED2553;
+  color: var(--main-primary-color);
 }
 
 /* MODULE - BOX */
@@ -233,7 +254,8 @@ a:hover, a:focus {
   font-weight: 700;
   letter-spacing: 2px;
   color: #ED2553;
-  position: relative;
+  color: var(--main-primary-color);
+  position:relative;
 }
 .title:before {
   content: "";
@@ -243,6 +265,7 @@ a:hover, a:focus {
   top: 0;
   left: -50px;
   background: #ED2553;
+  background: var(--main-primary-color);
 }
 
 /* MODULE - FORM */
@@ -288,7 +311,7 @@ a:hover, a:focus {
   z-index: 3;
 }
 .input .spin {
-  background: #ED2553;
+  background: var(--main-primary-color);
   z-index: 4;
   width: 0;
 }
@@ -329,6 +352,7 @@ a:hover, a:focus {
 .button button {
   background-color: #fff;
   color: #ED2553;
+  color: var(--main-primary-color);
   border: none;
 }
 .button.trigger button.active {
@@ -359,7 +383,9 @@ a:hover, a:focus {
   -ms-transform: scale(0) rotate(-45deg);
 }
 .button.submit button:hover {
+  color: var(--main-primary-color);
   color: #ED2553;
+  border-color: var(--main-primary-color);
   border-color: #ED2553;
 }
 .button.favorite button:hover {
@@ -554,3 +580,4 @@ input:checked + label:before {
 
 /* MODULE - PAGINATION */
 .paginator { display: none; }
+ne;

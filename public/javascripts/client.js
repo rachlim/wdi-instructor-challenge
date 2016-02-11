@@ -100,7 +100,7 @@ var __BASE = window.location;
       movieList = $('<li/>', {
         html: movieTitle,
         id: results[i].imdbID
-      }).append(detailSection, favLink, favStar);
+      }).append(favLink, favStar, detailSection);
 
       list.push(movieList);
     }
@@ -187,33 +187,45 @@ var __BASE = window.location;
     var movie = $(this);
     var imdb_id = movie.data('imdb');
 
-    getMovieDetails(imdb_id, function(details) {
+    if (! movie.hasClass('active')) {
       var movieSection = movie.parents('li').find('section');
       hideOtherMovies();
-      showMovieDetails(movieSection, details);
-    });
+
+      console.log(movieSection.find('.media').length);
+
+      if(0 === movieSection.find('.media').length)  {
+        getMovieDetails(imdb_id, function(details) {
+          addMovieDetailsToSection(movieSection, details);
+        });
+      }
+
+      movieSection.fadeIn().addClass('active');
+      movie.addClass('active');
+    }
+
   });
 
   function hideOtherMovies() {
-    $('.result-list').find('section').empty();
+    $('.result-list').find('section').fadeOut();
+    $('.movie-link').removeClass('active');
   }
 
-  function showMovieDetails(section, details) {
+  function addMovieDetailsToSection(section, details) {
     //TODO REFACTOR THIS APPEND ZILLA
     var detail_container = $('<div class="media" />');
     var movie_poster = $('<div class="media-left" />');
-    var poster_link = $('<a href="' + details.Poster+ '" />');
-    var poster_url = $('<img width="250" class="media-object" src="' + details.Poster+ '" />');
+    var poster_link = ('N/A' !== details.Poster) ? $('<a href="' + details.Poster+ '" />') : $('<a href="http://lorempixel.com/250/370" />');
+    var poster_url = ('N/A' !== details.Poster) ? $('<img width="250" class="media-object" src="' + details.Poster+ '" />') : $('<img width="250" class="media-object" src="http://lorempixel.com/250/370" />');
     poster_url.appendTo(poster_link);
     poster_link.appendTo(movie_poster);
 
     var movie_copy = $('<div class="media-body" />');
     var movie_heading = $('<h4 class="media-heading">' + details.Year + '</h4>');
     var movie_plot = $('<p class="plot" />').text(details.Plot);
-    var movie_director = $('<p class="director" />').text('Director: ' + details.Director);
-    var movie_rating = $('<p class="rating" />').text('Rating: ' + details.Rated);
-    var movie_length = $('<p class="length" />').text('Runtime: ' + details.Runtime);
-    var movie_imdb_rating = $('<p class="imdb_rating" />').text('iMDB Rating: ' + details.imdbRating);
+    var movie_director = $('<h5 class="director" />').text('Director: ' + details.Director);
+    var movie_rating = $('<h5 class="rating" />').text('Rating: ' + details.Rated);
+    var movie_length = $('<h5 class="length" />').text('Runtime: ' + details.Runtime);
+    var movie_imdb_rating = $('<h5 class="imdb_rating" />').text('iMDB Rating: ' + details.imdbRating);
 
     movie_copy.append(movie_plot)
               .append(movie_director)
@@ -225,7 +237,6 @@ var __BASE = window.location;
 
     detail_container.append(movie_poster, movie_copy);
     section.append(detail_container);
-    section.fadeIn('slow');
   }
 
   // THIS PART HERE COVERS ALL EVENT ON CLICKING FAVORITE FOR A MOVIE
