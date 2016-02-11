@@ -98,7 +98,6 @@ var __BASE = window.location;
       }
     });
   }
-
   // end of shared functions
 
   // THIS PART HERE COVERS ALL SEARCH MOVIE FLOW
