@@ -498,6 +498,9 @@ input:checked + label:before {
   -webkit-transform: rotateZ(45deg);
   transform: rotateZ(45deg);
 }
+.search-spinner .sk-folding-cube {
+  left: 47%;
+}
 .sk-folding-cube .sk-cube {
   float: left;
   width: 50%;

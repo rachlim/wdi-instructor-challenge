@@ -83,7 +83,7 @@ var __BASE = window.location;
   function listResults(results, inFavorite) {
     var list = [];
     var favLink, favStar, movieTitle, movieLink, detailSection, movieList;
-    var resultLoader = $('.spinner-wrapper');
+    var resultSpinner = $('.spinner-wrapper');
 
     //TODO: Refactor this loop
     for (var i in results) {
@@ -116,7 +116,12 @@ var __BASE = window.location;
         id: results[i].imdbID
       }).append(favStar, movieTitle, detailSection);
 
-      resultLoader.clone().attr('id', 'result-loader-' + results[i].imdbID).appendTo(detailSection);
+      resultSpinner
+        .clone()
+        .attr('id', 'result-spinner-' + results[i].imdbID)
+        .addClass('search-spinner')
+        .appendTo(detailSection);
+
       list.push(movieList);
     }
 
@@ -202,7 +207,7 @@ var __BASE = window.location;
       hideOtherMovies();
 
       if(0 === movieSection.find('.media').length)  {
-        $('#result-loader-' + imdb_id).fadeIn('slow');
+        $('#result-spinner-' + imdb_id).fadeIn('slow');
         getMovieDetails(imdb_id, function(details) {
           addMovieDetailsToSection(movieSection, details);
         });
@@ -246,7 +251,7 @@ var __BASE = window.location;
 
     detail_container.append(movie_poster, movie_copy);
     section.append(detail_container);
-    $('#result-loader-' + details.imdbID).fadeOut('slow');
+    $('#result-spinner-' + details.imdbID).fadeOut('slow');
   }
 
   // THIS PART HERE COVERS ALL EVENT ON CLICKING FAVORITE FOR A MOVIE
