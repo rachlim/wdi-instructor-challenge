@@ -98,9 +98,9 @@ var __BASE = window.location;
 
       detailSection = $('<section/>');
       movieList = $('<li/>', {
-        html: movieTitle,
+        html: favLink,
         id: results[i].imdbID
-      }).append(favLink, favStar, detailSection);
+      }).append(favStar, movieTitle, detailSection);
 
       list.push(movieList);
     }
@@ -126,14 +126,9 @@ var __BASE = window.location;
     });
   }
 
-  // TODO PAGINATION FOR RESULTS
   function resetPagination(results, params) {
     var totalResultCount = results.totalResults,
         totalPages = Math.ceil(totalResultCount / 10);
-
-    console.log('reset pagination');
-    console.log(totalResultCount, totalPages, totalPages > 1);
-
 
     if(totalResultCount > 10 && totalPages > 1) {
       $('.next').removeData('page');
@@ -190,8 +185,6 @@ var __BASE = window.location;
     if (! movie.hasClass('active')) {
       var movieSection = movie.parents('li').find('section');
       hideOtherMovies();
-
-      console.log(movieSection.find('.media').length);
 
       if(0 === movieSection.find('.media').length)  {
         getMovieDetails(imdb_id, function(details) {

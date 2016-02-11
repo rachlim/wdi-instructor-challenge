@@ -96,7 +96,7 @@ a:hover, a:focus {
   -ms-transition: 300ms cubic-bezier(.4, 0, .2, 1);
 }
 
-.result-list h2 { text-align: center; }
+.result-list h2 { text-align: center;margin: 0;}
 .result-list > h2 {
   color: white;
   font-weight: bold;
@@ -126,9 +126,7 @@ a:hover, a:focus {
   transform: translateZ(0);
   transition: box-shadow 0.25s ease-in;
   width: 100%;
-  transition: 300ms cubic-bezier(.4, 0, .2, 1);
-  -webkit-transition: 300ms cubic-bezier(.4, 0, .2, 1);
-  -ms-transition: 300ms cubic-bezier(.4, 0, .2, 1);
+  border-radius: 10px;
 }
 .result-list li:hover {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
