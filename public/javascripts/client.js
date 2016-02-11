@@ -3,6 +3,15 @@ var __OMDB = '//www.omdbapi.com/?';
 var __BASE = window.location;
 
 (function() {
+
+  // TODO Get random poster, put it as the body background
+  function randomID(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  // console.log(randomID(0, 9999999));
+  // getMovieDetails( randomID() );
+
   // THIS PART HERE COVERS ALL DOM MANIPULATION FOR AESTHETIC PURPOSES
   $(".input input").focus(function() {
     $(this).parent(".input").each(function() {
@@ -54,12 +63,12 @@ var __BASE = window.location;
   function showEmptyError(message) {
     $('.paginator').hide();
     $('.alert-container').find('.alert').text(message);
-    $('.alert-container').fadeIn();
+    $('.alert-container').fadeIn('slow');
     resetFlow();
   }
 
   function showSearchResults(formData) {
-    $('.spinner-wrapper').show();
+    $('#search-spinner').fadeIn('slow');
     getMoviesFlow(formData, 'search');
   }
 
@@ -68,12 +77,13 @@ var __BASE = window.location;
     $('form').trigger('reset');
     $('button.active').removeClass('active');
     $(".input input").trigger('blur');
-    $('.spinner-wrapper').fadeOut('slow');
+    $('#search-spinner').fadeOut('slow');
   }
 
   function listResults(results, inFavorite) {
     var list = [];
-    var movieTitle, movieLink, detailSection, movieList;
+    var favLink, favStar, movieTitle, movieLink, detailSection, movieList;
+    var resultLoader = $('.spinner-wrapper');
 
     //TODO: Refactor this loop
     for (var i in results) {
@@ -99,11 +109,14 @@ var __BASE = window.location;
                       });
 
       detailSection = $('<section/>');
+
+
       movieList = $('<li/>', {
         html: favLink,
         id: results[i].imdbID
       }).append(favStar, movieTitle, detailSection);
 
+      resultLoader.clone().attr('id', 'result-loader-' + results[i].imdbID).appendTo(detailSection);
       list.push(movieList);
     }
 
@@ -230,8 +243,10 @@ var __BASE = window.location;
               .append(movie_imdb_rating)
               .prepend(movie_heading);
 
+    $('#result-loader-' + details.imdbID).fadeIn('slow');
     detail_container.append(movie_poster, movie_copy);
     section.append(detail_container);
+    $('#result-loader-' + details.imdbID).fadeOut('slow');
   }
 
   // THIS PART HERE COVERS ALL EVENT ON CLICKING FAVORITE FOR A MOVIE
@@ -305,7 +320,7 @@ var __BASE = window.location;
 
   function getMovieDetails(imdb_id, callback) {
     // TODO: VALIDATE IF IMDB ID IS EMPTY
-    var search_params = "i=" + imdb_id + "&type=movie&r=json";
+    var search_params = "i=" + imdb_id + "&type=movie&plot=full&tomatoes=true&r=json";
 
     $.ajax({
       type: 'GET',
