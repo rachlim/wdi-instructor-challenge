@@ -94,6 +94,10 @@ a:hover, a:focus {
 }
 
 .result-list h2 { text-align: center; }
+.result-list > h2 { 
+  color: white; 
+  font-weight: bold;
+}
 
 .result-list li::after {
   clear: both;

@@ -50,6 +50,7 @@ var __BASE = window.location;
   });
 
   function showEmptyError(message) {
+    $('.paginator').hide();
     $('.alert-container').find('.alert').text(message);
     $('.alert-container').fadeIn();
     resetFlow();
@@ -57,11 +58,10 @@ var __BASE = window.location;
 
   function showSearchResults(formData) {
     $('.spinner-wrapper').show();
-    getMoviesFlow('search', formData);
+    getMoviesFlow(formData, 'search');
   }
 
   function resetFlow() {
-    $('.paginator').fadeOut();
     $('.result-list').empty();
     $('form').trigger('reset');
     $('button.active').removeClass('active');
@@ -127,19 +127,27 @@ var __BASE = window.location;
   }
 
   // TODO PAGINATION FOR RESULTS
-  function handlePagination(results, params) {
+  function resetPagination(results, params) {
     var totalResultCount = results.totalResults,
         totalPages = Math.ceil(totalResultCount / 10);
 
-    console.log(totalResultCount, totalPages);
+    console.log('reset pagination');
+    console.log(totalResultCount, totalPages, totalPages > 1);
 
-    if(totalResultCount > 10) {
+
+    if(totalResultCount > 10 && totalPages > 1) {
+      $('.next').removeData('page');
+      $('.previous').data('page', 1);
+
       $('.paginator')
         .show()
         .data('params', params)
         .data('current-page', 1)
         .data('max', totalPages)
-        .find('.previous').addClass('disabled');
+        .find('.previous').addClass('disabled')
+        .find('.next').removeClass('disabled');
+    } else {
+      $('.paginator').fadeOut();
     }
   }
 
@@ -152,6 +160,7 @@ var __BASE = window.location;
         all_prev = $('.previous');
 
     if(pager_trigger.hasClass('disabled')) return false;
+
     $('.change-page').addClass('disabled');
 
     var currentPage = paginator.data('current-page'),
@@ -162,11 +171,10 @@ var __BASE = window.location;
     var new_page = (pager_trigger.hasClass('next')) ? nextPage : prevPage;
     var params = paginator.data('params') + '&page=' + new_page;
 
-    if(getMoviesFlow('pagination', params)) {
-      $('.change-page').removeClass('disabled');
-      if(new_page == maxPage) all_next.addClass('disabled');
-      if(new_page == 1) all_prev.addClass('disabled');
-    }
+    getMoviesFlow(params);
+    $('.change-page').removeClass('disabled');
+    if(new_page == maxPage) all_next.addClass('disabled');
+    if(new_page == 1) all_prev.addClass('disabled');
 
     paginator.data('current-page', new_page);
     all_next.data('page', new_page + 1);
@@ -223,6 +231,7 @@ var __BASE = window.location;
   // THIS PART HERE COVERS ALL EVENT ON CLICKING FAVORITE FOR A MOVIE
   $(".favorite").click(function(e) {
     e.preventDefault();
+    $('.paginator').fadeOut();
 
     var allFavs = [];
 
@@ -233,8 +242,6 @@ var __BASE = window.location;
           Title: all_fav_in_data[fav].name
         });
       }
-
-      $('.paginator').hide();
 
       if (0 === allFavs.length) {
         showEmptyError('You have not liked any movie. Click on the star!');
@@ -260,24 +267,22 @@ var __BASE = window.location;
   });
 
   // SHARED FUNCTIONS
-  function getMoviesFlow(type, params) {
+  function getMoviesFlow(params, type) {
     getMovies(params, function(results) {
       $('.alert-container').fadeOut();
       resetFlow();
 
-      if (results.Search) {
-        if ('True' == results.Response) {
-          listResults(results.Search, false);
-          checkFavStatus();
-          if(type === 'search') {
-            handlePagination(results, params);
-          } else {
-            return true;
-          }
+      if ('True' == results.Response) {
+        listResults(results.Search, false);
+        checkFavStatus();
+        if(type === 'search') {
+          resetPagination(results, params);
         } else {
-          resetFlow();
-          $('.result-list').html('<h2>' + results.Error + '</h2>');
+          movies_list = results;
         }
+      } else {
+        $('.paginator').fadeOut();
+        $('.result-list').html('<h2>' + results.Error + '</h2>');
       }
     });
   }
