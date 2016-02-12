@@ -19,13 +19,13 @@ Flickies also run publicly in [heroku](https://powerful-ocean-29922.herokuapp.co
 #### Running Locally
 
 * Run:
-* ```javascript
+```javascript
     npm start
-  ```
+```
 * If that doesn't work somehow cos you're using windows. Run:
-* ```javascript
+```javascript
     node ./bin/www
-  ```
+```
 * Go to http://localhost:3000/
 * Sip a coffee and **VOILA**, you have your personal FLICKIES
 * p.s. if it happened you need to run on a different port. Edit the www file under bin folder. You should know what to edit.
@@ -33,9 +33,9 @@ Flickies also run publicly in [heroku](https://powerful-ocean-29922.herokuapp.co
 #### Testing Locally
 
 * Run:
-* ```javascript
+```javascript
     npm test
-  ```
+```
 * p.s. Test running on real-time, don't want that? You can also run this instead
 * ```javascript
     node test.js
