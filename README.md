@@ -11,9 +11,9 @@ Flickies also run publicly in [heroku](https://powerful-ocean-29922.herokuapp.co
 
 - I've removed the ruby-backend-starter-code for clarity sake
 - To install all the required packages, run:
-- ```javascript
+```javascript
     npm install
-  ```
+```
 - Sip a coffee and proceed to run the app
 
 #### Running Locally
