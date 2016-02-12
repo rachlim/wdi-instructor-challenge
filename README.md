@@ -22,7 +22,7 @@ Flickies also run publicly in [heroku](https://powerful-ocean-29922.herokuapp.co
 ```javascript
     npm start
 ```
-* If that doesn't work somehow cos you're using windows. Run:
+* If that doesn't work somehow cos you're using windows, ~~get a mac~~. Run:
 ```javascript
     node ./bin/www
 ```
