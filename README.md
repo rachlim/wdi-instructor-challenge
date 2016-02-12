@@ -37,9 +37,9 @@ Flickies also run publicly in [heroku](https://powerful-ocean-29922.herokuapp.co
     npm test
 ```
 * p.s. Test running on real-time, don't want that? You can also run this instead
-* ```javascript
+```javascript
     node test.js
-  ```
+```
 
 #### Notes
 
