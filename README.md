@@ -59,6 +59,7 @@ This project wont be possible without the help of [Codepen](http://codepen.io/) 
 - [Yusuf Bakır](http://codepen.io/yusufbkr/pen/RPBQqg)
 - [Chris Ota](http://codepen.io/chrisota/pen/RrYKMK)
 - [Filipe Linhares](http://codepen.io/filipelinhares/pen/tcwiL)
-- and, [Max Koehler](http://codepen.io/awesomephant/pen/zacsg)
+- [Max Koehler](http://codepen.io/awesomephant/pen/zacsg)
+- and lastly, the one and only [Bootstrap](http://getbootstrap.com/)
 
 **Thanks for the opportunities and HAPPY FLICKING!!**
