@@ -12,7 +12,7 @@ Flickies also run publicly in [heroku](https://powerful-ocean-29922.herokuapp.co
 - I've removed the ruby-backend-starter-code for clarity sake
 - To install all the required packages, run:
 - ```javascript
-  npm install
+    npm install
   ```
 - Sip a coffee and proceed to run the app
 
@@ -24,7 +24,7 @@ Flickies also run publicly in [heroku](https://powerful-ocean-29922.herokuapp.co
   ```
 * If that doesn't work somehow cos you're using windows. Run:
 * ```javascript
-  node ./bin/www
+    node ./bin/www
   ```
 * Go to http://localhost:3000/
 * Sip a coffee and **VOILA**, you have your personal FLICKIES
@@ -34,11 +34,11 @@ Flickies also run publicly in [heroku](https://powerful-ocean-29922.herokuapp.co
 
 * Run:
 * ```javascript
-  npm test
+    npm test
   ```
 * p.s. Test running on real-time, don't want that? You can also run this instead
 * ```javascript
-  node test.js
+    node test.js
   ```
 
 #### Notes
