@@ -1,16 +1,17 @@
-![GA Logo](https://raw.github.com/generalassembly/ga-ruby-on-rails-for-devs/master/images/ga.png)
+![Flickies Logo](https://dl.dropboxusercontent.com/u/131021/flickies/favicon.png)
 
-## WDI Instructor Code Challenge
+## FLICKIES
 
-### GOAL 
+### GOAL
 
-> Create a single page application that will utilize an external API to request movie data. The client side application will be served by a back-end which will have the ability to persist data.
+> Welcome to Flickies. This is a standalone project made for General Assembly Instructor Challenge
+  https://github.com/rachlim/wdi-instructor-challenge
 
-#### Back-end Instructions
+#### Installation
 
-- Within this repo you will have noticed two folders entitled `node-backend-starter-code` and `ruby-backend-starter-code`. Each of these contains similar back-ends written in frameworks respective to their languages - Sinatra for Ruby and Express for Node.
+- I've removed the ruby-backend-starter-code for clarity sake
 
-- Please **choose one** of the back-ends before you proceed. Feel free to pick whichever language you feel more comfortable in.
+- 
 
 - Both back-ends contain several errors that commonly made by students, so you will need to do some debugging to ensure they are working correctly.
 
@@ -37,7 +38,7 @@
 
 #### Deliverables
 
-- Please fork [this repo](https://github.com/generalassembly-hk/wdi-instructor-challenge) and send us a pull request with the completed code challenge. 
+- Please fork [this repo](https://github.com/generalassembly-hk/wdi-instructor-challenge) and send us a pull request with the completed code challenge.
 
 - Include a README.md file in your repo with a link to your application deployed on Heroku or Digital Ocean.
 
