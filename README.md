@@ -43,7 +43,7 @@ Flickies also run publicly in [heroku](https://powerful-ocean-29922.herokuapp.co
 
 #### Notes
 
-* I didn't us vanilla javascript on the front end side of the codes, as I don't think I can deliver on time. Please embrace jQuery, I think it's commonly used and easier to understand for beginners.
+* I didn't us vanilla javascript on the front end side of the codes, as I don't think I can deliver on time if I don't use jQuery. Please embrace jQuery, I think it's commonly used and easier to understand for beginners.
 * The site is best run on the latest chrome browser ~~, that's always the case.~~
 
 #### Stacks
