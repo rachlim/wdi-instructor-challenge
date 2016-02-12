@@ -18,50 +18,40 @@ Flickies also run publicly in [heroku](https://powerful-ocean-29922.herokuapp.co
 
 #### Running Locally
 
-- Run:
-
-- ```javascript
+* Run:
+* ```javascript
     npm start
   ```
-
-- If that doesn't work somehow cos you're using windows, ~~too bad.~~. Run:
-
-- ```javascript
+* If that doesn't work somehow cos you're using windows. Run:
+* ```javascript
   node ./bin/www
   ```
-
-- Go to http://localhost:3000/
-
-- Sip a coffee and **VOILA**, you have your personal FLICKIES
-
-- p.s. if it happened you need to run on a different port. Edit the www file under bin folder. You should know what to edit.
+* Go to http://localhost:3000/
+* Sip a coffee and **VOILA**, you have your personal FLICKIES
+* p.s. if it happened you need to run on a different port. Edit the www file under bin folder. You should know what to edit.
   
 #### Testing Locally
 
-- Run:
-
-- ```javascript
+* Run:
+* ```javascript
   npm test
   ```
-
-- p.s. Test running on real-time, don't want that? You can also run this instead
-
-- ```javascript
+* p.s. Test running on real-time, don't want that? You can also run this instead
+* ```javascript
   node test.js
   ```
 
 #### Notes
 
-- I didn't us vanilla javascript on the front end side of the codes, as I don't think I can deliver on time. Please embrace jQuery, I think it's commonly used and easier to understand for beginners.
-
-- The site is best run on the latest chrome browser ~~, that's always the case.~~
+* I didn't us vanilla javascript on the front end side of the codes, as I don't think I can deliver on time. Please embrace jQuery, I think it's commonly used and easier to understand for beginners.
+* The site is best run on the latest chrome browser ~~, that's always the case.~~
 
 #### Stacks
 
-- Express.js
-- [body-parser](https://github.com/expressjs/body-parser) 
-- [supertest](https://www.npmjs.com/package/supertest)
-- [mocha](https://www.npmjs.com/package/mocha)
+* Express.js
+* [body-parser](https://github.com/expressjs/body-parser) 
+* [supertest](https://www.npmjs.com/package/supertest)
+* [mocha](https://www.npmjs.com/package/mocha)
 
 #### Colophon
 
