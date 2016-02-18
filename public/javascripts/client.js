@@ -101,24 +101,24 @@ var __BASE = window.location;
   // end of shared functions
 
   // THIS PART HERE COVERS ALL SEARCH MOVIE FLOW
-  $(".submit").click(function(e) {
-    e.preventDefault();
-
-    var form = $('form');
-    var formData = form.serialize();
-    var formArr = form.serializeArray();
-    // get request parameters from form
-
-    // make sure the css doesn't flash 'active' (yellow)
-    $(".favorite").removeClass('active');
-
-    // front end validation to check if user types something in the form
-    if (! formArr[0].value) {
-      showEmptyError('Please enter your search keyword');
-    } else {
-      showSearchResults(formData);
-    }
-  });
+  // $(".submit").click(function(e) {
+  //   e.preventDefault();
+  //
+  //   var form = $('form');
+  //   var formData = form.serialize();
+  //   var formArr = form.serializeArray();
+  //   // get request parameters from form
+  //
+  //   // make sure the css doesn't flash 'active' (yellow)
+  //   $(".favorite").removeClass('active');
+  //
+  //   // front end validation to check if user types something in the form
+  //   if (! formArr[0].value) {
+  //     showEmptyError('Please enter your search keyword');
+  //   } else {
+  //     showSearchResults(formData);
+  //   }
+  // });
 
   // this function gets called to fill the error message placeholder
   function showEmptyError(message) {
