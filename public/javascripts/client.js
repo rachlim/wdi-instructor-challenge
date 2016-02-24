@@ -2,7 +2,7 @@
 var __OMDB = '//www.omdbapi.com/?';
 var __BASE = window.location;
 
-(function() {
+(function($) {
   // SHARED FUNCTIONS
   // these function called from different flow
   // purposely separated so it can work independently
@@ -413,4 +413,4 @@ var __BASE = window.location;
 
   // console.log(randomID(0, 9999999));
   // getMovieDetails( randomID() );
-})($);
+})(jQuery);
