@@ -1,0 +1,35 @@
+development:
+  adapter: postgresql
+  encoding: unicode
+  database: wdi_development
+  pool: 5
+  username: postgres
+  password:
+
+test: &test
+  adapter: postgresql
+  encoding: unicode
+  database: wdi_test
+  pool: 5
+  username: postgres
+  password:
+
+production:
+  adapter: postgresql
+  encoding: unicode
+  database: wdi_production
+  pool: 5
+  username: postgres
+  password:
+
+staging:
+  adapter: postgresql
+  encoding: unicode
+  database: wdi_staging
+  pool: 5
+  username: postgres
+  password:
+
+
+cucumber:
+  <<: *test
