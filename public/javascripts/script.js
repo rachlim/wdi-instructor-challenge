@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
         event = _dom.createEvent('HTMLEvents');
 
     this.$ = function(el) {
+      // TODO: this part here needs to be refactored as well
       // if (!(this instanceof $)) {
       //   return new $(el);
       // }
@@ -17,8 +18,32 @@ document.addEventListener('DOMContentLoaded', function() {
         return _dom.querySelectorAll(selector);
       },
       trigger: function(evt, el) {
+        console.log(evt);
         event.initEvent(evt, true, false);
         this.$(el).dispatchEvent(event);
+      },
+      // TODO: This fade function still buggy
+      fade: function(selector, type, ms) {
+        var isIn = type === 'in',
+          opacity = isIn ? 1 : 0,
+          interval = 500,
+          duration = ms || 5000,
+          gap = interval / duration;
+
+        if(isIn) {
+          this.$(selector).style.display = 'block';
+          this.$(selector).style.opacity = opacity;
+        }
+
+        function func() {
+          opacity = isIn ? opacity + gap : opacity - gap;
+          this.$(selector).style.opacity = opacity;
+
+          if(opacity <= 0) this.$(selector).style.display = 'none';
+          if(opacity <= 0 || opacity >= 1) window.clearInterval(fading);
+        }
+
+        var fading = window.setInterval(func, interval);
       }
     };
   }();
@@ -40,28 +65,33 @@ document.addEventListener('DOMContentLoaded', function() {
     };
   }();
 
-  var _SHARED = function(omdb) {
-    this.resetFlow = function() {
-      this.$('.result-list').innerHTML = '';
-      if( this.$('button.active') ) this.$('button.active').classList.remove('active');
-      _DOM.trigger('reset', 'form');
-      _DOM.trigger('blur', '.input input');
-
-      fadeOut(this.$('#search-spinner'));
+  var _SHARED = function(omdb, dom) {
+    this.resetForm = function() {
+      dom.$('form').reset();
+      dom.fade('.paginator', 'out');
+      if( dom.$('button.active') ) dom.$('button.active').classList.remove('active');
     };
 
     this.listResults = function(results, inFavorite) {
-      console.log('list results');
+      // console.log('list results');
     };
 
     return {
-      getMoviesFlow: function(params, type) {
+      resetForm: this.resetForm,
+      // this function gets called to fill the error message placeholder
+      showEmptyError: function(message) {
+        [].forEach.call( dom.all('.alert-container .alert'), function(el) {
+          el.textContent = message;
+        });
+
+        dom.fade('.alert-container', 'in') ;
+        this.resetForm();
+      },
+      showSearchResults: function(params, type) {
+        dom.fade('#search-spinner', 'in');
+
         omdb.getMovies(params, function(results) {
-          console.log(results);
-
-          fadeOut(this.$('.alert-container'));
-          this.resetFlow();
-
+          this.resetForm();
           var results_json = JSON.parse(results);
 
           if ('True' === results.Response) {
@@ -74,16 +104,18 @@ document.addEventListener('DOMContentLoaded', function() {
             //   resetPagination(results, params);
             // }
           } else {
-            fadeOut(this.$('.paginator'));
-            this.$('.result-list').innerHTML = '<h2>' + results_json.Error + '</h2>';
+            dom.$('.result-list').innerHTML = '<h2>' + results_json.Error + '</h2>';
           }
+
+          dom.fade('.alert-container', 'out');
+          dom.fade('#search-spinner', 'out');
         });
       }
     };
-  }(_OMDB);
+  }(_OMDB, _DOM);
 
   // FORM Module, all interaction with the form will happen here
-  (function($selector) {
+  (function($selector, $resultCtrl) {
     $selector.addEventListener('click', function(e) {
       e.preventDefault();
 
@@ -97,30 +129,11 @@ document.addEventListener('DOMContentLoaded', function() {
       // console.log(formData, formArr);
 
       if ( ! formArr[0].value ) {
-        showEmptyError('Please enter your search keyword');
+        $resultCtrl.showEmptyError('Please enter your search keyword');
       } else {
-        showSearchResults(formData);
+        $resultCtrl.showSearchResults(formData, 'search');
       }
 
     }, false);
-  })(_DOM.$('.submit'));
-
-  // this function gets called to fill the error message placeholder
-  function showEmptyError(message) {
-    // _DOM.$('.paginator').hide();
-
-    [].forEach.call( _DOM.all('.alert-container .alert'), function(el) {
-      el.textContent = message;
-    });
-
-    fadeIn(_DOM.$('.alert-container'))  ;
-
-    // resetFlow();
-  }
-
-  function showSearchResults(formData) {
-    fadeIn(_DOM.$('#search-spinner'));
-    _SHARED.getMoviesFlow(formData, 'search');
-  }
-
+  })(_DOM.$('.submit'), _SHARED);
 });
