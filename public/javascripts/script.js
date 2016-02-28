@@ -1,4 +1,21 @@
 document.addEventListener('DOMContentLoaded', function() {
+  var _OMDB = function() {
+    var request = new XMLHttpRequest(),
+        _endpoint = '//www.omdbapi.com/?';
+
+    return {
+      getMovies: function(params, callback) {
+        request.open('GET', _endpoint + params, true);
+        request.onload = function() {
+          if (request.status >= 200 && request.status < 400) {
+            callback(request.responseText);
+          }
+        };
+        request.send();
+      }
+    };
+  }();
+
   var _DOM = function() {
     var _dom = document,
         event = _dom.createEvent('HTMLEvents');
@@ -9,6 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
       //   return new $(el);
       // }
       // this.el = document.querySelector(el);
+      console.log();
       return _dom.querySelector(el);
     };
 
@@ -17,10 +35,13 @@ document.addEventListener('DOMContentLoaded', function() {
       all: function(selector) {
         return _dom.querySelectorAll(selector);
       },
-      trigger: function(evt, el) {
-        console.log(evt);
-        event.initEvent(evt, true, false);
-        this.$(el).dispatchEvent(event);
+      trigger: function(ev, selector) {
+        var event = _dom.createEvent('HTMLEvents');
+        event.initEvent(ev, true, false);
+        [].forEach.call(
+          this.all(selector), function(el) {
+            el.dispatchEvent(event);
+        });
       },
       // TODO: This fade function still buggy
       fade: function(selector, type, ms) {
@@ -48,54 +69,47 @@ document.addEventListener('DOMContentLoaded', function() {
     };
   }();
 
-  var _OMDB = function() {
-    var request = new XMLHttpRequest(),
-        _endpoint = '//www.omdbapi.com/?';
-
-    return {
-      getMovies: function(params, callback) {
-        request.open('GET', _endpoint + params, true);
-        request.onload = function() {
-          if (request.status >= 200 && request.status < 400) {
-            callback(request.responseText);
-          }
-        };
-        request.send();
-      }
-    };
-  }();
-
-  var _SHARED = function(omdb, dom) {
+  var _SHARED = function(_omdb, _dom) {
     this.resetForm = function() {
-      dom.$('form').reset();
-      dom.fade('.paginator', 'out');
-      if( dom.$('button.active') ) dom.$('button.active').classList.remove('active');
+      _dom.$('form').reset();
+      _dom.trigger('blur', '.input input');
+      _dom.fade('.paginator', 'out');
+      if( _dom.$('button.active') ) _dom.$('button.active').classList.remove('active');
     };
 
     this.listResults = function(results, inFavorite) {
-      // console.log('list results');
+      var list = [];
+      var favLink, favStar, movieTitle, movieLink, detailSection, movieList;
+      var resultSpinner = _dom.$('.spinner-wrapper');
+
+      //TODO: Refactor this loop
+      for (var i in results) {
+        console.log(results[i]);
+      }
     };
 
     return {
       resetForm: this.resetForm,
+      listResults: this.listResults,
       // this function gets called to fill the error message placeholder
       showEmptyError: function(message) {
-        [].forEach.call( dom.all('.alert-container .alert'), function(el) {
+        [].forEach.call( _dom.all('.alert-container .alert'), function(el) {
           el.textContent = message;
         });
 
-        dom.fade('.alert-container', 'in') ;
+        _dom.fade('.alert-container', 'in') ;
         this.resetForm();
       },
       showSearchResults: function(params, type) {
-        dom.fade('#search-spinner', 'in');
+        _dom.fade('#search-spinner', 'in');
 
-        omdb.getMovies(params, function(results) {
+        _omdb.getMovies(params, function(results) {
           this.resetForm();
-          var results_json = JSON.parse(results);
+          results = JSON.parse(results);
 
           if ('True' === results.Response) {
             this.listResults(results.Search, false);
+
             // checkFavStatus();
             //
             // //if the trigger for this function comes from "search"
@@ -104,11 +118,11 @@ document.addEventListener('DOMContentLoaded', function() {
             //   resetPagination(results, params);
             // }
           } else {
-            dom.$('.result-list').innerHTML = '<h2>' + results_json.Error + '</h2>';
+            _dom.$('.result-list').innerHTML = '<h2>' + results_json.Error + '</h2>';
           }
 
-          dom.fade('.alert-container', 'out');
-          dom.fade('#search-spinner', 'out');
+          _dom.fade('.alert-container', 'out');
+          _dom.fade('#search-spinner', 'out');
         });
       }
     };
