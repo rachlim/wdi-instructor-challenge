@@ -1,4 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
+  Element.prototype.attr = function (name, value) {
+    if (typeof value === "undefined") {
+        return this.getAttribute(name);
+    } else {
+        return this.setAttribute(name, value);
+    }
+  };
+
   var _OMDB = function() {
     var request = new XMLHttpRequest(),
         _endpoint = '//www.omdbapi.com/?';
@@ -17,30 +25,27 @@ document.addEventListener('DOMContentLoaded', function() {
   }();
 
   var _DOM = function() {
-    var _dom = document,
-        event = _dom.createEvent('HTMLEvents');
+    var _dom = document;
 
     this.$ = function(el) {
-      // TODO: this part here needs to be refactored as well
-      // if (!(this instanceof $)) {
-      //   return new $(el);
-      // }
-      // this.el = document.querySelector(el);
-      console.log();
       return _dom.querySelector(el);
     };
 
     return {
+      create: function(selector) {
+        return _dom.createElement(selector);
+      },
       $: this.$,
-      all: function(selector) {
-        return _dom.querySelectorAll(selector);
+      all: function(selector, callback) {
+        [].forEach.call( _dom.querySelectorAll(selector), function(el) {
+          return callback(el);
+        });
       },
       trigger: function(ev, selector) {
         var event = _dom.createEvent('HTMLEvents');
         event.initEvent(ev, true, false);
-        [].forEach.call(
-          this.all(selector), function(el) {
-            el.dispatchEvent(event);
+        this.all(selector, function(el) {
+          el.dispatchEvent(event);
         });
       },
       // TODO: This fade function still buggy
@@ -78,13 +83,59 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     this.listResults = function(results, inFavorite) {
-      var list = [];
-      var favLink, favStar, movieTitle, movieLink, detailSection, movieList;
-      var resultSpinner = _dom.$('.spinner-wrapper');
+      var resultSpinner = _dom.$('.spinner-wrapper'),
+          listObject = {},
+          listsArr = []
+          ;
 
-      //TODO: Refactor this loop
       for (var i in results) {
-        console.log(results[i]);
+        // TODO: refactor this, to clone if a same node already exists
+        var movieList = _dom.create('li'),
+        favLink = _dom.create('input'),
+        favStar = _dom.create('label'),
+        movieTitle = _dom.create('h2'),
+        movieLink = _dom.create('a'),
+        detailSection = _dom.create('section'),
+        clonedSpinner = resultSpinner.cloneNode(true);
+
+        listObject = {
+          imdb_id: results[i].imdbID,
+          title: results[i].Title
+        };
+
+        favLink.id = 'fav' + i;
+        favLink.type = 'checkbox';
+        favLink.setAttribute('class', 'hide fav-link');
+        favLink.setAttribute('data-imdb', listObject.imdb_id);
+        favLink.setAttribute('data-movie-title', listObject.title);
+        favLink.setAttribute('data-in-favorite', 'false');
+
+        favStar.setAttribute('aria-hidden', 'true');
+        favStar.setAttribute('data-icon', '★');
+        favStar.setAttribute('for', favLink.id);
+
+        movieLink.setAttribute('class', 'movie-link');
+        movieLink.href = "#";
+        movieLink.setAttribute('data-imdb', listObject.imdb_id);
+        movieLink.innerHTML = listObject.title;
+
+        movieTitle.appendChild(movieLink);
+
+        clonedSpinner.id = 'result-spinner-' + listObject.imdb_id;
+        clonedSpinner.class = 'search-spinner';
+        detailSection.appendChild(clonedSpinner);
+
+        movieList.id = listObject.imdb_id;
+        movieList.appendChild(favLink);
+        movieList.appendChild(favStar);
+        movieList.appendChild(movieTitle);
+        movieList.appendChild(detailSection);
+
+        listsArr.push(movieList);
+      }
+
+      for (var list in listsArr) {
+        _dom.$('.result-list').appendChild(listsArr[list]);
       }
     };
 
@@ -93,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function() {
       listResults: this.listResults,
       // this function gets called to fill the error message placeholder
       showEmptyError: function(message) {
-        [].forEach.call( _dom.all('.alert-container .alert'), function(el) {
+        _dom.all('.alert-container .alert', function(el) {
           el.textContent = message;
         });
 
