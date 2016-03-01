@@ -1,15 +1,15 @@
 document.addEventListener('DOMContentLoaded', function() {
-  Element.prototype.attr = function (name, value) {
+  Element.prototype.attr = function(name, value) {
     if (typeof value === "undefined") {
-        return this.getAttribute(name);
+      return this.getAttribute(name);
     } else {
-        return this.setAttribute(name, value);
+      return this.setAttribute(name, value);
     }
   };
 
   var _OMDB = function() {
     var request = new XMLHttpRequest(),
-        _endpoint = '//www.omdbapi.com/?';
+      _endpoint = '//www.omdbapi.com/?';
 
     return {
       getMovies: function(params, callback) {
@@ -32,12 +32,12 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     return {
+      $: this.$,
       create: function(selector) {
         return _dom.createElement(selector);
       },
-      $: this.$,
       all: function(selector, callback) {
-        [].forEach.call( _dom.querySelectorAll(selector), function(el) {
+        [].forEach.call(_dom.querySelectorAll(selector), function(el) {
           return callback(el);
         });
       },
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
           duration = ms || 5000,
           gap = interval / duration;
 
-        if(isIn) {
+        if (isIn) {
           this.$(selector).style.display = 'block';
           this.$(selector).style.opacity = opacity;
         }
@@ -65,11 +65,39 @@ document.addEventListener('DOMContentLoaded', function() {
           opacity = isIn ? opacity + gap : opacity - gap;
           this.$(selector).style.opacity = opacity;
 
-          if(opacity <= 0) this.$(selector).style.display = 'none';
-          if(opacity <= 0 || opacity >= 1) window.clearInterval(fading);
+          if (opacity <= 0) this.$(selector).style.display = 'none';
+          if (opacity <= 0 || opacity >= 1) window.clearInterval(fading);
         }
 
         var fading = window.setInterval(func, interval);
+      },
+      on: function(elSelector, eventName, selector, callback) {
+        var element = this.$(elSelector);
+
+        element.addEventListener(eventName, function(event) {
+          var possibleTargets = element.querySelectorAll(selector);
+          var target = event.target;
+
+          for (var i = 0, l = possibleTargets.length; i < l; i++) {
+            var el = target;
+            var p = possibleTargets[i];
+
+            while (el && el !== element) {
+              if (el === p) {
+                return callback.call(p, event);
+              }
+
+              el = el.parentNode;
+            }
+          }
+        }, false);
+      },
+      hasClass: function(el, classname) {
+        if (el.classList) {
+          return el.classList.contains(classname);
+        } else {
+          return new RegExp('(^| )' + classname + '( |$)', 'gi').test(el.classname);
+        }
       }
     };
   }();
@@ -79,24 +107,23 @@ document.addEventListener('DOMContentLoaded', function() {
       _dom.$('form').reset();
       _dom.trigger('blur', '.input input');
       _dom.fade('.paginator', 'out');
-      if( _dom.$('button.active') ) _dom.$('button.active').classList.remove('active');
+      if (_dom.$('button.active')) _dom.$('button.active').classList.remove('active');
     };
 
     this.listResults = function(results, inFavorite) {
       var resultSpinner = _dom.$('.spinner-wrapper'),
-          listObject = {},
-          listsArr = []
-          ;
+        listObject = {},
+        listsArr = [];
 
       for (var i in results) {
         // TODO: refactor this, to clone if a same node already exists
         var movieList = _dom.create('li'),
-        favLink = _dom.create('input'),
-        favStar = _dom.create('label'),
-        movieTitle = _dom.create('h2'),
-        movieLink = _dom.create('a'),
-        detailSection = _dom.create('section'),
-        clonedSpinner = resultSpinner.cloneNode(true);
+          favLink = _dom.create('input'),
+          favStar = _dom.create('label'),
+          movieTitle = _dom.create('h2'),
+          movieLink = _dom.create('a'),
+          detailSection = _dom.create('section'),
+          clonedSpinner = resultSpinner.cloneNode(true);
 
         listObject = {
           imdb_id: results[i].imdbID,
@@ -148,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function() {
           el.textContent = message;
         });
 
-        _dom.fade('.alert-container', 'in') ;
+        _dom.fade('.alert-container', 'in');
         this.resetForm();
       },
       showSearchResults: function(params, type) {
@@ -180,25 +207,41 @@ document.addEventListener('DOMContentLoaded', function() {
   }(_OMDB, _DOM);
 
   // FORM Module, all interaction with the form will happen here
-  (function($selector, $resultCtrl) {
+  (function($selector, formCtrl) {
     $selector.addEventListener('click', function(e) {
       e.preventDefault();
 
       // get request parameters from form
       var form = _DOM.$('form'),
-          formData = serialize(form),
-          formArr = serializeArray(form);
+        formData = serialize(form),
+        formArr = serializeArray(form);
 
       // make sure the css doesn't flash 'active' (yellow)
       _DOM.$(".favorite").classList.remove('active');
       // console.log(formData, formArr);
 
-      if ( ! formArr[0].value ) {
-        $resultCtrl.showEmptyError('Please enter your search keyword');
+      if (!formArr[0].value) {
+        formCtrl.showEmptyError('Please enter your search keyword');
       } else {
-        $resultCtrl.showSearchResults(formData, 'search');
+        formCtrl.showSearchResults(formData, 'search');
       }
 
     }, false);
   })(_DOM.$('.submit'), _SHARED);
+
+  // RESULT Module, all interaction with the result list will happen here
+  (function(_dom, resultCtrl) {
+    _dom.on('.result-list', 'click', '.movie-link', function(e) {
+      e.preventDefault();
+      var this_link = e.target,
+          imdb_id = e.target.getAttribute('data-imdb');
+
+      if( _dom.hasClass(this_link, 'active') ) {
+        console.log('test');
+      }
+
+      console.log(e.target, imdb_id);
+    });
+
+  })(_DOM, _SHARED);
 });

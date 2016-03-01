@@ -247,31 +247,31 @@ var __BASE = window.location;
   });
 
   // THIS PART HERE COVERS ALL DOM MANIPULATION FROM GETTING DETAILS ON MOVIES
-  $('.result-list').on('click', '.movie-link', function(e) {
-    e.preventDefault();
-    var movie = $(this);
-    var imdb_id = movie.data('imdb');
-
-    if (! movie.hasClass('active')) {
-      var movieSection = movie.parents('li').find('section');
-      hideOtherMovies();
-
-      // if movie details already added to the section
-      // ignore the flow of AJAX call to get the movie details
-      // and just show the section
-      if(0 === movieSection.find('.media').length)  {
-        $('#result-spinner-' + imdb_id).fadeIn('slow');
-        getMovieDetails(imdb_id, function(details) {
-          addMovieDetailsToSection(movieSection, details);
-        });
-      }
-
-      movieSection.fadeIn().addClass('active');
-      movie.addClass('active');
-    }
-
-    // TODO: close the detail section when opened section is clicked again
-  });
+  // $('.result-list').on('click', '.movie-link', function(e) {
+  //   e.preventDefault();
+  //   var movie = $(this);
+  //   var imdb_id = movie.data('imdb');
+  //
+  //   if (! movie.hasClass('active')) {
+  //     var movieSection = movie.parents('li').find('section');
+  //     hideOtherMovies();
+  //
+  //     // if movie details already added to the section
+  //     // ignore the flow of AJAX call to get the movie details
+  //     // and just show the section
+  //     if(0 === movieSection.find('.media').length)  {
+  //       $('#result-spinner-' + imdb_id).fadeIn('slow');
+  //       getMovieDetails(imdb_id, function(details) {
+  //         addMovieDetailsToSection(movieSection, details);
+  //       });
+  //     }
+  //
+  //     movieSection.fadeIn().addClass('active');
+  //     movie.addClass('active');
+  //   }
+  //
+  //   // TODO: close the detail section when opened section is clicked again
+  // });
 
   // function that hides all other movie details
   // so only one details gets shown each time
