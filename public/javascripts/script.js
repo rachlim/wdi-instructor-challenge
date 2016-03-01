@@ -85,18 +85,31 @@ document.addEventListener('DOMContentLoaded', function() {
     this.listResults = function(results, inFavorite) {
       var resultSpinner = _dom.$('.spinner-wrapper'),
           listObject = {},
-          listsArr = []
-          ;
+          listsArr = [],
+          movieList,
+          favLink, favStar, movieTitle, movieLink, detailSection;
+
 
       for (var i in results) {
-        // TODO: refactor this, to clone if a same node already exists
-        var movieList = _dom.create('li'),
-        favLink = _dom.create('input'),
-        favStar = _dom.create('label'),
-        movieTitle = _dom.create('h2'),
-        movieLink = _dom.create('a'),
-        detailSection = _dom.create('section'),
-        clonedSpinner = resultSpinner.cloneNode(true);
+        var clonedSpinner = resultSpinner.cloneNode(true);
+
+        if (0 === listsArr.length) {
+          movieList = _dom.create('li');
+          favLink = _dom.create('input');
+          favStar = _dom.create('label');
+          movieTitle = _dom.create('h2');
+          movieLink = _dom.create('a');
+          detailSection = _dom.create('section');
+        } else {
+          movieList = _dom.$('.movie-list').cloneNode(true);
+          favLink = movieList.querySelector('.fav-link');
+          favStar = movieList.querySelector('.fav-star');
+          movieTitle = movieList.querySelector('.fav-link');
+          movieLink = movieList.querySelector('.movie-link');
+          detailSection = movieList.querySelector('.detail-section');
+        }
+
+        console.log(i, _dom.$('.movie-list'));
 
         listObject = {
           imdb_id: results[i].imdbID,
@@ -110,6 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
         favLink.setAttribute('data-movie-title', listObject.title);
         favLink.setAttribute('data-in-favorite', 'false');
 
+        favStar.setAttribute('class', 'fav-star');
         favStar.setAttribute('aria-hidden', 'true');
         favStar.setAttribute('data-icon', '★');
         favStar.setAttribute('for', favLink.id);
@@ -120,12 +134,15 @@ document.addEventListener('DOMContentLoaded', function() {
         movieLink.innerHTML = listObject.title;
 
         movieTitle.appendChild(movieLink);
+        movieTitle.setAttribute('class', 'movie-title');
 
         clonedSpinner.id = 'result-spinner-' + listObject.imdb_id;
         clonedSpinner.class = 'search-spinner';
         detailSection.appendChild(clonedSpinner);
+        detailSection.setAttribute('class', 'detail-section');
 
         movieList.id = listObject.imdb_id;
+        movieList.setAttribute('class', 'movie-list');
         movieList.appendChild(favLink);
         movieList.appendChild(favStar);
         movieList.appendChild(movieTitle);
@@ -169,7 +186,7 @@ document.addEventListener('DOMContentLoaded', function() {
             //   resetPagination(results, params);
             // }
           } else {
-            _dom.$('.result-list').innerHTML = '<h2>' + results_json.Error + '</h2>';
+            _dom.$('.result-list').innerHTML = '<h2>' + results.Error + '</h2>';
           }
 
           _dom.fade('.alert-container', 'out');
