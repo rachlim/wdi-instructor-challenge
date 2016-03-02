@@ -6,6 +6,92 @@ document.addEventListener('DOMContentLoaded', function() {
       return this.setAttribute(name, value);
     }
   };
+  Element.prototype.trigger = function(ev) {
+    var event = document.createEvent('HTMLEvents');
+    event.initEvent(ev, true, false);
+    this.dispatchEvent(event);
+  };
+  Element.prototype.hasClass = function(classname) {
+    if (this.classList) {
+      return this.classList.contains(classname);
+    } else {
+      return new RegExp('(^| )' + classname + '( |$)', 'gi').test(this.classname);
+    }
+  };
+  Element.prototype.on = function(eventName, childSelector, callback) {
+    var element = this;
+
+    element.addEventListener(eventName, function(event) {
+      var possibleTargets = element.querySelectorAll(childSelector);
+      var target = event.target;
+
+      for (var i = 0, l = possibleTargets.length; i < l; i++) {
+        var el = target;
+        var p = possibleTargets[i];
+
+        while (el && el !== element) {
+          if (el === p) {
+            return callback.call(p, event);
+          }
+
+          el = el.parentNode;
+        }
+      }
+    }, false);
+  };
+  Element.prototype.parents = function(selector) {
+
+    var parents = [],
+        firstChar = '';
+        
+    if (selector) {
+      firstChar = selector.charAt(0);
+    }
+
+    elem = this;
+
+    // Get matches
+    for ( ; elem && elem !== document; elem = elem.parentNode ) {
+      if (selector) {
+        // If selector is a class
+        if (firstChar === '.') {
+          if (elem.classList.contains(selector.substr(1))) {
+            parents.push(elem);
+          }
+        }
+
+        // If selector is an ID
+        if (firstChar === '#') {
+          if (elem.id === selector.substr(1)) {
+            parents.push(elem);
+          }
+        }
+
+        // If selector is a data attribute
+        if (firstChar === '[') {
+          if (elem.hasAttribute(selector.substr(1, selector.length - 1))) {
+            parents.push(elem);
+          }
+        }
+
+        // If selector is a tag
+        if (elem.tagName.toLowerCase() === selector) {
+          parents.push(elem);
+        }
+
+      } else {
+        parents.push(elem);
+      }
+    }
+
+    // Return parents if any exist
+    if (parents.length === 0) {
+      return null;
+    } else {
+      return parents;
+    }
+  };
+
 
   var _OMDB = function() {
     var request = new XMLHttpRequest(),
@@ -33,20 +119,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     return {
       $: this.$,
-      create: function(selector) {
-        return _dom.createElement(selector);
-      },
       all: function(selector, callback) {
         [].forEach.call(_dom.querySelectorAll(selector), function(el) {
           return callback(el);
         });
       },
-      trigger: function(ev, selector) {
-        var event = _dom.createEvent('HTMLEvents');
-        event.initEvent(ev, true, false);
-        this.all(selector, function(el) {
-          el.dispatchEvent(event);
-        });
+      create: function(selector) {
+        return _dom.createElement(selector);
       },
       // TODO: This fade function still buggy
       fade: function(selector, type, ms) {
@@ -70,34 +149,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         var fading = window.setInterval(func, interval);
-      },
-      on: function(elSelector, eventName, selector, callback) {
-        var element = this.$(elSelector);
-
-        element.addEventListener(eventName, function(event) {
-          var possibleTargets = element.querySelectorAll(selector);
-          var target = event.target;
-
-          for (var i = 0, l = possibleTargets.length; i < l; i++) {
-            var el = target;
-            var p = possibleTargets[i];
-
-            while (el && el !== element) {
-              if (el === p) {
-                return callback.call(p, event);
-              }
-
-              el = el.parentNode;
-            }
-          }
-        }, false);
-      },
-      hasClass: function(el, classname) {
-        if (el.classList) {
-          return el.classList.contains(classname);
-        } else {
-          return new RegExp('(^| )' + classname + '( |$)', 'gi').test(el.classname);
-        }
       }
     };
   }();
@@ -105,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function() {
   var _SHARED = function(_omdb, _dom) {
     this.resetForm = function() {
       _dom.$('form').reset();
-      _dom.trigger('blur', '.input input');
+      _dom.$('.input input').trigger('blur');
       _dom.fade('.paginator', 'out');
       if (_dom.$('button.active')) _dom.$('button.active').classList.remove('active');
     };
@@ -230,18 +281,22 @@ document.addEventListener('DOMContentLoaded', function() {
   })(_DOM.$('.submit'), _SHARED);
 
   // RESULT Module, all interaction with the result list will happen here
-  (function(_dom, resultCtrl) {
-    _dom.on('.result-list', 'click', '.movie-link', function(e) {
+  (function($result, resultCtrl) {
+    $result.on('click', '.movie-link', function(e) {
       e.preventDefault();
       var this_link = e.target,
-          imdb_id = e.target.getAttribute('data-imdb');
+        imdb_id = e.target.getAttribute('data-imdb');
 
-      if( _dom.hasClass(this_link, 'active') ) {
-        console.log('test');
+      if (!this_link.hasClass('active')) {
+        console.log('get movie details');
+
+        var movieSection = this_link.parents('li');
+
+        console.log(movieSection);
       }
 
       console.log(e.target, imdb_id);
     });
 
-  })(_DOM, _SHARED);
+  })(_DOM.$('.result-list'), _SHARED);
 });
