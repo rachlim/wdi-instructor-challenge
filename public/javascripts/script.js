@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var parents = [],
         firstChar = '';
-        
+
     if (selector) {
       firstChar = selector.charAt(0);
     }
@@ -285,14 +285,10 @@ document.addEventListener('DOMContentLoaded', function() {
     $result.on('click', '.movie-link', function(e) {
       e.preventDefault();
       var this_link = e.target,
-        imdb_id = e.target.getAttribute('data-imdb');
+          imdb_id = e.target.getAttribute('data-imdb');
 
       if (!this_link.hasClass('active')) {
-        console.log('get movie details');
-
         var movieSection = this_link.parents('li');
-
-        console.log(movieSection);
       }
 
       console.log(e.target, imdb_id);
