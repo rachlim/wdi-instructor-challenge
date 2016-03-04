@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    Element.prototype.attr = function(name, value) {
+  Element.prototype.attr = function(name, value) {
     if (typeof value === "undefined") {
       return this.getAttribute(name);
     } else {
@@ -119,7 +119,6 @@ document.addEventListener('DOMContentLoaded', function() {
     var fading = window.setInterval(func, interval);
   };
 
-
   var _OMDB = function() {
     var request = new XMLHttpRequest(),
       _endpoint = '//www.omdbapi.com/?';
@@ -131,6 +130,22 @@ document.addEventListener('DOMContentLoaded', function() {
           if (request.status >= 200 && request.status < 400) {
             callback(request.responseText);
           }
+        };
+        request.send();
+      },
+      getMovieDetails: function(imdb_id, callback) {
+        // TODO: VALIDATE IF IMDB ID IS EMPTY
+        if ( ! imdb_id ) return ;
+
+        var search_params = "i=" + imdb_id + "&type=movie&plot=full&tomatoes=true&r=json";
+
+        request.open('GET', _endpoint + search_params, true);
+        request.onload = function() {
+          if (request.status >= 200 && request.status < 400) {
+            callback(request.responseText);
+          }
+
+          //TODO: do something when there's error
         };
         request.send();
       }
@@ -307,27 +322,91 @@ document.addEventListener('DOMContentLoaded', function() {
   })(_DOM.$('.submit'), _SHARED);
 
   // RESULT Module, all interaction with the result list will happen here
-  (function($result, resultCtrl) {
+  (function($result, resultCtrl, _omdb) {
+    function addMovieDetailsToSection(section, details) {
+      var detail_container = _DOM.create('div'),
+          movie_poster = _DOM.create('div'),
+          poster_link = _DOM.create('a'),
+          poster_img = _DOM.create('img');
+
+      // movie poster part
+      movie_poster.setAttribute('class', 'media-left');
+      poster_img.class = 'media-object';
+
+      if ('N/A' !== details.Poster) {
+        poster_link.href = details.Poster;
+        poster_img.setAttribute('src', details.Poster);
+      } else {
+        poster_link.href = 'http://lorempixel.com/250/370';
+        poster_img.setAttribute('src', 'http://lorempixel.com/250/370');
+      }
+
+      poster_link.appendChild(poster_img);
+      movie_poster.appendChild(poster_link);
+
+      // movie copy part
+      var movie_copy = _DOM.create('div');
+      var movie_heading = _DOM.create('h4');
+      var movie_plot = _DOM.create('p');
+      var movie_director = _DOM.create('h5');
+      var movie_rating = _DOM.create('h5');
+      var movie_length = _DOM.create('h5');
+      var movie_imdb_rating = _DOM.create('h5');
+
+      movie_copy.setAttribute('class', 'media-body');
+      movie_heading.setAttribute('class', 'media-heading');
+      movie_heading.textContent = details.Year;
+      movie_plot.setAttribute('class', 'plot');
+      movie_plot.textContent = details.Plot;
+      movie_director.setAttribute('class', 'director');
+      movie_director.textContent = 'Director: ' + details.Director;
+      movie_rating.setAttribute('class', 'rating');
+      movie_rating.textContent = 'Rating: ' + details.Rated;
+      movie_length.setAttribute('class', 'length');
+      movie_length.textContent = 'Runtime: ' + details.Runtime;
+      movie_imdb_rating.setAttribute('class', 'imdb_rating');
+      movie_imdb_rating.textContent = 'iMDB Rating: ' + details.imdbRating;
+
+      movie_copy.appendChild(movie_heading);
+      movie_copy.appendChild(movie_plot);
+      movie_copy.appendChild(movie_director);
+      movie_copy.appendChild(movie_director);
+      movie_copy.appendChild(movie_rating);
+      movie_copy.appendChild(movie_length);
+      movie_copy.appendChild(movie_imdb_rating);
+      // movie_heading.appendChild(movie_copy);
+
+      movie_poster.setAttribute('class', 'media-left');
+      movie_copy.setAttribute('class', 'media-body');
+
+      detail_container.setAttribute('class', 'media');
+      detail_container.appendChild(movie_poster);
+      detail_container.appendChild(movie_copy);
+
+      console.log(section);
+      section.appendChild(detail_container);
+    }
+
     $result.on('click', '.movie-link', function(e) {
       e.preventDefault();
       var this_link = e.target,
           imdb_id = e.target.getAttribute('data-imdb'),
-          movieSection = this_link.parents('li')[0];
+          movieSection = this_link.parents('li')[0].querySelector('section');
 
       if (! this_link.hasClass('active')) {
         if(0 === movieSection.querySelectorAll('.media').length)  {
           _DOM.fade('#result-spinner-' + imdb_id, 'in');
-          // getMovieDetails(imdb_id, function(details) {
-          //   addMovieDetailsToSection(movieSection, details);
-          // });
+          _omdb.getMovieDetails(imdb_id, function(details) {
+            details = JSON.parse(details);
+            addMovieDetailsToSection(movieSection, details);
+          });
         }
       }
 
-      console.log(movieSection.classList);
       movieSection.addClass('active');
       this_link.addClass('active');
-      _DOM.fade(movieSection, 'in');
+      movieSection.fade('in');
     });
 
-  })(_DOM.$('.result-list'), _SHARED);
+  })(_DOM.$('.result-list'), _SHARED, _OMDB);
 });
