@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-  Element.prototype.attr = function(name, value) {
+    Element.prototype.attr = function(name, value) {
     if (typeof value === "undefined") {
       return this.getAttribute(name);
     } else {
@@ -17,6 +17,12 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
       return new RegExp('(^| )' + classname + '( |$)', 'gi').test(this.classname);
     }
+  };
+  Element.prototype.addClass = function(className) {
+    if (this.classList)
+      this.classList.add(className);
+    else
+      this.className += ' ' + className;
   };
   Element.prototype.on = function(eventName, childSelector, callback) {
     var element = this;
@@ -40,7 +46,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }, false);
   };
   Element.prototype.parents = function(selector) {
-
     var parents = [],
         firstChar = '';
 
@@ -91,6 +96,28 @@ document.addEventListener('DOMContentLoaded', function() {
       return parents;
     }
   };
+  Element.prototype.fade = function(type, ms) {
+    var isIn = type === 'in',
+      opacity = isIn ? 1 : 0,
+      interval = 500,
+      duration = ms || 5000,
+      gap = interval / duration;
+
+    if (isIn) {
+      this.style.display = 'block';
+      this.style.opacity = opacity;
+    }
+
+    function func() {
+      opacity = isIn ? opacity + gap : opacity - gap;
+      this.style.opacity = opacity;
+
+      if (opacity <= 0) this.style.display = 'none';
+      if (opacity <= 0 || opacity >= 1) window.clearInterval(fading);
+    }
+
+    var fading = window.setInterval(func, interval);
+  };
 
 
   var _OMDB = function() {
@@ -127,7 +154,6 @@ document.addEventListener('DOMContentLoaded', function() {
       create: function(selector) {
         return _dom.createElement(selector);
       },
-      // TODO: This fade function still buggy
       fade: function(selector, type, ms) {
         var isIn = type === 'in',
           opacity = isIn ? 1 : 0,
@@ -285,13 +311,22 @@ document.addEventListener('DOMContentLoaded', function() {
     $result.on('click', '.movie-link', function(e) {
       e.preventDefault();
       var this_link = e.target,
-          imdb_id = e.target.getAttribute('data-imdb');
+          imdb_id = e.target.getAttribute('data-imdb'),
+          movieSection = this_link.parents('li')[0];
 
-      if (!this_link.hasClass('active')) {
-        var movieSection = this_link.parents('li');
+      if (! this_link.hasClass('active')) {
+        if(0 === movieSection.querySelectorAll('.media').length)  {
+          _DOM.fade('#result-spinner-' + imdb_id, 'in');
+          // getMovieDetails(imdb_id, function(details) {
+          //   addMovieDetailsToSection(movieSection, details);
+          // });
+        }
       }
 
-      console.log(e.target, imdb_id);
+      console.log(movieSection.classList);
+      movieSection.addClass('active');
+      this_link.addClass('active');
+      _DOM.fade(movieSection, 'in');
     });
 
   })(_DOM.$('.result-list'), _SHARED);
