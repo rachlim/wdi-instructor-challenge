@@ -313,45 +313,45 @@ var __BASE = window.location;
   }
 
   // THIS PART HERE COVERS ALL EVENT ON CLICKING FAVORITE FOR A MOVIE
-  $(".favorite").click(function(e) {
-    e.preventDefault();
-    $('.paginator').fadeOut();
-    $(this).addClass('active');
+  // $(".favorite").click(function(e) {
+  //   e.preventDefault();
+  //   $('.paginator').fadeOut();
+  //   $(this).addClass('active');
+  //
+  //   var allFavs = [];
+  //
+  //   getFavorites(function(all_fav_in_data) {
+  //     for (var fav in all_fav_in_data) {
+  //       allFavs.push({
+  //         imdbID: all_fav_in_data[fav].oid,
+  //         Title: all_fav_in_data[fav].name
+  //       });
+  //     }
+  //
+  //     if (0 === allFavs.length) {
+  //       showEmptyError('You have not liked any movie. Click on the star!');
+  //     } else {
+  //       $('.alert-container').fadeOut();
+  //       resetFlow();
+  //       listResults(allFavs, true);
+  //       checkFavStatus();
+  //     }
+  //   });
+  // });
 
-    var allFavs = [];
-
-    getFavorites(function(all_fav_in_data) {
-      for (var fav in all_fav_in_data) {
-        allFavs.push({
-          imdbID: all_fav_in_data[fav].oid,
-          Title: all_fav_in_data[fav].name
-        });
-      }
-
-      if (0 === allFavs.length) {
-        showEmptyError('You have not liked any movie. Click on the star!');
-      } else {
-        $('.alert-container').fadeOut();
-        resetFlow();
-        listResults(allFavs, true);
-        checkFavStatus();
-      }
-    });
-  });
-
-  $('.result-list').on('click', '.fav-link', function() {
-    var star = $(this);
-    var imdb_id = star.data('imdb');
-    var title = star.data('movie-title');
-
-    // check if a movie is already favorited
-    // if it is, delete the favorite instead
-    if (star.is(":checked")) {
-      updateDeleteFavorite('POST', star, imdb_id, title);
-    } else {
-      updateDeleteFavorite('DELETE', star, imdb_id, title);
-    }
-  });
+  // $('.result-list').on('click', '.fav-link', function() {
+  //   var star = $(this);
+  //   var imdb_id = star.data('imdb');
+  //   var title = star.data('movie-title');
+  //
+  //   // check if a movie is already favorited
+  //   // if it is, delete the favorite instead
+  //   if (star.is(":checked")) {
+  //     updateDeleteFavorite('POST', star, imdb_id, title);
+  //   } else {
+  //     updateDeleteFavorite('DELETE', star, imdb_id, title);
+  //   }
+  // });
 
   // the ajax call who update or delete the user's favorites movie
   // interact with back end application API endpoint

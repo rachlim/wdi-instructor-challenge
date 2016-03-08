@@ -131,7 +131,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
   var _OMDB = function() {
     var request = new XMLHttpRequest(),
-      _endpoint = '//www.omdbapi.com/?';
+        _endpoint = '//www.omdbapi.com/?',
+        _base = window.location.origin;
 
     return {
       getMovies: function(params, callback) {
@@ -158,6 +159,33 @@ document.addEventListener('DOMContentLoaded', function() {
           //TODO: do something when there's error
         };
         request.send();
+      },
+      getFavorites: function(callback) {
+        request.open('GET', _base + '/favorites', true);
+        request.onload = function() {
+          if (request.status >= 200 && request.status < 400) {
+            callback(request.responseText);
+          }
+
+          //TODO: do something when there's error
+        };
+        request.send();
+      },
+      updateDeleteFavorite: function(type, favlink, oid, name) {
+        var fav_param = "name=" + name + "&oid=" + oid;
+
+        request.open(type, _base + '/favorites', true);
+        request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+        request.send(fav_param);
+        request.onload = function() {
+          if (request.status >= 200 && request.status < 400) {
+            if (type == "DELETE" && favlink.getAttribute('data-in-favorite')) {
+              _DOM.$('#'+oid).fade('out');
+            }
+          }
+
+          //TODO: do something when there's error
+        };
       }
     };
   }();
@@ -188,7 +216,7 @@ document.addEventListener('DOMContentLoaded', function() {
       _dom.$('.input input').trigger('blur');
       _dom.$('.paginator').fade('out');
       _dom.$('.result-list').innerHTML = "";
-      if (_dom.$('button.active')) _dom.$('button.active').classList.remove('active');
+      // if (_dom.$('button.active')) _dom.$('button.active').classList.remove('active');
     };
 
     this.listResults = function(results, inFavorite) {
@@ -216,7 +244,13 @@ document.addEventListener('DOMContentLoaded', function() {
         favLink.setAttribute('class', 'hide fav-link');
         favLink.setAttribute('data-imdb', listObject.imdb_id);
         favLink.setAttribute('data-movie-title', listObject.title);
-        favLink.setAttribute('data-in-favorite', 'false');
+
+        if (inFavorite) {
+          favLink.setAttribute('checked', true);
+          favLink.setAttribute('data-in-favorite', 'true');
+        } else {
+          favLink.setAttribute('data-in-favorite', 'false');
+        }
 
         favStar.setAttribute('aria-hidden', 'true');
         favStar.setAttribute('data-icon', '★');
@@ -287,9 +321,9 @@ document.addEventListener('DOMContentLoaded', function() {
     };
   }(_OMDB, _DOM);
 
-  // FORM Module, all interaction with the form will happen here
-  (function($selector, formCtrl) {
-    $selector.addEventListener('click', function(e) {
+  // FORM Module, all interaction with the form will managed here
+  (function($submit, formCtrl) {
+    $submit.addEventListener('click', function(e) {
       e.preventDefault();
 
       // get request parameters from form
@@ -309,7 +343,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }, false);
   })(_DOM.$('.submit'), _SHARED);
 
-  // RESULT Module, all interaction with the result list will happen here
+  // RESULT Module, all interaction with the result list will managed here
   (function($result, resultCtrl, _omdb) {
     function addMovieDetailsToSection(section, details) {
       var detail_container = _DOM.create('div'),
@@ -408,5 +442,47 @@ document.addEventListener('DOMContentLoaded', function() {
         movieSection.fade('in');
       }
     });
+
+    $result.on('click', '.fav-link', function(e) {
+        var star = e.target,
+            imdb_id = star.getAttribute('data-imdb'),
+            title = star.getAttribute('data-movie-title');
+
+        console.log(star, imdb_id, title);
+        if (star.checked) {
+          _omdb.updateDeleteFavorite('POST', star, imdb_id, title);
+        } else {
+          _omdb.updateDeleteFavorite('DELETE', star, imdb_id, title);
+        }
+    });
   })(_DOM.$('.result-list'), _SHARED, _OMDB);
+
+  // FAVORITE Module, all interaction with the favorite button will managed here
+  (function($favorite, favCtrl, _omdb) {
+    $favorite.addEventListener('click', function(e) {
+      e.preventDefault();
+      $favorite.addClass('active');
+
+      var allFavs = [];
+
+      _omdb.getFavorites(function(all_fav_in_data) {
+        all_fav_in_data = JSON.parse(all_fav_in_data);
+
+        for (var fav in all_fav_in_data) {
+          allFavs.push({
+            imdbID: all_fav_in_data[fav].oid,
+            Title: all_fav_in_data[fav].name
+          });
+        }
+
+        if (0 === allFavs.length) {
+          favCtrl.showEmptyError('You have not liked any movie. Click on the star!');
+        } else {
+          _DOM.$('.alert-container').fade('out');
+          favCtrl.resetForm();
+          favCtrl.listResults(allFavs, true);
+        }
+      });
+    });
+  })(_DOM.$('.favorite'), _SHARED, _OMDB);
 });
