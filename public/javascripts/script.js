@@ -24,6 +24,15 @@ document.addEventListener('DOMContentLoaded', function() {
     else
       this.className += ' ' + className;
   };
+  Element.prototype.removeClass = function(className) {
+    var el = this;
+
+    if (el.classList) {
+      el.classList.remove(className);
+    } else {
+      el.className = el.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+    }
+  };
   Element.prototype.on = function(eventName, childSelector, callback) {
     var element = this;
 
@@ -101,18 +110,19 @@ document.addEventListener('DOMContentLoaded', function() {
       opacity = isIn ? 1 : 0,
       interval = 500,
       duration = ms || 5000,
-      gap = interval / duration;
+      gap = interval / duration,
+      element = this;
 
     if (isIn) {
-      this.style.display = 'block';
-      this.style.opacity = opacity;
+      element.style.display = 'block';
+      element.style.opacity = opacity;
     }
 
     function func() {
       opacity = isIn ? opacity + gap : opacity - gap;
-      this.style.opacity = opacity;
+      element.style.opacity = opacity;
 
-      if (opacity <= 0) this.style.display = 'none';
+      if (opacity <= 0) element.style.display = 'none';
       if (opacity <= 0 || opacity >= 1) window.clearInterval(fading);
     }
 
@@ -168,28 +178,6 @@ document.addEventListener('DOMContentLoaded', function() {
       },
       create: function(selector) {
         return _dom.createElement(selector);
-      },
-      fade: function(selector, type, ms) {
-        var isIn = type === 'in',
-          opacity = isIn ? 1 : 0,
-          interval = 500,
-          duration = ms || 5000,
-          gap = interval / duration;
-
-        if (isIn) {
-          this.$(selector).style.display = 'block';
-          this.$(selector).style.opacity = opacity;
-        }
-
-        function func() {
-          opacity = isIn ? opacity + gap : opacity - gap;
-          this.$(selector).style.opacity = opacity;
-
-          if (opacity <= 0) this.$(selector).style.display = 'none';
-          if (opacity <= 0 || opacity >= 1) window.clearInterval(fading);
-        }
-
-        var fading = window.setInterval(func, interval);
       }
     };
   }();
@@ -198,7 +186,8 @@ document.addEventListener('DOMContentLoaded', function() {
     this.resetForm = function() {
       _dom.$('form').reset();
       _dom.$('.input input').trigger('blur');
-      _dom.fade('.paginator', 'out');
+      _dom.$('.paginator').fade('out');
+      _dom.$('.result-list').innerHTML = "";
       if (_dom.$('button.active')) _dom.$('button.active').classList.remove('active');
     };
 
@@ -267,11 +256,11 @@ document.addEventListener('DOMContentLoaded', function() {
           el.textContent = message;
         });
 
-        _dom.fade('.alert-container', 'in');
+        _dom.$('.alert-container').fade('in');
         this.resetForm();
       },
       showSearchResults: function(params, type) {
-        _dom.fade('#search-spinner', 'in');
+        _dom.$('#search-spinner').fade('in');
 
         _omdb.getMovies(params, function(results) {
           this.resetForm();
@@ -288,11 +277,11 @@ document.addEventListener('DOMContentLoaded', function() {
             //   resetPagination(results, params);
             // }
           } else {
-            _dom.$('.result-list').innerHTML = '<h2>' + results_json.Error + '</h2>';
+            _dom.$('.result-list').innerHTML = '<h2>' + results.Error + '</h2>';
           }
 
-          _dom.fade('.alert-container', 'out');
-          _dom.fade('#search-spinner', 'out');
+          _dom.$('.alert-container').fade('out');
+          _dom.$('#search-spinner').fade('out');
         });
       }
     };
@@ -310,7 +299,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
       // make sure the css doesn't flash 'active' (yellow)
       _DOM.$(".favorite").classList.remove('active');
-      // console.log(formData, formArr);
 
       if (!formArr[0].value) {
         formCtrl.showEmptyError('Please enter your search keyword');
@@ -332,6 +320,7 @@ document.addEventListener('DOMContentLoaded', function() {
       // movie poster part
       movie_poster.setAttribute('class', 'media-left');
       poster_img.class = 'media-object';
+      poster_img.setAttribute('width', '250');
 
       if ('N/A' !== details.Poster) {
         poster_link.href = details.Poster;
@@ -383,8 +372,17 @@ document.addEventListener('DOMContentLoaded', function() {
       detail_container.appendChild(movie_poster);
       detail_container.appendChild(movie_copy);
 
-      console.log(section);
       section.appendChild(detail_container);
+    }
+
+    function hideOtherMovies() {
+      [].forEach.call($result.querySelectorAll('section'), function(el) {
+        el.style.display = 'none';
+        el.style.opacity = 0;
+      });
+      [].forEach.call($result.querySelectorAll('.movie-link'), function(el) {
+        el.removeClass('active');
+      });
     }
 
     $result.on('click', '.movie-link', function(e) {
@@ -394,19 +392,21 @@ document.addEventListener('DOMContentLoaded', function() {
           movieSection = this_link.parents('li')[0].querySelector('section');
 
       if (! this_link.hasClass('active')) {
+        hideOtherMovies();
+
         if(0 === movieSection.querySelectorAll('.media').length)  {
-          _DOM.fade('#result-spinner-' + imdb_id, 'in');
+          _DOM.$('#result-spinner-' + imdb_id).fade('in');
           _omdb.getMovieDetails(imdb_id, function(details) {
             details = JSON.parse(details);
             addMovieDetailsToSection(movieSection, details);
+            movieSection.querySelector('.spinner-wrapper').fade('out');
           });
         }
+
+        movieSection.addClass('active');
+        this_link.addClass('active');
+        movieSection.fade('in');
       }
-
-      movieSection.addClass('active');
-      this_link.addClass('active');
-      movieSection.fade('in');
     });
-
   })(_DOM.$('.result-list'), _SHARED, _OMDB);
 });
