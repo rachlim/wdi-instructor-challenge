@@ -336,11 +336,9 @@ document.addEventListener('DOMContentLoaded', function() {
           results = JSON.parse(results);
 
           if ('True' === results.Response) {
+            _dom.$('.result-list').innerHTML = "";
+            if(type === 'search') this.resetPagination(results, params);
             this.listResults(results.Search, false);
-
-            if(type === 'search') {
-              this.resetPagination(results, params);
-            }
           } else {
             _dom.$('.result-list').innerHTML = '<h2>' + results.Error + '</h2>';
           }
@@ -515,4 +513,40 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
   })(_DOM.$('.favorite'), _SHARED, _OMDB);
+
+  // when pagination button is clicked (next or previous)
+  // a call is made again to oMDB api
+  // and the pagination element is updated accordingly
+  (function($, paginator, paginatorCtrl) {
+    paginator.on('click', '.change-page', function(e) {
+      e.preventDefault();
+      console.log('change page');
+
+      var paginator = $('.paginator'),
+          pager_trigger = $(this),
+          all_next = $('.next'),
+          all_prev = $('.previous');
+
+      if(pager_trigger.hasClass('disabled')) return false;
+      // $('.change-page').addClass('disabled');
+
+      var currentPage = paginator.data('current-page'),
+          nextPage = ( 'undefined' === typeof( all_next.data('page') ) ) ? currentPage + 1 : all_next.data('page'),
+          prevPage = ( 1 < currentPage ) ? currentPage - 1 : currentPage,
+          maxPage = paginator.data('max');
+
+      var new_page = (pager_trigger.hasClass('next')) ? nextPage : prevPage;
+      var params = paginator.data('params') + '&page=' + new_page;
+
+      paginatorCtrl.showSearchResults(params);
+
+      $('.change-page').removeClass('disabled');
+      if(new_page == maxPage) all_next.addClass('disabled');
+      if(new_page == 1) all_prev.addClass('disabled');
+
+      paginator.data('current-page', new_page);
+      all_next.data('page', new_page + 1);
+      all_prev.data('page', new_page - 1);
+    });
+  })(jQuery, jQuery('.paginator'), _SHARED);
 });
