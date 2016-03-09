@@ -1,6 +1,6 @@
 // GLOBAL VAR
-var __OMDB = '//www.omdbapi.com/?';
-var __BASE = window.location;
+// var __OMDB = '//www.omdbapi.com/?';
+// var __BASE = window.location;
 
 (function($) {
   // SHARED FUNCTIONS
@@ -192,26 +192,26 @@ var __BASE = window.location;
   // this function reset the pagination states to its initial stage
   // and pass the original search parameter to the pagination element
   // so it'll know what to show on the next page
-  function resetPagination(results, params) {
-    var totalResultCount = results.totalResults,
-        totalPages = Math.ceil(totalResultCount / 10);
-
-    // show pagination only if search result is more than 10 items
-    if(totalResultCount > 10) {
-      $('.next').removeData('page');
-      $('.previous').data('page', 1);
-
-      $('.paginator')
-        .show()
-        .data('params', params)
-        .data('current-page', 1)
-        .data('max', totalPages)
-        .find('.previous').addClass('disabled')
-        .find('.next').removeClass('disabled');
-    } else {
-      $('.paginator').fadeOut();
-    }
-  }
+  // function resetPagination(results, params) {
+  //   var totalResultCount = results.totalResults,
+  //       totalPages = Math.ceil(totalResultCount / 10);
+  //
+  //   // show pagination only if search result is more than 10 items
+  //   if(totalResultCount > 10) {
+  //     $('.next').removeData('page');
+  //     $('.previous').data('page', 1);
+  //
+  //     $('.paginator')
+  //       .show()
+  //       .data('params', params)
+  //       .data('current-page', 1)
+  //       .data('max', totalPages)
+  //       .find('.previous').addClass('disabled')
+  //       .find('.next').removeClass('disabled');
+  //   } else {
+  //     $('.paginator').fadeOut();
+  //   }
+  // }
 
   // when pagination button is clicked (next or previous)
   // a call is made again to oMDB api

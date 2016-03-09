@@ -193,12 +193,10 @@ document.addEventListener('DOMContentLoaded', function() {
   var _DOM = function() {
     var _dom = document;
 
-    this.$ = function(el) {
-      return _dom.querySelector(el);
-    };
-
     return {
-      $: this.$,
+      $: function(el) {
+        return _dom.querySelector(el);
+      },
       all: function(selector, callback) {
         [].forEach.call(_dom.querySelectorAll(selector), function(el) {
           return callback(el);
@@ -214,9 +212,7 @@ document.addEventListener('DOMContentLoaded', function() {
     this.resetForm = function() {
       _dom.$('form').reset();
       _dom.$('.input input').trigger('blur');
-      _dom.$('.paginator').fade('out');
       _dom.$('.result-list').innerHTML = "";
-      // if (_dom.$('button.active')) _dom.$('button.active').classList.remove('active');
     };
 
     this.listResults = function(results, inFavorite) {
@@ -291,6 +287,36 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     };
 
+    this.resetPagination = function(results, params) {
+      var totalResultCount = results.totalResults,
+          totalPages = Math.ceil(totalResultCount / 10),
+          paginators, next_paginators, prev_paginators;
+
+      // show pagination only if search result is more than 10 items
+      if(totalResultCount > 10) {
+        _dom.all('.next', function(next) {
+          next.removeAttribute('data-page');
+          next.removeClass('disabled');
+        });
+
+        _dom.all('.previous', function(prev) {
+          prev.setAttribute('data-page', 1);
+          prev.addClass('disabled');
+        });
+
+        _dom.all('.paginator', function(paginator) {
+          paginator.fade('in');
+          paginator.setAttribute('data-params', params);
+          paginator.setAttribute('data-current-page', 1);
+          paginator.setAttribute('data-max', totalPages);
+          paginator.setAttribute('data-max', totalPages);
+        });
+      }
+      //  else {
+      //   $('.paginator').fadeOut();
+      // }
+    };
+
     return {
       resetForm: this.resetForm,
       listResults: this.listResults,
@@ -307,19 +333,14 @@ document.addEventListener('DOMContentLoaded', function() {
         _dom.$('#search-spinner').fade('in');
 
         _omdb.getMovies(params, function(results) {
-          this.resetForm();
           results = JSON.parse(results);
 
           if ('True' === results.Response) {
             this.listResults(results.Search, false);
 
-            // checkFavStatus();
-            //
-            // //if the trigger for this function comes from "search"
-            // //reset back all the pagination
-            // if(type === 'search') {
-            //   resetPagination(results, params);
-            // }
+            if(type === 'search') {
+              this.resetPagination(results, params);
+            }
           } else {
             _dom.$('.result-list').innerHTML = '<h2>' + results.Error + '</h2>';
           }
