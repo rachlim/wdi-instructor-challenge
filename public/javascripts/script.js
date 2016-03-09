@@ -211,6 +211,7 @@ document.addEventListener('DOMContentLoaded', function() {
   var _SHARED = function(_omdb, _dom) {
     this.resetForm = function() {
       _dom.$('form').reset();
+      _dom.$('.input input').value = "";
       _dom.$('.input input').trigger('blur');
       _dom.$('.result-list').innerHTML = "";
       _dom.all('.paginator', function(paginator) {
@@ -314,16 +315,16 @@ document.addEventListener('DOMContentLoaded', function() {
           paginator.setAttribute('data-max', totalPages);
           paginator.setAttribute('data-max', totalPages);
         });
+      } else {
+        _dom.all('.paginator', function(paginator) {
+          paginator.style.display = 'none';
+        });
       }
-      //  else {
-      //   $('.paginator').fadeOut();
-      // }
     };
 
     return {
       resetForm: this.resetForm,
       listResults: this.listResults,
-      // this function gets called to fill the error message placeholder
       showEmptyError: function(message) {
         _dom.all('.alert-container .alert', function(el) {
           el.textContent = message;
