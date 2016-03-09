@@ -213,6 +213,9 @@ document.addEventListener('DOMContentLoaded', function() {
       _dom.$('form').reset();
       _dom.$('.input input').trigger('blur');
       _dom.$('.result-list').innerHTML = "";
+      _dom.all('.paginator', function(paginator) {
+        paginator.style.display = 'none';
+      });
     };
 
     this.listResults = function(results, inFavorite) {
@@ -518,35 +521,36 @@ document.addEventListener('DOMContentLoaded', function() {
   // a call is made again to oMDB api
   // and the pagination element is updated accordingly
   (function($, paginator, paginatorCtrl) {
+    var all_next = $('.next'),
+        all_prev = $('.previous');
+
     paginator.on('click', '.change-page', function(e) {
       e.preventDefault();
-      console.log('change page');
 
-      var paginator = $('.paginator'),
-          pager_trigger = $(this),
-          all_next = $('.next'),
-          all_prev = $('.previous');
+      var maxPage = paginator.attr('data-max'),
+          params = paginator.attr('data-params'),
+          currentPage = parseInt(paginator.attr('data-current-page')),
+          nextPage =
+          ( 'undefined' === typeof( all_next.attr('data-page') ) ) ? currentPage + 1 : parseInt(all_next.attr('data-page')),
+          prevPage = ( 1 < currentPage ) ? currentPage - 1 : currentPage;
+
+
+      var pager_trigger = $(this),
+          new_page = (pager_trigger.hasClass('next')) ? nextPage : prevPage;
 
       if(pager_trigger.hasClass('disabled')) return false;
       // $('.change-page').addClass('disabled');
 
-      var currentPage = paginator.data('current-page'),
-          nextPage = ( 'undefined' === typeof( all_next.data('page') ) ) ? currentPage + 1 : all_next.data('page'),
-          prevPage = ( 1 < currentPage ) ? currentPage - 1 : currentPage,
-          maxPage = paginator.data('max');
-
-      var new_page = (pager_trigger.hasClass('next')) ? nextPage : prevPage;
-      var params = paginator.data('params') + '&page=' + new_page;
-
+      params = params + '&page=' + new_page;
       paginatorCtrl.showSearchResults(params);
 
       $('.change-page').removeClass('disabled');
       if(new_page == maxPage) all_next.addClass('disabled');
       if(new_page == 1) all_prev.addClass('disabled');
 
-      paginator.data('current-page', new_page);
-      all_next.data('page', new_page + 1);
-      all_prev.data('page', new_page - 1);
+      paginator.attr('data-current-page', new_page);
+      all_next.attr('data-page', new_page + 1);
+      all_prev.attr('data-page', new_page - 1);
     });
   })(jQuery, jQuery('.paginator'), _SHARED);
 });
