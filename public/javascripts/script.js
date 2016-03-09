@@ -221,8 +221,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     this.listResults = function(results, inFavorite) {
       var resultSpinner = _dom.$('.spinner-wrapper'),
-        listObject = {},
-        listsArr = [];
+          listObject = {},
+          listsArr = [];
 
       for (var i in results) {
         // TODO: refactor this, to clone if a same node already exists
@@ -279,6 +279,16 @@ document.addEventListener('DOMContentLoaded', function() {
       for (var list in listsArr) {
         _dom.$('.result-list').appendChild(listsArr[list]);
       }
+
+      _omdb.getFavorites(function(all_fav_in_data) {
+        all_favs = JSON.parse(all_fav_in_data);
+
+        for (var i in all_favs) {
+          for (var j in listsArr) {
+            if( listsArr[j].id === all_favs[i].oid ) _dom.$('#fav' + j).checked = true;
+          }
+        }
+      });
     };
 
     return {
@@ -448,7 +458,6 @@ document.addEventListener('DOMContentLoaded', function() {
             imdb_id = star.getAttribute('data-imdb'),
             title = star.getAttribute('data-movie-title');
 
-        console.log(star, imdb_id, title);
         if (star.checked) {
           _omdb.updateDeleteFavorite('POST', star, imdb_id, title);
         } else {
