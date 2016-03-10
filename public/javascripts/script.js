@@ -224,15 +224,23 @@ document.addEventListener('DOMContentLoaded', function() {
           listObject = {},
           listsArr = [];
 
+      var movieList, favLink, favStar, movieTitle, movieLink, detailSection;
+
       for (var i in results) {
         // TODO: refactor this, to clone if a same node already exists
-        var movieList = _dom.create('li'),
-          favLink = _dom.create('input'),
-          favStar = _dom.create('label'),
-          movieTitle = _dom.create('h2'),
-          movieLink = _dom.create('a'),
-          detailSection = _dom.create('section'),
-          clonedSpinner = resultSpinner.cloneNode(true);
+        if ( i === 0 ) {
+          movieList = _dom.create('li');
+          favLink = _dom.create('input');
+          favStar = _dom.create('label');
+          movieTitle = _dom.create('h2');
+          movieLink = _dom.create('a');
+          detailSection = _dom.create('section');
+        } else {
+          movieList = _dom.$('.movie-list').cloneNode(true);
+          favLink = movieList.querySelector('.fav-link');
+        }
+
+        clonedSpinner = resultSpinner.cloneNode(true);
 
         listObject = {
           imdb_id: results[i].imdbID,
@@ -268,6 +276,7 @@ document.addEventListener('DOMContentLoaded', function() {
         detailSection.appendChild(clonedSpinner);
 
         movieList.id = listObject.imdb_id;
+        movieList.setAttribute('class', 'movie-list');
         movieList.appendChild(favLink);
         movieList.appendChild(favStar);
         movieList.appendChild(movieTitle);
