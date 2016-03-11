@@ -194,6 +194,9 @@ document.addEventListener('DOMContentLoaded', function() {
     var _dom = document;
 
     return {
+      id: function(el) {
+        return _dom.getElementById(el);
+      },
       $: function(el) {
         return _dom.querySelector(el);
       },
@@ -221,25 +224,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
     this.listResults = function(results, inFavorite) {
       var resultSpinner = _dom.$('.spinner-wrapper'),
+          movieTemplate = _dom.id('movielist-template').innerHTML,
           listObject = {},
           listsArr = [];
 
       var movieList, favLink, favStar, movieTitle, movieLink, detailSection;
 
       for (var i in results) {
-        // TODO: refactor this, to clone if a same node already exists
-        if ( i === 0 ) {
-          movieList = _dom.create('li');
-          favLink = _dom.create('input');
-          favStar = _dom.create('label');
-          movieTitle = _dom.create('h2');
-          movieLink = _dom.create('a');
-          detailSection = _dom.create('section');
-        } else {
-          movieList = _dom.$('.movie-list').cloneNode(true);
-          favLink = movieList.querySelector('.fav-link');
-        }
+        movieList = _dom.create('li');
+        movieList.innerHTML = movieTemplate;
 
+        favLink = movieList.querySelector('input');
+        favStar = movieList.querySelector('label');
+        movieTitle = movieList.querySelector('h2');
+        movieLink = movieList.querySelector('a');
+        detailSection = movieList.querySelector('section');
         clonedSpinner = resultSpinner.cloneNode(true);
 
         listObject = {
@@ -248,8 +247,6 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         favLink.id = 'fav' + i;
-        favLink.type = 'checkbox';
-        favLink.setAttribute('class', 'hide fav-link');
         favLink.setAttribute('data-imdb', listObject.imdb_id);
         favLink.setAttribute('data-movie-title', listObject.title);
 
@@ -260,11 +257,7 @@ document.addEventListener('DOMContentLoaded', function() {
           favLink.setAttribute('data-in-favorite', 'false');
         }
 
-        favStar.setAttribute('aria-hidden', 'true');
-        favStar.setAttribute('data-icon', '★');
-        favStar.setAttribute('for', favLink.id);
-
-        movieLink.setAttribute('class', 'movie-link');
+        // TODO: change href to actual image url
         movieLink.href = "#";
         movieLink.setAttribute('data-imdb', listObject.imdb_id);
         movieLink.innerHTML = listObject.title;
@@ -272,11 +265,9 @@ document.addEventListener('DOMContentLoaded', function() {
         movieTitle.appendChild(movieLink);
 
         clonedSpinner.id = 'result-spinner-' + listObject.imdb_id;
-        clonedSpinner.class = 'search-spinner';
         detailSection.appendChild(clonedSpinner);
 
         movieList.id = listObject.imdb_id;
-        movieList.setAttribute('class', 'movie-list');
         movieList.appendChild(favLink);
         movieList.appendChild(favStar);
         movieList.appendChild(movieTitle);
@@ -388,16 +379,25 @@ document.addEventListener('DOMContentLoaded', function() {
   // RESULT Module, all interaction with the result list will managed here
   (function($result, resultCtrl, _omdb) {
     function addMovieDetailsToSection(section, details) {
-      var detail_container = _DOM.create('div'),
-          movie_poster = _DOM.create('div'),
-          poster_link = _DOM.create('a'),
-          poster_img = _DOM.create('img');
+      var movieDetailTemplate = _DOM.id('moviedetail-template').innerHTML;
+      section.innerHTML = movieDetailTemplate;
 
       // movie poster part
-      movie_poster.setAttribute('class', 'media-left');
-      poster_img.class = 'media-object';
-      poster_img.setAttribute('width', '250');
+      var detail_container = section.querySelector('.media'),
+          movie_poster = detail_container.querySelector('.media-left'),
+          poster_link = movie_poster.querySelector('a'),
+          poster_img = poster_link.querySelector('img');
+      // movie copy part
+      var movie_copy = section.querySelector('.media-body'),
+          movie_heading = movie_copy.querySelector('h4'),
+          movie_plot = movie_copy.querySelector('.plot'),
+          movie_director = movie_copy.querySelector('.director'),
+          movie_rating = movie_copy.querySelector('.rating'),
+          movie_length = movie_copy.querySelector('.length'),
+          movie_imdb_rating = movie_copy.querySelector('.imdb_rating');
 
+
+      // customizing movie poster part
       if ('N/A' !== details.Poster) {
         poster_link.href = details.Poster;
         poster_img.setAttribute('src', details.Poster);
@@ -406,47 +406,13 @@ document.addEventListener('DOMContentLoaded', function() {
         poster_img.setAttribute('src', 'http://lorempixel.com/250/370');
       }
 
-      poster_link.appendChild(poster_img);
-      movie_poster.appendChild(poster_link);
-
-      // movie copy part
-      var movie_copy = _DOM.create('div');
-      var movie_heading = _DOM.create('h4');
-      var movie_plot = _DOM.create('p');
-      var movie_director = _DOM.create('h5');
-      var movie_rating = _DOM.create('h5');
-      var movie_length = _DOM.create('h5');
-      var movie_imdb_rating = _DOM.create('h5');
-
-      movie_copy.setAttribute('class', 'media-body');
-      movie_heading.setAttribute('class', 'media-heading');
+      // customizing movie copy part
       movie_heading.textContent = details.Year;
-      movie_plot.setAttribute('class', 'plot');
       movie_plot.textContent = details.Plot;
-      movie_director.setAttribute('class', 'director');
       movie_director.textContent = 'Director: ' + details.Director;
-      movie_rating.setAttribute('class', 'rating');
       movie_rating.textContent = 'Rating: ' + details.Rated;
-      movie_length.setAttribute('class', 'length');
       movie_length.textContent = 'Runtime: ' + details.Runtime;
-      movie_imdb_rating.setAttribute('class', 'imdb_rating');
       movie_imdb_rating.textContent = 'iMDB Rating: ' + details.imdbRating;
-
-      movie_copy.appendChild(movie_heading);
-      movie_copy.appendChild(movie_plot);
-      movie_copy.appendChild(movie_director);
-      movie_copy.appendChild(movie_director);
-      movie_copy.appendChild(movie_rating);
-      movie_copy.appendChild(movie_length);
-      movie_copy.appendChild(movie_imdb_rating);
-      // movie_heading.appendChild(movie_copy);
-
-      movie_poster.setAttribute('class', 'media-left');
-      movie_copy.setAttribute('class', 'media-body');
-
-      detail_container.setAttribute('class', 'media');
-      detail_container.appendChild(movie_poster);
-      detail_container.appendChild(movie_copy);
 
       section.appendChild(detail_container);
     }
@@ -475,7 +441,10 @@ document.addEventListener('DOMContentLoaded', function() {
           _omdb.getMovieDetails(imdb_id, function(details) {
             details = JSON.parse(details);
             addMovieDetailsToSection(movieSection, details);
-            movieSection.querySelector('.spinner-wrapper').fade('out');
+
+            if (movieSection.querySelector('.spinner-wrapper')) {
+              movieSection.querySelector('.spinner-wrapper').fade('out');
+            }
           });
         }
 
