@@ -246,6 +246,8 @@ document.addEventListener('DOMContentLoaded', function() {
           title: results[i].Title
         };
 
+        favStar.setAttribute('for', 'fav' + i);
+
         favLink.id = 'fav' + i;
         favLink.setAttribute('data-imdb', listObject.imdb_id);
         favLink.setAttribute('data-movie-title', listObject.title);
