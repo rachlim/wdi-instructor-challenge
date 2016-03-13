@@ -179,7 +179,7 @@ document.addEventListener('DOMContentLoaded', function() {
         request.send(fav_param);
         request.onload = function() {
           if (request.status >= 200 && request.status < 400) {
-            if (type == "DELETE" && favlink.getAttribute('data-in-favorite')) {
+            if (type == "DELETE" && 'true' === favlink.getAttribute('data-in-favorite')) {
               _DOM.$('#'+oid).fade('out');
             }
           }
@@ -411,10 +411,10 @@ document.addEventListener('DOMContentLoaded', function() {
       // customizing movie copy part
       movie_heading.textContent = details.Year;
       movie_plot.textContent = details.Plot;
-      movie_director.textContent = 'Director: ' + details.Director;
-      movie_rating.textContent = 'Rating: ' + details.Rated;
-      movie_length.textContent = 'Runtime: ' + details.Runtime;
-      movie_imdb_rating.textContent = 'iMDB Rating: ' + details.imdbRating;
+      movie_director.textContent = details.Director;
+      movie_rating.textContent = details.Rated;
+      movie_length.textContent = details.Runtime;
+      movie_imdb_rating.textContent = details.imdbRating;
 
       section.appendChild(detail_container);
     }
