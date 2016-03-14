@@ -134,8 +134,6 @@ document.addEventListener('DOMContentLoaded', function() {
     speed = speed || 20;
     el.style.opacity = 1;
 
-    // console.log(el, 'fade out');
-
     (function fade() {
       if ((el.style.opacity-=0.1)<0.1) {
         el.style.display="none";
@@ -150,8 +148,6 @@ document.addEventListener('DOMContentLoaded', function() {
     speed = speed || 20;
     el.style.opacity = 0;
     el.style.display = "block";
-
-    // console.log(el, 'fade in');
 
     (function fade() {
       var val = parseFloat(el.style.opacity);
