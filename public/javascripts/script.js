@@ -129,67 +129,6 @@ document.addEventListener('DOMContentLoaded', function() {
     var fading = window.setInterval(func, interval);
   };
 
-  var _OMDB = function() {
-    var request = new XMLHttpRequest(),
-        _endpoint = '//www.omdbapi.com/?',
-        _base = window.location.origin;
-
-    return {
-      getMovies: function(params, callback) {
-        request.open('GET', _endpoint + params, true);
-        request.onload = function() {
-          if (request.status >= 200 && request.status < 400) {
-            callback(request.responseText);
-          }
-        };
-        request.send();
-      },
-      getMovieDetails: function(imdb_id, callback) {
-        // TODO: VALIDATE IF IMDB ID IS EMPTY
-        if ( ! imdb_id ) return ;
-
-        var search_params = "i=" + imdb_id + "&type=movie&plot=full&tomatoes=true&r=json";
-
-        request.open('GET', _endpoint + search_params, true);
-        request.onload = function() {
-          if (request.status >= 200 && request.status < 400) {
-            callback(request.responseText);
-          }
-
-          //TODO: do something when there's error
-        };
-        request.send();
-      },
-      getFavorites: function(callback) {
-        request.open('GET', _base + '/favorites', true);
-        request.onload = function() {
-          if (request.status >= 200 && request.status < 400) {
-            callback(request.responseText);
-          }
-
-          //TODO: do something when there's error
-        };
-        request.send();
-      },
-      updateDeleteFavorite: function(type, favlink, oid, name) {
-        var fav_param = "name=" + name + "&oid=" + oid;
-
-        request.open(type, _base + '/favorites', true);
-        request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-        request.send(fav_param);
-        request.onload = function() {
-          if (request.status >= 200 && request.status < 400) {
-            if (type == "DELETE" && 'true' === favlink.getAttribute('data-in-favorite')) {
-              _DOM.$('#'+oid).fade('out');
-            }
-          }
-
-          //TODO: do something when there's error
-        };
-      }
-    };
-  }();
-
   var _DOM = function() {
     var _dom = document;
 
@@ -210,6 +149,67 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     };
   }();
+
+  var _OMDB = function(appCtrl, _dom) {
+    var request = new XMLHttpRequest(),
+        _endpoint = '//www.omdbapi.com/?',
+        _base = window.location.origin;
+
+    return {
+      getMovies: function(params, callback) {
+        request.open('GET', _endpoint + params, true);
+        request.onload = function() {
+          if (request.status >= 200 && request.status < 400) {
+            callback(request.responseText);
+          } else {
+            appCtrl.showEmptyError('Connection Error, please refresh.');
+          }
+        };
+        request.send();
+      },
+      getMovieDetails: function(imdb_id, callback) {
+        if ( ! imdb_id ) return ;
+        var search_params = "i=" + imdb_id + "&type=movie&plot=full&tomatoes=true&r=json";
+
+        request.open('GET', _endpoint + search_params, true);
+        request.onload = function() {
+          if (request.status >= 200 && request.status < 400) {
+            callback(request.responseText);
+          } else {
+            appCtrl.showEmptyError('Connection Error, please refresh.');
+          }
+        };
+        request.send();
+      },
+      getFavorites: function(callback) {
+        request.open('GET', _base + '/favorites', true);
+        request.onload = function() {
+          if (request.status >= 200 && request.status < 400) {
+            callback(request.responseText);
+          } else {
+            appCtrl.showEmptyError('Connection Error, please refresh.');
+          }
+        };
+        request.send();
+      },
+      updateDeleteFavorite: function(type, favlink, oid, name) {
+        var fav_param = "name=" + name + "&oid=" + oid;
+
+        request.open(type, _base + '/favorites', true);
+        request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+        request.send(fav_param);
+        request.onload = function() {
+          if (request.status >= 200 && request.status < 400) {
+            if (type == "DELETE" && 'true' === favlink.getAttribute('data-in-favorite')) {
+              _dom.$('#'+oid).fade('out');
+            }
+          } else {
+            appCtrl.showEmptyError('Connection Error, please refresh.');
+          }
+        };
+      }
+    };
+  }(_SHARED, _DOM);
 
   var _SHARED = function(_omdb, _dom) {
     this.resetForm = function() {
@@ -243,7 +243,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         listObject = {
           imdb_id: results[i].imdbID,
-          title: results[i].Title
+          title: results[i].Title,
+          poster_url: results[i].Poster
         };
 
         favStar.setAttribute('for', 'fav' + i);
@@ -259,8 +260,7 @@ document.addEventListener('DOMContentLoaded', function() {
           favLink.setAttribute('data-in-favorite', 'false');
         }
 
-        // TODO: change href to actual image url
-        movieLink.href = "#";
+        movieLink.href = listObject.poster_url;
         movieLink.setAttribute('data-imdb', listObject.imdb_id);
         movieLink.innerHTML = listObject.title;
 
@@ -325,6 +325,10 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     return {
+      jump: function(selector_id) {
+        var top = _dom.id(selector_id).offsetTop; //Getting Y of target element
+        window.scrollTo(0, top);
+      },
       resetForm: this.resetForm,
       listResults: this.listResults,
       showEmptyError: function(message) {
@@ -453,6 +457,8 @@ document.addEventListener('DOMContentLoaded', function() {
         movieSection.addClass('active');
         this_link.addClass('active');
         movieSection.fade('in');
+
+        resultCtrl.jump(imdb_id);
       }
     });
 
