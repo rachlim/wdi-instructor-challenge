@@ -235,7 +235,7 @@ document.addEventListener('DOMContentLoaded', function() {
         request.onload = function() {
           if (request.status >= 200 && request.status < 400) {
             if (type == "DELETE" && 'true' === favlink.getAttribute('data-in-favorite')) {
-              _dom.$('#'+oid).fade('out');
+              _dom.$('#'+oid).fadeOut();
             }
           } else {
             appCtrl.showEmptyError('Connection Error, please refresh.');
@@ -345,7 +345,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         _dom.all('.paginator', function(paginator) {
-          paginator.fade('in');
+          paginator.fadeIn();
           paginator.setAttribute('data-params', params);
           paginator.setAttribute('data-current-page', 1);
           paginator.setAttribute('data-max', totalPages);
@@ -370,11 +370,11 @@ document.addEventListener('DOMContentLoaded', function() {
           el.textContent = message;
         });
 
-        _dom.$('.alert-container').fade('in');
+        _dom.$('.alert-container').fadeIn();
         this.resetForm();
       },
       showSearchResults: function(params, type) {
-        _dom.$('#search-spinner').fade('in');
+        _dom.$('#search-spinner').fadeIn();
 
         _omdb.getMovies(params, function(results) {
           results = JSON.parse(results);
@@ -387,7 +387,7 @@ document.addEventListener('DOMContentLoaded', function() {
             _dom.$('.result-list').innerHTML = '<h2>' + results.Error + '</h2>';
           }
 
-          _dom.$('.alert-container').fade('out');
+          _dom.$('.alert-container').fadeOut();
           _dom.$('#search-spinner').fade('out');
         });
       }
@@ -477,20 +477,20 @@ document.addEventListener('DOMContentLoaded', function() {
         hideOtherMovies();
 
         if(0 === movieSection.querySelectorAll('.media').length)  {
-          _DOM.$('#result-spinner-' + imdb_id).fade('in');
+          _DOM.$('#result-spinner-' + imdb_id).fadeIn();
           _omdb.getMovieDetails(imdb_id, function(details) {
             details = JSON.parse(details);
             addMovieDetailsToSection(movieSection, details);
 
             if (movieSection.querySelector('.spinner-wrapper')) {
-              movieSection.querySelector('.spinner-wrapper').fade('out');
+              movieSection.querySelector('.spinner-wrapper').fadeOut();
             }
           });
         }
 
         movieSection.addClass('active');
         this_link.addClass('active');
-        movieSection.fade('in');
+        movieSection.fadeIn();
 
         resultCtrl.jump(imdb_id);
       }
@@ -530,7 +530,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (0 === allFavs.length) {
           favCtrl.showEmptyError('You have not liked any movie. Click on the star!');
         } else {
-          _DOM.$('.alert-container').fade('out');
+          _DOM.$('.alert-container').fadeOut();
           favCtrl.resetForm();
           favCtrl.listResults(allFavs, true);
         }

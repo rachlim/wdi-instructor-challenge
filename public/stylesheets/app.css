@@ -215,14 +215,13 @@ a:hover, a:focus {
   transition: 300ms cubic-bezier(.4, 0, .2, 1);
   -webkit-transition: 300ms cubic-bezier(.4, 0, .2, 1);
   -ms-transition: 300ms cubic-bezier(.4, 0, .2, 1);
-  display: none;
+  display: none; 
   border-top: 2px solid #ED2553;
   border-bottom: 2px solid #ED2553;
   padding: 5% 0;
-
   max-height: 0;
-  transition: max-height 0.15s ease-out;;
-  -webkit-transition: max-height 0.15s ease-out;;
+  transition: max-height 0.15s ease-out;
+  -webkit-transition: max-height 0.15s ease-out;
   -ms-transition: max-height 0.15s ease-out;
 }
 
@@ -469,7 +468,7 @@ input:checked + label:before {
 .spinner-wrapper {
   position: fixed;
   top: 0;
-  left: 0;
+  left: 18px;
   right: 0;
   bottom: 0;
   background-color: rgba(255, 255, 255, 0.6);
