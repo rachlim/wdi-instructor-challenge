@@ -1,3 +1,5 @@
+// PREVIOUS ITERATION SCRIPTS, NOT USED ANYMORE
+
 // GLOBAL VAR
 var __OMDB = '//www.omdbapi.com/?';
 var __BASE = window.location;

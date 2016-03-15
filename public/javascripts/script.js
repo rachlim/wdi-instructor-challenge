@@ -1,164 +1,9 @@
+// MAIN SCRIPT FILE, WITH VANILLA TASTE
+
+// Waiting for DOM to be fully loaded, similar to $(document).ready function
 document.addEventListener('DOMContentLoaded', function() {
-  Element.prototype.attr = function(name, value) {
-    if (typeof value === "undefined") {
-      return this.getAttribute(name);
-    } else {
-      return this.setAttribute(name, value);
-    }
-  };
-  Element.prototype.trigger = function(ev) {
-    var event = document.createEvent('HTMLEvents');
-    event.initEvent(ev, true, false);
-    this.dispatchEvent(event);
-  };
-  Element.prototype.hasClass = function(classname) {
-    if (this.classList) {
-      return this.classList.contains(classname);
-    } else {
-      return new RegExp('(^| )' + classname + '( |$)', 'gi').test(this.classname);
-    }
-  };
-  Element.prototype.addClass = function(className) {
-    if (this.classList)
-      this.classList.add(className);
-    else
-      this.className += ' ' + className;
-  };
-  Element.prototype.removeClass = function(className) {
-    var el = this;
 
-    if (el.classList) {
-      el.classList.remove(className);
-    } else {
-      el.className = el.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
-    }
-  };
-  Element.prototype.on = function(eventName, childSelector, callback) {
-    var element = this;
-
-    element.addEventListener(eventName, function(event) {
-      var possibleTargets = element.querySelectorAll(childSelector);
-      var target = event.target;
-
-      for (var i = 0, l = possibleTargets.length; i < l; i++) {
-        var el = target;
-        var p = possibleTargets[i];
-
-        while (el && el !== element) {
-          if (el === p) {
-            return callback.call(p, event);
-          }
-
-          el = el.parentNode;
-        }
-      }
-    }, false);
-  };
-  Element.prototype.parents = function(selector) {
-    var parents = [],
-        firstChar = '';
-
-    if (selector) {
-      firstChar = selector.charAt(0);
-    }
-
-    elem = this;
-
-    // Get matches
-    for ( ; elem && elem !== document; elem = elem.parentNode ) {
-      if (selector) {
-        // If selector is a class
-        if (firstChar === '.') {
-          if (elem.classList.contains(selector.substr(1))) {
-            parents.push(elem);
-          }
-        }
-
-        // If selector is an ID
-        if (firstChar === '#') {
-          if (elem.id === selector.substr(1)) {
-            parents.push(elem);
-          }
-        }
-
-        // If selector is a data attribute
-        if (firstChar === '[') {
-          if (elem.hasAttribute(selector.substr(1, selector.length - 1))) {
-            parents.push(elem);
-          }
-        }
-
-        // If selector is a tag
-        if (elem.tagName.toLowerCase() === selector) {
-          parents.push(elem);
-        }
-
-      } else {
-        parents.push(elem);
-      }
-    }
-
-    // Return parents if any exist
-    if (parents.length === 0) {
-      return null;
-    } else {
-      return parents;
-    }
-  };
-  Element.prototype.fade = function(type, ms) {
-    var isIn = type === 'in',
-      opacity = isIn ? 1 : 0,
-      interval = 500,
-      duration = ms || 5000,
-      gap = interval / duration,
-      element = this;
-
-    if (isIn) {
-      element.style.display = 'block';
-      element.style.opacity = opacity;
-    }
-
-    function func() {
-      opacity = isIn ? opacity + gap : opacity - gap;
-      element.style.opacity = opacity;
-
-      if (opacity <= 0) element.style.display = 'none';
-      if (opacity <= 0 || opacity >= 1) window.clearInterval(fading);
-    }
-
-    var fading = window.setInterval(func, interval);
-  };
-  Element.prototype.fadeOut = function(speed) {
-    var el = this;
-
-    speed = speed || 20;
-    el.style.opacity = 1;
-
-    (function fade() {
-      if ((el.style.opacity-=0.1)<0.1) {
-        el.style.display="none";
-      } else {
-        setTimeout(fade,speed);
-      }
-    })();
-  };
-  Element.prototype.fadeIn = function(speed) {
-    var el = this;
-
-    speed = speed || 20;
-    el.style.opacity = 0;
-    el.style.display = "block";
-
-    (function fade() {
-      var val = parseFloat(el.style.opacity);
-
-      if (false === ((val += 0.1) > 1) ) {
-        el.style.opacity = val;
-        setTimeout(fade,speed);
-      }
-    })();
-  };
-
+  // ALL DOM RELATED MODIFIER FUNCTION WILL GO HERE, MOSTLY ON TRAVERSING AND SEARCHING ELEMENT
   var _DOM = function() {
     var _dom = document;
 
@@ -180,6 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
   }();
 
+  // ALL AJAX RELATED FUNCTIONS CAN BE PUBLICLY CALLED THROUGH THIS OBJECT
   var _OMDB = function(appCtrl, _dom) {
     var request = new XMLHttpRequest(),
         _endpoint = '//www.omdbapi.com/?',
@@ -230,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
         request.send(fav_param);
         request.onload = function() {
           if (request.status >= 200 && request.status < 400) {
-            if (type == "DELETE" && 'true' === favlink.getAttribute('data-in-favorite')) {
+            if (type == "DELETE" && 'true' === favlink.attr('data-in-favorite')) {
               _dom.$('#'+oid).fadeOut();
             }
           } else {
@@ -241,7 +87,11 @@ document.addEventListener('DOMContentLoaded', function() {
     };
   }(_SHARED, _DOM);
 
+  // ALL APPLICATION SPECIFIC HELPER FUNCTIONS
   var _SHARED = function(_omdb, _dom) {
+    // putting these three function outside the return function, so it's accessible for other public returned method
+
+    // this function restart all the form state prior submitting a search
     this.resetForm = function() {
       _dom.$('form').reset();
       _dom.$('.input input').value = "";
@@ -250,6 +100,38 @@ document.addEventListener('DOMContentLoaded', function() {
       _dom.all('.paginator', function(paginator) {
         paginator.style.display = 'none';
       });
+    };
+
+    this.resetPagination = function(results, params) {
+      var totalResultCount = results.totalResults,
+          totalPages = Math.ceil(totalResultCount / 10),
+          paginators, next_paginators, prev_paginators;
+
+      // show pagination only if search result is more than 10 items
+      // setting the parameter for pagination upon the total result count
+      if(totalResultCount > 10) {
+        _dom.all('.next', function(next) {
+          next.removeAttribute('data-page');
+          next.removeClass('disabled');
+        });
+
+        _dom.all('.previous', function(prev) {
+          prev.attr('data-page', 1);
+          prev.addClass('disabled');
+        });
+
+        _dom.all('.paginator', function(paginator) {
+          paginator.fadeIn();
+          paginator.attr('data-params', params);
+          paginator.attr('data-current-page', 1);
+          paginator.attr('data-max', totalPages);
+          paginator.attr('data-max', totalPages);
+        });
+      } else {
+        _dom.all('.paginator', function(paginator) {
+          paginator.style.display = 'none';
+        });
+      }
     };
 
     this.listResults = function(results, inFavorite) {
@@ -261,6 +143,8 @@ document.addEventListener('DOMContentLoaded', function() {
       var movieList, favLink, favStar, movieTitle, movieLink, detailSection;
 
       for (var i in results) {
+        // create new list, but set it's child node to be the same like the template
+        // this method is replicated for movie details as well
         movieList = _dom.create('li');
         movieList.innerHTML = movieTemplate;
 
@@ -277,21 +161,24 @@ document.addEventListener('DOMContentLoaded', function() {
           poster_url: results[i].Poster
         };
 
-        favStar.setAttribute('for', 'fav' + i);
+        // only adjusting node attributes that needed to be changed
+        favStar.attr('for', 'fav' + i);
 
         favLink.id = 'fav' + i;
-        favLink.setAttribute('data-imdb', listObject.imdb_id);
-        favLink.setAttribute('data-movie-title', listObject.title);
+        favLink.attr('data-imdb', listObject.imdb_id);
+        favLink.attr('data-movie-title', listObject.title);
 
+        // this attribute is mainly for aesthetic purposes
+        // fade out element if the the movie item is unfavorited under favorite list
         if (inFavorite) {
-          favLink.setAttribute('checked', true);
-          favLink.setAttribute('data-in-favorite', 'true');
+          favLink.attr('checked', true);
+          favLink.attr('data-in-favorite', 'true');
         } else {
-          favLink.setAttribute('data-in-favorite', 'false');
+          favLink.attr('data-in-favorite', 'false');
         }
 
         movieLink.href = listObject.poster_url;
-        movieLink.setAttribute('data-imdb', listObject.imdb_id);
+        movieLink.attr('data-imdb', listObject.imdb_id);
         movieLink.innerHTML = listObject.title;
 
         movieTitle.appendChild(movieLink);
@@ -305,13 +192,16 @@ document.addEventListener('DOMContentLoaded', function() {
         movieList.appendChild(movieTitle);
         movieList.appendChild(detailSection);
 
+        // put all li element inside a list
         listsArr.push(movieList);
       }
 
       for (var list in listsArr) {
+        // and adding each list into the result list container
         _dom.$('.result-list').appendChild(listsArr[list]);
       }
 
+      // check the status of favorites of each movie results based on it imdb id
       _omdb.getFavorites(function(all_fav_in_data) {
         all_favs = JSON.parse(all_fav_in_data);
 
@@ -323,38 +213,10 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     };
 
-    this.resetPagination = function(results, params) {
-      var totalResultCount = results.totalResults,
-          totalPages = Math.ceil(totalResultCount / 10),
-          paginators, next_paginators, prev_paginators;
-
-      // show pagination only if search result is more than 10 items
-      if(totalResultCount > 10) {
-        _dom.all('.next', function(next) {
-          next.removeAttribute('data-page');
-          next.removeClass('disabled');
-        });
-
-        _dom.all('.previous', function(prev) {
-          prev.setAttribute('data-page', 1);
-          prev.addClass('disabled');
-        });
-
-        _dom.all('.paginator', function(paginator) {
-          paginator.fadeIn();
-          paginator.setAttribute('data-params', params);
-          paginator.setAttribute('data-current-page', 1);
-          paginator.setAttribute('data-max', totalPages);
-          paginator.setAttribute('data-max', totalPages);
-        });
-      } else {
-        _dom.all('.paginator', function(paginator) {
-          paginator.style.display = 'none';
-        });
-      }
-    };
-
+    // all functions under the return function can be called from other modules
+    // this pattern is replicated from other modules
     return {
+      // functions to follow the anchor of a hyperlink element
       jump: function(selector_id) {
         var top = _dom.id(selector_id).offsetTop; //Getting Y of target element
         window.scrollTo(0, top);
@@ -375,6 +237,7 @@ document.addEventListener('DOMContentLoaded', function() {
         _omdb.getMovies(params, function(results) {
           results = JSON.parse(results);
 
+          // if the result response from OMDB is empty, show error on the result list
           if ('True' === results.Response) {
             _dom.$('.result-list').innerHTML = "";
             if(type === 'search') this.resetPagination(results, params);
@@ -397,8 +260,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
       // get request parameters from form
       var form = _DOM.$('form'),
-        formData = serialize(form),
-        formArr = serializeArray(form);
+          formData = serialize(form),
+          formArr = serializeArray(form);
 
       // make sure the css doesn't flash 'active' (yellow)
       _DOM.$(".favorite").classList.remove('active');
@@ -408,7 +271,6 @@ document.addEventListener('DOMContentLoaded', function() {
       } else {
         formCtrl.showSearchResults(formData, 'search');
       }
-
     }, false);
   })(_DOM.$('.submit'), _SHARED);
 
@@ -436,10 +298,10 @@ document.addEventListener('DOMContentLoaded', function() {
       // customizing movie poster part
       if ('N/A' !== details.Poster) {
         poster_link.href = details.Poster;
-        poster_img.setAttribute('src', details.Poster);
+        poster_img.attr('src', details.Poster);
       } else {
         poster_link.href = 'http://lorempixel.com/250/370';
-        poster_img.setAttribute('src', 'http://lorempixel.com/250/370');
+        poster_img.attr('src', 'http://lorempixel.com/250/370');
       }
 
       // customizing movie copy part
@@ -463,15 +325,20 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
 
+    // what happened once a movie item is clicked
     $result.on('click', '.movie-link', function(e) {
       e.preventDefault();
       var this_link = e.target,
-          imdb_id = e.target.getAttribute('data-imdb'),
+          imdb_id = e.target.attr('data-imdb'),
           movieSection = this_link.parents('li')[0].querySelector('section');
 
       if (! this_link.hasClass('active')) {
+        // hide other movies sections once a movie link was clicked
         hideOtherMovies();
 
+        // check if the section already has details section
+        // if not, add the details into the section
+        // if yes, dont add it in again
         if(0 === movieSection.querySelectorAll('.media').length)  {
           _DOM.$('#result-spinner-' + imdb_id).fadeIn();
           _omdb.getMovieDetails(imdb_id, function(details) {
@@ -492,20 +359,21 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
 
+    // what happened once a favorite star is clicked
     $result.on('click', '.fav-link', function(e) {
-        var star = e.target,
-            imdb_id = star.getAttribute('data-imdb'),
-            title = star.getAttribute('data-movie-title');
+      var star = e.target,
+          imdb_id = star.attr('data-imdb'),
+          title = star.attr('data-movie-title');
 
-        if (star.checked) {
-          _omdb.updateDeleteFavorite('POST', star, imdb_id, title);
-        } else {
-          _omdb.updateDeleteFavorite('DELETE', star, imdb_id, title);
-        }
+      if (star.checked) {
+        _omdb.updateDeleteFavorite('POST', star, imdb_id, title);
+      } else {
+        _omdb.updateDeleteFavorite('DELETE', star, imdb_id, title);
+      }
     });
   })(_DOM.$('.result-list'), _SHARED, _OMDB);
 
-  // FAVORITE Module, all interaction with the favorite button will managed here
+  // FAVORITE Module, all interaction once "My Favorites" is clicked
   (function($favorite, favCtrl, _omdb) {
     $favorite.addEventListener('click', function(e) {
       e.preventDefault();
@@ -537,6 +405,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // when pagination button is clicked (next or previous)
   // a call is made again to oMDB api
   // and the pagination element is updated accordingly
+  // not a core function, hence jquery is used
   (function($, paginator, paginatorCtrl) {
     var all_next = $('.next'),
         all_prev = $('.previous');

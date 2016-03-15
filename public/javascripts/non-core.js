@@ -1,5 +1,4 @@
 (function($) {
-
   // THIS PART HERE COVERS ALL DOM MANIPULATION FOR AESTHETIC PURPOSES
   // wont explain a lot here, cos it's not the main functionalities
   $(".input input").focus(function() {

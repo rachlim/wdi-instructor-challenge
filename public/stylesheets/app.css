@@ -463,7 +463,10 @@ input:checked + label:before {
 }
 
 /* MODULE - SPINNER & LOADER */
-#search-spinner { display: none; }
+#search-spinner { 
+  display: none; 
+  left: 0;
+}
 
 .spinner-wrapper {
   position: fixed;
