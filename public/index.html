@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Flickies</title>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <!-- Google Fonts for Typography-->
+  <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300,400italic|Montserrat:400,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="./stylesheets/app.css">
+
+  <!-- FAVICON -->
+  <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
+  <link rel="icon" href="./favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+  <h1>Flickies</h1>
+
+  <!-- FRONT END VALIDATION MESSAGE PLACEHOLDER -->
+  <section class="container alert-container">
+    <div class="alert alert-warning" role="alert"></div>
+  </section>
+
+  <!-- MAIN FORM  -->
+  <div class="materialContainer">
+    <div class="box">
+      <div class="title">SEARCH</div>
+
+      <form action="#" method="post">
+        <div class="input">
+          <label for="s">Movie name</label>
+          <input type="text" name="s" id="s" autocomplete="off">
+          <span class="spin"></span>
+        </div>
+
+        <input type="hidden" name="type" id="type" value="movie">
+        <input type="hidden" name="r" id="r" value="json">
+
+        <div class="button trigger submit">
+          <button>
+            <span>GO</span>
+          </button>
+        </div>
+        <div class="button trigger favorite">
+          <button>
+            <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+            <span>MY FAVORITES</span>
+            <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+          </button>
+        </div>
+      </form>
+
+      <!--CSS Spinner-->
+      <div id="search-spinner" class="spinner-wrapper">
+       <div class="spinner">
+        <div class="sk-folding-cube">
+         <div class="sk-cube1 sk-cube"></div>
+         <div class="sk-cube2 sk-cube"></div>
+         <div class="sk-cube4 sk-cube"></div>
+         <div class="sk-cube3 sk-cube"></div>
+        </div>
+       </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTAINER FOR THE MOVIE LIST -->
+  <section class="container">
+    <nav class="paginator">
+      <ul class="pager">
+        <li class="previous change-page"><a href="#"><span aria-hidden="true">&larr;</span> PREVIOUS</a></li>
+        <li class="next change-page"><a href="#">NEXT <span aria-hidden="true">&rarr;</span></a></li>
+      </ul>
+    </nav>
+    <ul class="result-list">
+    </ul>
+    <nav class="paginator">
+      <ul class="pager">
+        <li class="previous change-page"><a href="#"><span aria-hidden="true">&larr;</span> PREVIOUS</a></li>
+        <li class="next change-page"><a href="#">NEXT <span aria-hidden="true">&rarr;</span></a></li>
+      </ul>
+    </nav>
+  </section>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+  <script src="./javascripts/plugins.js"></script>
+  <script src="./javascripts/script.js"></script>
+  <script src="./javascripts/non-core.js"></script>
+
+  <!-- HTML TEMPLATE -->
+  <!-- This is the template of each movie item once it's returning search results -->
+  <script id="movielist-template" type="x-template">
+    <input id="fav0" type="checkbox" class="hide fav-link" data-imdb="tt0030848" data-movie-title="Test Pilot" data-in-favorite="false">
+    <label aria-hidden="true" data-icon="★" for="fav0"></label>
+    <h2>
+      <a class="movie-link" href="#" data-imdb="tt0030848">Test Pilot</a>
+    </h2>
+    <section>
+    </section>
+  </script>
+
+  <!-- This is the template of each movie details once it's clicked -->
+  <script id="moviedetail-template" type="x-template">
+    <div class="media">
+      <div class="media-left">
+        <a href="#">
+          <img width="250" src="#">
+        </a>
+      </div>
+      <div class="media-body">
+        <h4 class="media-heading">2013</h4>
+        <p class="plot"></p>
+
+        <h5>Director: <span class="director">Chris Mason Johnson</span></h5>
+        <h5>Rating: <span class="rating">N/A</span></h5>
+        <h5>Runtime: <span class="length">89 min</span></h5>
+        <h5>iMDB Rating: <span class="imdb_rating">6.5</span></h5>
+      </div>
+    </div>
+  </script>
+</body>
+
+</html>
